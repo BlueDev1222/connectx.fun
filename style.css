@@ -5,6 +5,7 @@
 }
 
 :root {
+
     --blue: #1877f2;
 
     --background: #ffffff;
@@ -17,10 +18,13 @@
     --border: #e5e7eb;
 
     --hover: #f5f8fa;
+
 }
 
 body.dark {
+
     --background: #000000;
+
     --surface: #000000;
 
     --text: #f7f9f9;
@@ -30,9 +34,11 @@ body.dark {
     --border: #2f3336;
 
     --hover: #16181c;
+
 }
 
 body {
+
     font-family:
         Arial,
         Helvetica,
@@ -43,6 +49,7 @@ body {
 
     color:
         var(--text);
+
 }
 
 
@@ -51,6 +58,7 @@ body {
 ========================= */
 
 #authScreen {
+
     min-height: 100vh;
 
     display: flex;
@@ -73,9 +81,11 @@ body {
             transparent 35%
         ),
         #050b18;
+
 }
 
 .auth-card {
+
     width: 100%;
 
     max-width: 420px;
@@ -90,9 +100,11 @@ body {
 
     box-shadow:
         0 25px 70px #0008;
+
 }
 
 .logo {
+
     width: 65px;
 
     height: 65px;
@@ -120,361 +132,100 @@ body {
             #1877f2,
             #6f00ff
         );
+
 }
 
 .auth-card h1 {
+
     text-align: center;
 
     margin-top: 15px;
+
 }
 
 .subtitle {
+
     text-align: center;
 
     color: #666;
 
     margin: 5px 0 25px;
+
 }
 
-
-/* =========================
-   EMAIL / PHONE SELECTOR
-========================= */
-
-.auth-methods {
-    width: 100%;
+.auth-card form {
 
     display: flex;
 
-    gap: 10px;
+    flex-direction: column;
 
-    margin-bottom: 12px;
+    gap: 12px;
+
 }
-
-.auth-methods .method {
-    flex: 1;
-
-    height: 48px;
-
-    border: 0;
-
-    border-radius: 25px;
-
-    background: #f5f8fa;
-
-    color: #0f1419;
-
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
-    font-size: 15px;
-
-    font-weight: 800;
-
-    cursor: pointer;
-
-    transition:
-        background 0.2s ease,
-        color 0.2s ease,
-        transform 0.15s ease;
-}
-
-.auth-methods .method:hover {
-    background: #e8eef2;
-}
-
-.auth-methods .method.active {
-    background: var(--blue);
-
-    color: white;
-}
-
-.auth-methods .method:active {
-    transform: scale(0.97);
-}
-
-
-/* =========================
-   AUTH INPUTS
-========================= */
 
 .auth-card input {
-    width: 100%;
 
-    height: 48px;
-
-    padding:
-        0 17px;
-
-    margin-bottom: 10px;
+    padding: 13px;
 
     border:
-        1px solid #d9dee3;
+        1px solid #ddd;
 
-    border-radius: 25px;
+    border-radius: 10px;
 
     outline: none;
 
-    background: #f5f8fa;
-
-    color: #0f1419;
-
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
-    font-size: 15px;
-
-    transition:
-        background 0.2s ease,
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-.auth-card input:hover {
-    background: #eef3f6;
 }
 
 .auth-card input:focus {
-    background: #ffffff;
 
     border-color:
         var(--blue);
 
-    box-shadow:
-        0 0 0 2px #1877f233;
 }
 
-.auth-card input::placeholder {
-    color: #667085;
-}
-
-
-/* =========================
-   DISPLAY NAME
-========================= */
-
-#authName {
-    display: block;
-}
-
-
-/* =========================
-   USERNAME
-========================= */
-
-#authUsername {
-    display: block;
-}
-
-
-/* =========================
-   EMAIL
-========================= */
-
-#emailInputContainer {
-    width: 100%;
-}
-
-#authEmail {
-    width: 100%;
-}
-
-
-/* =========================
-   PHONE
-========================= */
-
-#phoneInputContainer {
-    width: 100%;
-}
-
-#authPhone {
-    width: 100%;
-}
-
-#phoneInputContainer small {
-    display: block;
-
-    margin:
-        -3px 0 10px 10px;
-
-    color:
-        #667085;
-
-    font-size: 12px;
-
-    line-height: 1.4;
-}
-
-
-/* =========================
-   SEND CODE
-========================= */
-
-#sendCodeButton {
-    width: 100%;
-
-    height: 48px;
-
-    padding:
-        0 18px;
-
-    margin-top: 2px;
+.auth-card form button {
 
     border: 0;
 
-    border-radius: 25px;
+    padding: 13px;
 
-    background:
-        var(--blue);
+    border-radius: 10px;
 
     color: white;
 
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
-    font-size: 15px;
-
-    font-weight: 900;
-
-    cursor: pointer;
-
-    transition:
-        background 0.2s ease,
-        transform 0.15s ease;
-}
-
-#sendCodeButton:hover {
-    background:
-        #166fe5;
-}
-
-#sendCodeButton:active {
-    transform:
-        scale(0.98);
-}
-
-
-/* =========================
-   OTP
-========================= */
-
-#otpContainer {
-    width: 100%;
-}
-
-#otpInput {
-    width: 100%;
-
-    height: 48px;
-
-    margin-top: 10px;
-
-    margin-bottom: 10px;
-}
-
-#verifyCodeButton {
-    width: 100%;
-
-    height: 48px;
-
-    padding: 0 18px;
-
-    border: 0;
-
-    border-radius: 25px;
-
     background:
         var(--blue);
-
-    color: white;
-
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
-    font-size: 15px;
-
-    font-weight: 900;
-
-    cursor: pointer;
-
-    transition:
-        background 0.2s ease,
-        transform 0.15s ease;
-}
-
-#verifyCodeButton:hover {
-    background:
-        #166fe5;
-}
-
-#verifyCodeButton:active {
-    transform:
-        scale(0.98);
-}
-
-
-/* =========================
-   RESEND
-========================= */
-
-#resendCodeButton {
-    width: 100%;
-
-    height: 42px;
-
-    margin-top: 10px;
-
-    border: 0;
-
-    border-radius: 25px;
-
-    background:
-        transparent;
-
-    color:
-        var(--blue);
-
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
-    font-size: 14px;
 
     font-weight: 800;
 
     cursor: pointer;
 
-    transition:
-        background 0.2s ease;
 }
 
-#resendCodeButton:hover {
-    background:
-        #f5f8fa;
+.switch {
+
+    width: 100%;
+
+    border: 0;
+
+    background: none;
+
+    color: var(--blue);
+
+    margin-top: 20px;
+
+    cursor: pointer;
+
 }
-
-
-/* =========================
-   AUTH MESSAGE
-========================= */
 
 .auth-message {
+
     margin-top: 15px;
 
     text-align: center;
 
-    color:
-        #d00;
+    color: #d00;
+
 }
 
 
@@ -483,10 +234,13 @@ body {
 ========================= */
 
 #app {
+
     min-height: 100vh;
+
 }
 
 .layout {
+
     max-width: 1250px;
 
     margin: auto;
@@ -499,6 +253,7 @@ body {
         250px
         minmax(400px, 650px)
         320px;
+
 }
 
 
@@ -507,6 +262,7 @@ body {
 ========================= */
 
 .sidebar {
+
     border-right:
         1px solid var(--border);
 
@@ -517,9 +273,11 @@ body {
     top: 0;
 
     height: 100vh;
+
 }
 
 .brand {
+
     display: flex;
 
     align-items: center;
@@ -533,9 +291,11 @@ body {
     padding: 10px;
 
     margin-bottom: 15px;
+
 }
 
 .brand-icon {
+
     width: 42px;
 
     height: 42px;
@@ -559,17 +319,18 @@ body {
             #1877f2,
             #6f00ff
         );
+
 }
 
 .nav {
+
     width: 100%;
 
     border: 0;
 
     background: transparent;
 
-    color:
-        var(--text);
+    color: var(--text);
 
     padding: 14px;
 
@@ -580,15 +341,19 @@ body {
     font-size: 16px;
 
     cursor: pointer;
+
 }
 
 .nav:hover,
 .nav.active {
+
     background:
         var(--hover);
+
 }
 
 .post-button {
+
     width: 100%;
 
     margin-top: 15px;
@@ -607,9 +372,11 @@ body {
     font-weight: 900;
 
     cursor: pointer;
+
 }
 
 .account {
+
     position: absolute;
 
     bottom: 20px;
@@ -619,13 +386,15 @@ body {
     align-items: center;
 
     gap: 10px;
+
 }
 
 .account small {
+
     display: block;
 
-    color:
-        var(--muted);
+    color: var(--muted);
+
 }
 
 
@@ -634,6 +403,7 @@ body {
 ========================= */
 
 .avatar {
+
     width: 42px;
 
     height: 42px;
@@ -658,6 +428,7 @@ body {
             #1877f2,
             #6f00ff
         );
+
 }
 
 
@@ -666,27 +437,33 @@ body {
 ========================= */
 
 main {
+
     border-right:
         1px solid var(--border);
+
 }
 
 .page {
+
     display: none;
+
 }
 
 .page.active {
+
     display: block;
+
 }
 
 header {
+
     position: sticky;
 
     top: 0;
 
     z-index: 5;
 
-    padding:
-        18px 20px;
+    padding: 18px 20px;
 
     font-size: 20px;
 
@@ -704,6 +481,7 @@ header {
 
     backdrop-filter:
         blur(10px);
+
 }
 
 
@@ -712,6 +490,7 @@ header {
 ========================= */
 
 .composer {
+
     display: flex;
 
     gap: 12px;
@@ -720,13 +499,17 @@ header {
 
     border-bottom:
         1px solid var(--border);
+
 }
 
 .composer-body {
+
     flex: 1;
+
 }
 
 .composer textarea {
+
     width: 100%;
 
     min-height: 80px;
@@ -737,46 +520,48 @@ header {
 
     resize: none;
 
-    background:
-        transparent;
+    background: transparent;
 
-    color:
-        var(--text);
+    color: var(--text);
 
     font-size: 18px;
+
 }
 
 .composer-bottom {
+
     display: flex;
 
     align-items: center;
 
     justify-content: space-between;
+
 }
 
 #characterCount {
-    color:
-        var(--muted);
+
+    color: var(--muted);
 
     font-size: 13px;
+
 }
 
 #postButton {
+
     border: 0;
 
     border-radius: 25px;
 
-    padding:
-        9px 20px;
+    padding: 9px 20px;
 
     color: white;
 
-    background:
-        var(--blue);
+    background: var(--blue);
 
     font-weight: 900;
 
     cursor: pointer;
+
 }
 
 
@@ -785,6 +570,7 @@ header {
 ========================= */
 
 .post {
+
     display: flex;
 
     gap: 12px;
@@ -793,35 +579,46 @@ header {
 
     border-bottom:
         1px solid var(--border);
+
 }
 
 .post:hover {
+
     background:
         rgba(128,128,128,.03);
+
 }
 
 .post-body {
+
     flex: 1;
+
 }
 
 .post-header {
+
     display: flex;
 
     gap: 5px;
 
     align-items: center;
+
 }
 
 .post-name {
+
     font-weight: 900;
+
 }
 
 .post-user {
-    color:
-        var(--muted);
+
+    color: var(--muted);
+
 }
 
 .post-content {
+
     margin-top: 7px;
 
     white-space: pre-wrap;
@@ -829,9 +626,11 @@ header {
     word-break: break-word;
 
     line-height: 1.5;
+
 }
 
 .actions {
+
     display: flex;
 
     justify-content: space-between;
@@ -839,30 +638,33 @@ header {
     margin-top: 12px;
 
     max-width: 450px;
+
 }
 
 .action {
+
     border: 0;
 
-    background:
-        transparent;
+    background: transparent;
 
-    color:
-        var(--muted);
+    color: var(--muted);
 
     cursor: pointer;
 
     padding: 5px;
+
 }
 
 .action:hover {
-    color:
-        var(--blue);
+
+    color: var(--blue);
+
 }
 
 .action.liked {
-    color:
-        #ef4444;
+
+    color: #ef4444;
+
 }
 
 
@@ -871,10 +673,13 @@ header {
 ========================= */
 
 .rightbar {
+
     padding: 15px;
+
 }
 
 .search {
+
     display: flex;
 
     align-items: center;
@@ -884,27 +689,28 @@ header {
     background:
         var(--hover);
 
-    padding:
-        10px 15px;
+    padding: 10px 15px;
 
     border-radius: 25px;
+
 }
 
 .search input {
+
     width: 100%;
 
     border: 0;
 
     outline: 0;
 
-    background:
-        transparent;
+    background: transparent;
 
-    color:
-        var(--text);
+    color: var(--text);
+
 }
 
 .card {
+
     margin-top: 20px;
 
     padding: 18px;
@@ -913,10 +719,13 @@ header {
         var(--hover);
 
     border-radius: 18px;
+
 }
 
 .card h2 {
+
     margin-bottom: 15px;
+
 }
 
 
@@ -925,6 +734,7 @@ header {
 ========================= */
 
 .profile-cover {
+
     height: 160px;
 
     background:
@@ -934,49 +744,57 @@ header {
             #1877f2,
             #6f00ff
         );
+
 }
 
 .profile {
-    padding:
-        0 20px 20px;
+
+    padding: 0 20px 20px;
+
 }
 
 .profile-avatar {
+
     width: 90px;
 
     height: 90px;
 
     margin-top: -45px;
 
-    border:
-        5px solid var(--background);
+    border: 5px solid var(--background);
 
     font-size: 28px;
+
 }
 
 .profile h2 {
+
     margin-top: 10px;
+
 }
 
 .muted {
-    color:
-        var(--muted);
+
+    color: var(--muted);
+
 }
 
 .stats {
+
     display: flex;
 
     gap: 25px;
 
     margin-top: 15px;
 
-    color:
-        var(--muted);
+    color: var(--muted);
+
 }
 
 .stats strong {
-    color:
-        var(--text);
+
+    color: var(--text);
+
 }
 
 
@@ -985,43 +803,59 @@ header {
 ========================= */
 
 .mobile-nav {
+
     display: none;
+
 }
 
 @media(max-width: 1000px) {
 
     .layout {
+
         grid-template-columns:
             75px
             minmax(400px, 650px);
+
     }
 
     .sidebar span,
     .account div:not(.avatar),
     .post-button {
+
         display: none;
+
     }
 
     .rightbar {
+
         display: none;
+
     }
+
 }
 
 @media(max-width: 700px) {
 
     .layout {
+
         display: block;
+
     }
 
     .sidebar {
+
         display: none;
+
     }
 
     main {
+
         border: 0;
+
     }
 
     .mobile-nav {
+
         position: fixed;
 
         bottom: 0;
@@ -1045,21 +879,25 @@ header {
             1px solid var(--border);
 
         z-index: 100;
+
     }
 
     .mobile-nav button {
+
         border: 0;
 
-        background:
-            transparent;
+        background: transparent;
 
-        color:
-            var(--text);
+        color: var(--text);
 
         font-size: 20px;
+
     }
 
     main {
+
         padding-bottom: 60px;
+
     }
+
 }
