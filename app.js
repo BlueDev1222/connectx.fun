@@ -1,12 +1,17 @@
-/* ==========================================
+/* =========================================================
    CONNECTX + SUPABASE
-========================================== */
+========================================================= */
+
+/*
+    Your Supabase project information.
+*/
 
 const SUPABASE_URL =
     "https://onvmeffhmruzshqlwakx.supabase.co";
 
 const SUPABASE_KEY =
     "sb_publishable_9VzEW8DurRpM51GgQ282BQ_qQ3e1WkX";
+
 
 const supabaseClient =
     window.supabase.createClient(
@@ -15,17 +20,17 @@ const supabaseClient =
     );
 
 
-/* ==========================================
+/* =========================================================
    GLOBAL STATE
-========================================== */
+========================================================= */
 
 let currentUser = null;
 let currentProfile = null;
 
 
-/* ==========================================
+/* =========================================================
    HELPERS
-========================================== */
+========================================================= */
 
 function initials(name) {
 
@@ -33,12 +38,13 @@ function initials(name) {
         return "U";
     }
 
-    return name
+    return String(name)
         .split(" ")
         .map(x => x[0])
         .join("")
         .slice(0, 2)
         .toUpperCase();
+
 }
 
 
@@ -50,6 +56,7 @@ function escapeHTML(text) {
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
+
 }
 
 
@@ -60,34 +67,42 @@ function timeAgo(date) {
             (Date.now() - new Date(date)) / 1000
         );
 
+
     if (seconds < 60) {
-        return `${seconds}s`;
+        return `${Math.max(seconds, 0)}s`;
     }
+
 
     const minutes =
         Math.floor(seconds / 60);
+
 
     if (minutes < 60) {
         return `${minutes}m`;
     }
 
+
     const hours =
         Math.floor(minutes / 60);
+
 
     if (hours < 24) {
         return `${hours}h`;
     }
 
+
     const days =
         Math.floor(hours / 24);
 
+
     return `${days}d`;
+
 }
 
 
-/* ==========================================
+/* =========================================================
    AUTH MESSAGE
-========================================== */
+========================================================= */
 
 function authMessage(
     message,
@@ -99,23 +114,27 @@ function authMessage(
             "authMessage"
         );
 
+
     if (!element) {
         return;
     }
 
+
     element.textContent =
         message;
 
+
     element.style.color =
         error
-            ? "#d00"
+            ? "#d00000"
             : "#16803c";
+
 }
 
 
-/* ==========================================
+/* =========================================================
    LOGIN
-========================================== */
+========================================================= */
 
 document
     .getElementById("loginForm")
@@ -125,11 +144,13 @@ document
 
             event.preventDefault();
 
+
             const email =
                 document
                     .getElementById("loginEmail")
                     .value
                     .trim();
+
 
             const password =
                 document
@@ -153,16 +174,23 @@ document
 
             if (error) {
 
+                console.error(
+                    "Login error:",
+                    error
+                );
+
                 authMessage(
                     error.message
                 );
 
                 return;
+
             }
 
 
             currentUser =
                 data.user;
+
 
             await loadApp();
 
@@ -170,9 +198,9 @@ document
     );
 
 
-/* ==========================================
+/* =========================================================
    REGISTER
-========================================== */
+========================================================= */
 
 document
     .getElementById("registerForm")
@@ -189,6 +217,7 @@ document
                     .value
                     .trim();
 
+
             const username =
                 document
                     .getElementById("registerUsername")
@@ -196,11 +225,13 @@ document
                     .trim()
                     .toLowerCase();
 
+
             const email =
                 document
                     .getElementById("registerEmail")
                     .value
                     .trim();
+
 
             const password =
                 document
@@ -209,7 +240,9 @@ document
 
 
             if (
-                !/^[a-z0-9_]+$/.test(username)
+                !/^[a-z0-9_]+$/.test(
+                    username
+                )
             ) {
 
                 authMessage(
@@ -217,11 +250,12 @@ document
                 );
 
                 return;
+
             }
 
 
             /*
-                Check username.
+                Check if username already exists.
             */
 
             const {
@@ -250,6 +284,7 @@ document
                 );
 
                 return;
+
             }
 
 
@@ -260,6 +295,7 @@ document
                 );
 
                 return;
+
             }
 
 
@@ -296,11 +332,17 @@ document
 
             if (error) {
 
+                console.error(
+                    "Registration error:",
+                    error
+                );
+
                 authMessage(
                     error.message
                 );
 
                 return;
+
             }
 
 
@@ -314,29 +356,35 @@ document
             }
 
 
-            if (data.session) {
+            /*
+                Email confirmation enabled.
+            */
 
-                currentUser =
-                    data.user;
-
-                await loadApp();
-
-            } else {
+            if (!data.session) {
 
                 authMessage(
                     "Account created. Check your email to confirm your account.",
                     false
                 );
 
+                return;
+
             }
+
+
+            currentUser =
+                data.user;
+
+
+            await loadApp();
 
         }
     );
 
 
-/* ==========================================
+/* =========================================================
    SWITCH LOGIN / REGISTER
-========================================== */
+========================================================= */
 
 document
     .getElementById("switchAuth")
@@ -349,10 +397,12 @@ document
                     "loginForm"
                 );
 
+
             const register =
                 document.getElementById(
                     "registerForm"
                 );
+
 
             const switchButton =
                 document.getElementById(
@@ -368,8 +418,10 @@ document
                 login.style.display =
                     "flex";
 
+
                 register.style.display =
                     "none";
+
 
                 switchButton.textContent =
                     "Create an account";
@@ -379,8 +431,10 @@ document
                 login.style.display =
                     "none";
 
+
                 register.style.display =
                     "flex";
+
 
                 switchButton.textContent =
                     "Already have an account? Log in";
@@ -391,9 +445,9 @@ document
     );
 
 
-/* ==========================================
+/* =========================================================
    LOAD APP
-========================================== */
+========================================================= */
 
 async function loadApp() {
 
@@ -424,6 +478,7 @@ async function loadApp() {
         );
 
         return;
+
     }
 
 
@@ -435,6 +490,7 @@ async function loadApp() {
         document.getElementById(
             "authScreen"
         );
+
 
     const app =
         document.getElementById(
@@ -460,6 +516,7 @@ async function loadApp() {
 
     updateUserUI();
 
+
     await loadFeed();
 
     await loadSuggestions();
@@ -467,12 +524,13 @@ async function loadApp() {
     await loadProfile();
 
     await loadNotifications();
+
 }
 
 
-/* ==========================================
+/* =========================================================
    USER UI
-========================================== */
+========================================================= */
 
 function updateUserUI() {
 
@@ -487,41 +545,86 @@ function updateUserUI() {
         "User";
 
 
-    document
-        .getElementById("sidebarName")
-        .textContent =
-        name;
+    const username =
+        currentProfile.username ||
+        "user";
 
 
-    document
-        .getElementById("sidebarUsername")
-        .textContent =
-        "@" +
-        currentProfile.username;
+    const sidebarName =
+        document.getElementById(
+            "sidebarName"
+        );
 
 
-    document
-        .getElementById("sidebarAvatar")
-        .textContent =
-        initials(name);
+    const sidebarUsername =
+        document.getElementById(
+            "sidebarUsername"
+        );
 
 
-    document
-        .getElementById("composerAvatar")
-        .textContent =
-        initials(name);
+    const sidebarAvatar =
+        document.getElementById(
+            "sidebarAvatar"
+        );
 
 
-    document
-        .getElementById("profileAvatar")
-        .textContent =
-        initials(name);
+    const composerAvatar =
+        document.getElementById(
+            "composerAvatar"
+        );
+
+
+    const profileAvatar =
+        document.getElementById(
+            "profileAvatar"
+        );
+
+
+    if (sidebarName) {
+
+        sidebarName.textContent =
+            name;
+
+    }
+
+
+    if (sidebarUsername) {
+
+        sidebarUsername.textContent =
+            "@" + username;
+
+    }
+
+
+    if (sidebarAvatar) {
+
+        sidebarAvatar.textContent =
+            initials(name);
+
+    }
+
+
+    if (composerAvatar) {
+
+        composerAvatar.textContent =
+            initials(name);
+
+    }
+
+
+    if (profileAvatar) {
+
+        profileAvatar.textContent =
+            initials(name);
+
+    }
+
 }
 
 
-/* ==========================================
+/* =========================================================
    FEED
-========================================== */
+========================================================= */
 
 async function loadFeed() {
 
@@ -532,15 +635,21 @@ async function loadFeed() {
 
 
     if (!feed) {
+
+        console.error(
+            "ConnectX: #feed was not found."
+        );
+
         return;
+
     }
 
 
     feed.innerHTML = `
         <div style="
             padding:30px;
-            color:var(--muted);
             text-align:center;
+            color:var(--muted);
         ">
             Loading posts...
         </div>
@@ -548,8 +657,16 @@ async function loadFeed() {
 
 
     /*
-        Explicitly use the posts -> profiles
-        foreign-key relationship.
+        IMPORTANT:
+
+        Explicitly use the relationship:
+
+        posts.user_id
+            ↓
+        profiles.id
+
+        This prevents Supabase from choosing
+        the wrong relationship.
     */
 
     const {
@@ -582,38 +699,47 @@ async function loadFeed() {
             .limit(100);
 
 
+    /*
+        Show the actual Supabase error.
+    */
+
     if (error) {
 
         console.error(
-            "SUPABASE FEED ERROR:",
+            "CONNECTX POSTS ERROR:",
             error
         );
 
 
         feed.innerHTML = `
-            <div style="
-                padding:30px;
-                color:#d00;
-            ">
+            <div class="error">
 
                 <strong>
                     Failed to load posts.
                 </strong>
 
-                <br><br>
-
-                <small>
+                <p style="
+                    margin-top:10px;
+                    font-size:13px;
+                    word-break:break-word;
+                ">
                     ${escapeHTML(
-                        error.message
+                        error.message ||
+                        "Unknown Supabase error."
                     )}
-                </small>
+                </p>
 
             </div>
         `;
 
         return;
+
     }
 
+
+    /*
+        No posts.
+    */
 
     if (
         !posts ||
@@ -621,34 +747,78 @@ async function loadFeed() {
     ) {
 
         feed.innerHTML = `
-            <div style="
-                padding:30px;
-                color:var(--muted);
-                text-align:center;
-            ">
-                No posts yet.
+            <div class="empty">
+
+                <strong>
+                    No posts yet.
+                </strong>
+
+                <p style="
+                    margin-top:8px;
+                ">
+                    Be the first person to post!
+                </p>
+
             </div>
         `;
 
         return;
+
     }
 
 
+    /*
+        Render posts.
+    */
+
     feed.innerHTML =
         posts
-            .map(renderPost)
+            .map(post => {
+
+                if (!post.profiles) {
+
+                    console.warn(
+                        "Post has no profile:",
+                        post
+                    );
+
+                    return "";
+
+                }
+
+
+                return renderPost(
+                    post
+                );
+
+            })
             .join("");
+
 }
 
 
-/* ==========================================
+/* =========================================================
    RENDER POST
-========================================== */
+========================================================= */
 
 function renderPost(post) {
 
     const profile =
-        post.profiles;
+        post.profiles || {
+
+            id:
+                post.user_id,
+
+            username:
+                "unknown",
+
+            display_name:
+                "Unknown User",
+
+            avatar_url:
+                null
+
+        };
 
 
     const likes =
@@ -668,14 +838,31 @@ function renderPost(post) {
         currentUser.id;
 
 
-    const displayName =
-        profile?.display_name ||
-        "Unknown User";
+    /*
+        Official ConnectX account.
+
+        Change this username only if your
+        official account uses another username.
+    */
+
+    const verified =
+        profile.username ===
+        "connectx";
 
 
-    const username =
-        profile?.username ||
-        "user";
+    const verifiedBadge =
+        verified
+            ?
+            `
+            <img
+                src="Verified ConnectX.jpg"
+                class="verified-badge"
+                alt="Verified"
+                title="Verified ConnectX account"
+            >
+            `
+            :
+            "";
 
 
     return `
@@ -684,7 +871,11 @@ function renderPost(post) {
 
             <div class="avatar">
 
-                ${initials(displayName)}
+                ${escapeHTML(
+                    initials(
+                        profile.display_name
+                    )
+                )}
 
             </div>
 
@@ -696,16 +887,19 @@ function renderPost(post) {
                     <strong class="post-name">
 
                         ${escapeHTML(
-                            displayName
+                            profile.display_name
                         )}
 
                     </strong>
 
 
+                    ${verifiedBadge}
+
+
                     <span class="post-user">
 
                         @${escapeHTML(
-                            username
+                            profile.username
                         )}
 
                     </span>
@@ -735,7 +929,9 @@ function renderPost(post) {
 
                     <button
                         class="action"
-                        onclick="commentPost('${post.id}')"
+                        onclick="
+                            commentPost('${post.id}')
+                        "
                     >
                         💬
                     </button>
@@ -747,7 +943,9 @@ function renderPost(post) {
                                 ? "liked"
                                 : ""
                         }"
-                        onclick="toggleLike('${post.id}')"
+                        onclick="
+                            toggleLike('${post.id}')
+                        "
                     >
 
                         ${
@@ -763,7 +961,9 @@ function renderPost(post) {
 
                     <button
                         class="action"
-                        onclick="sharePost('${post.id}')"
+                        onclick="
+                            sharePost('${post.id}')
+                        "
                     >
                         ↗
                     </button>
@@ -775,7 +975,9 @@ function renderPost(post) {
                             `
                             <button
                                 class="action"
-                                onclick="deletePost('${post.id}')"
+                                onclick="
+                                    deletePost('${post.id}')
+                                "
                             >
                                 🗑
                             </button>
@@ -791,12 +993,13 @@ function renderPost(post) {
         </article>
 
     `;
+
 }
 
 
-/* ==========================================
+/* =========================================================
    CREATE POST
-========================================== */
+========================================================= */
 
 document
     .getElementById("postInput")
@@ -903,7 +1106,7 @@ async function createPost() {
     if (error) {
 
         console.error(
-            "CREATE POST ERROR:",
+            "Create post error:",
             error
         );
 
@@ -912,6 +1115,7 @@ async function createPost() {
         );
 
         return;
+
     }
 
 
@@ -929,12 +1133,13 @@ async function createPost() {
     await loadFeed();
 
     await loadProfile();
+
 }
 
 
-/* ==========================================
+/* =========================================================
    LIKE
-========================================== */
+========================================================= */
 
 async function toggleLike(postId) {
 
@@ -945,7 +1150,7 @@ async function toggleLike(postId) {
 
     const {
         data: existing,
-        error: checkError
+        error: findError
     } =
         await supabaseClient
             .from("likes")
@@ -961,18 +1166,19 @@ async function toggleLike(postId) {
             .maybeSingle();
 
 
-    if (checkError) {
+    if (findError) {
 
         console.error(
-            "LIKE CHECK ERROR:",
-            checkError
+            "Like lookup error:",
+            findError
         );
 
         alert(
-            checkError.message
+            findError.message
         );
 
         return;
+
     }
 
 
@@ -1001,6 +1207,7 @@ async function toggleLike(postId) {
             );
 
             return;
+
         }
 
     } else {
@@ -1028,23 +1235,28 @@ async function toggleLike(postId) {
             );
 
             return;
+
         }
+
     }
 
 
     await loadFeed();
+
 }
 
 
-/* ==========================================
-   DELETE
-========================================== */
+/* =========================================================
+   DELETE POST
+========================================================= */
 
 async function deletePost(postId) {
 
-    if (!confirm(
-        "Delete this post?"
-    )) {
+    if (
+        !confirm(
+            "Delete this post?"
+        )
+    ) {
         return;
     }
 
@@ -1067,23 +1279,30 @@ async function deletePost(postId) {
 
     if (error) {
 
+        console.error(
+            "Delete post error:",
+            error
+        );
+
         alert(
             error.message
         );
 
         return;
+
     }
 
 
     await loadFeed();
 
     await loadProfile();
+
 }
 
 
-/* ==========================================
-   COMMENT
-========================================== */
+/* =========================================================
+   COMMENTS
+========================================================= */
 
 async function commentPost(postId) {
 
@@ -1122,23 +1341,30 @@ async function commentPost(postId) {
 
     if (error) {
 
+        console.error(
+            "Comment error:",
+            error
+        );
+
         alert(
             error.message
         );
 
         return;
+
     }
 
 
     alert(
         "Comment posted!"
     );
+
 }
 
 
-/* ==========================================
+/* =========================================================
    SHARE
-========================================== */
+========================================================= */
 
 async function sharePost(postId) {
 
@@ -1146,36 +1372,37 @@ async function sharePost(postId) {
         `${location.origin}${location.pathname}#post-${postId}`;
 
 
-    if (
-        navigator.clipboard
-    ) {
+    try {
 
-        try {
+        if (
+            navigator.clipboard
+        ) {
 
-            await navigator.clipboard
-                .writeText(url);
+            await navigator.clipboard.writeText(
+                url
+            );
 
             alert(
                 "Post link copied!"
             );
 
-        } catch {
-
-            alert(url);
-
         }
 
-    } else {
+    } catch (error) {
 
-        alert(url);
+        console.error(
+            "Share error:",
+            error
+        );
 
     }
+
 }
 
 
-/* ==========================================
+/* =========================================================
    SUGGESTIONS
-========================================== */
+========================================================= */
 
 async function loadSuggestions() {
 
@@ -1207,11 +1434,12 @@ async function loadSuggestions() {
     if (error) {
 
         console.error(
-            "SUGGESTIONS ERROR:",
+            "Suggestions error:",
             error
         );
 
         return;
+
     }
 
 
@@ -1242,98 +1470,122 @@ async function loadSuggestions() {
     container.innerHTML =
         (profiles || [])
             .map(
-                profile => `
+                profile => {
 
-                    <div
-                        style="
-                            display:flex;
-                            align-items:center;
-                            gap:10px;
-                            margin-bottom:15px;
-                        "
-                    >
-
-                        <div class="avatar">
-
-                            ${initials(
-                                profile.display_name
-                            )}
-
-                        </div>
+                    const verified =
+                        profile.username ===
+                        "connectx";
 
 
-                        <div style="flex:1">
+                    return `
 
-                            <strong>
-
-                                ${
-                                    escapeHTML(
-                                        profile.display_name
-                                    )
-                                }
-
-                            </strong>
-
-
-                            <small
-                                style="
-                                    display:block;
-                                    color:var(--muted);
-                                "
-                            >
-
-                                @${escapeHTML(
-                                    profile.username
-                                )}
-
-                            </small>
-
-                        </div>
-
-
-                        <button
-                            onclick="
-                                toggleFollow(
-                                    '${profile.id}'
-                                )
-                            "
+                        <div
                             style="
-                                border:0;
-                                border-radius:20px;
-                                padding:7px 12px;
-                                cursor:pointer;
+                                display:flex;
+                                align-items:center;
+                                gap:10px;
+                                margin-bottom:15px;
                             "
                         >
 
-                            ${
-                                followingIds.has(
-                                    profile.id
-                                )
-                                    ?
-                                    "Following"
-                                    :
-                                    "Follow"
-                            }
+                            <div class="avatar">
 
-                        </button>
+                                ${escapeHTML(
+                                    initials(
+                                        profile.display_name
+                                    )
+                                )}
 
-                    </div>
+                            </div>
 
-                `
+
+                            <div style="flex:1">
+
+                                <strong>
+
+                                    ${escapeHTML(
+                                        profile.display_name
+                                    )}
+
+                                    ${
+                                        verified
+                                            ?
+                                            `
+                                            <img
+                                                src="Verified ConnectX.jpg"
+                                                class="verified-badge"
+                                                alt="Verified"
+                                            >
+                                            `
+                                            :
+                                            ""
+                                    }
+
+                                </strong>
+
+
+                                <small
+                                    style="
+                                        display:block;
+                                        color:var(--muted);
+                                    "
+                                >
+
+                                    @${escapeHTML(
+                                        profile.username
+                                    )}
+
+                                </small>
+
+                            </div>
+
+
+                            <button
+                                onclick="
+                                    toggleFollow(
+                                        '${profile.id}'
+                                    )
+                                "
+                                style="
+                                    border:0;
+                                    border-radius:20px;
+                                    padding:7px 12px;
+                                    cursor:pointer;
+                                "
+                            >
+
+                                ${
+                                    followingIds.has(
+                                        profile.id
+                                    )
+                                        ?
+                                        "Following"
+                                        :
+                                        "Follow"
+                                }
+
+                            </button>
+
+                        </div>
+
+                    `;
+
+                }
             )
             .join("");
+
 }
 
 
-/* ==========================================
+/* =========================================================
    FOLLOW
-========================================== */
+========================================================= */
 
 async function toggleFollow(userId) {
 
     const {
         data: existing,
-        error: checkError
+        error: findError
     } =
         await supabaseClient
             .from("follows")
@@ -1351,81 +1603,58 @@ async function toggleFollow(userId) {
             .maybeSingle();
 
 
-    if (checkError) {
+    if (findError) {
 
         alert(
-            checkError.message
+            findError.message
         );
 
         return;
+
     }
 
 
     if (existing) {
 
-        const {
-            error
-        } =
-            await supabaseClient
-                .from("follows")
-                .delete()
-                .eq(
-                    "follower_id",
-                    currentUser.id
-                )
-                .eq(
-                    "following_id",
-                    userId
-                );
-
-
-        if (error) {
-
-            alert(
-                error.message
+        await supabaseClient
+            .from("follows")
+            .delete()
+            .eq(
+                "follower_id",
+                currentUser.id
+            )
+            .eq(
+                "following_id",
+                userId
             );
-
-            return;
-        }
 
     } else {
 
-        const {
-            error
-        } =
-            await supabaseClient
-                .from("follows")
-                .insert({
+        await supabaseClient
+            .from("follows")
+            .insert({
 
-                    follower_id:
-                        currentUser.id,
+                follower_id:
+                    currentUser.id,
 
-                    following_id:
-                        userId
+                following_id:
+                    userId
 
-                });
+            });
 
-
-        if (error) {
-
-            alert(
-                error.message
-            );
-
-            return;
-        }
     }
 
 
     await loadSuggestions();
 
     await loadProfile();
+
 }
 
 
-/* ==========================================
+/* =========================================================
    PROFILE
-========================================== */
+========================================================= */
 
 async function loadProfile() {
 
@@ -1439,7 +1668,8 @@ async function loadProfile() {
             "profileName"
         )
         .textContent =
-        currentProfile.display_name;
+        currentProfile.display_name ||
+        "User";
 
 
     document
@@ -1448,7 +1678,10 @@ async function loadProfile() {
         )
         .textContent =
         "@" +
-        currentProfile.username;
+        (
+            currentProfile.username ||
+            "user"
+        );
 
 
     document
@@ -1579,11 +1812,12 @@ async function loadProfile() {
     if (error) {
 
         console.error(
-            "PROFILE POSTS ERROR:",
+            "Profile posts error:",
             error
         );
 
         return;
+
     }
 
 
@@ -1595,12 +1829,13 @@ async function loadProfile() {
         (data || [])
             .map(renderPost)
             .join("");
+
 }
 
 
-/* ==========================================
+/* =========================================================
    NOTIFICATIONS
-========================================== */
+========================================================= */
 
 async function loadNotifications() {
 
@@ -1644,7 +1879,7 @@ async function loadNotifications() {
     if (error) {
 
         console.error(
-            "NOTIFICATIONS ERROR:",
+            "Notifications error:",
             error
         );
 
@@ -1653,15 +1888,19 @@ async function loadNotifications() {
                 padding:30px;
                 color:var(--muted);
             ">
-                No notifications available.
+                Unable to load notifications.
             </div>
         `;
 
         return;
+
     }
 
 
-    if (!data || !data.length) {
+    if (
+        !data ||
+        data.length === 0
+    ) {
 
         container.innerHTML = `
             <div style="
@@ -1673,6 +1912,7 @@ async function loadNotifications() {
         `;
 
         return;
+
     }
 
 
@@ -1692,12 +1932,9 @@ async function loadNotifications() {
 
                         🔔
 
-                        ${
-                            escapeHTML(
-                                notification.type
-                            )
-                        }
-
+                        ${escapeHTML(
+                            notification.type
+                        )}
 
                         <div
                             style="
@@ -1718,12 +1955,13 @@ async function loadNotifications() {
                 `
             )
             .join("");
+
 }
 
 
-/* ==========================================
+/* =========================================================
    SEARCH
-========================================== */
+========================================================= */
 
 document
     .getElementById("searchInput")
@@ -1766,9 +2004,11 @@ async function search() {
 
     if (!query) {
 
-        results.innerHTML = "";
+        results.innerHTML =
+            "";
 
         return;
+
     }
 
 
@@ -1788,7 +2028,7 @@ async function search() {
     if (userError) {
 
         console.error(
-            "USER SEARCH ERROR:",
+            "User search error:",
             userError
         );
 
@@ -1807,7 +2047,6 @@ async function search() {
                 content,
                 created_at,
                 profiles!posts_user_id_fkey (
-                    id,
                     username,
                     display_name
                 ),
@@ -1825,7 +2064,7 @@ async function search() {
     if (postError) {
 
         console.error(
-            "POST SEARCH ERROR:",
+            "Post search error:",
             postError
         );
 
@@ -1835,7 +2074,10 @@ async function search() {
     let html = "";
 
 
-    if (users?.length) {
+    if (
+        users &&
+        users.length
+    ) {
 
         html += `
             <h2 style="padding:20px">
@@ -1846,34 +2088,23 @@ async function search() {
 
         html += users
             .map(
-                user => `
+                user => {
 
-                    <div class="post">
-
-                        <div class="avatar">
-
-                            ${initials(
-                                user.display_name
-                            )}
-
-                        </div>
+                    const verified =
+                        user.username ===
+                        "connectx";
 
 
-                        <div>
+                    return `
 
-                            <strong>
+                        <div class="post">
+
+                            <div class="avatar">
 
                                 ${escapeHTML(
-                                    user.display_name
-                                )}
-
-                            </strong>
-
-
-                            <div class="post-user">
-
-                                @${escapeHTML(
-                                    user.username
+                                    initials(
+                                        user.display_name
+                                    )
                                 )}
 
                             </div>
@@ -1881,23 +2112,63 @@ async function search() {
 
                             <div>
 
-                                ${escapeHTML(
-                                    user.bio || ""
-                                )}
+                                <strong>
+
+                                    ${escapeHTML(
+                                        user.display_name
+                                    )}
+
+                                    ${
+                                        verified
+                                            ?
+                                            `
+                                            <img
+                                                src="Verified ConnectX.jpg"
+                                                class="verified-badge"
+                                                alt="Verified"
+                                            >
+                                            `
+                                            :
+                                            ""
+                                    }
+
+                                </strong>
+
+
+                                <div class="post-user">
+
+                                    @${escapeHTML(
+                                        user.username
+                                    )}
+
+                                </div>
+
+
+                                <div>
+
+                                    ${escapeHTML(
+                                        user.bio || ""
+                                    )}
+
+                                </div>
 
                             </div>
 
                         </div>
 
-                    </div>
+                    `;
 
-                `
+                }
             )
             .join("");
+
     }
 
 
-    if (posts?.length) {
+    if (
+        posts &&
+        posts.length
+    ) {
 
         html += `
             <h2 style="padding:20px">
@@ -1909,66 +2180,68 @@ async function search() {
         html += posts
             .map(renderPost)
             .join("");
+
     }
 
 
     if (!html) {
 
-        html = `
+        html =
+            `
             <div style="
                 padding:30px;
                 color:var(--muted);
             ">
                 No results found.
             </div>
-        `;
+            `;
+
     }
 
 
     results.innerHTML =
         html;
+
 }
 
 
-/* ==========================================
+/* =========================================================
    NAVIGATION
-========================================== */
+========================================================= */
 
 document
     .querySelectorAll(
         "[data-page]"
     )
-    .forEach(
-        button => {
+    .forEach(button => {
 
-            button.addEventListener(
-                "click",
-                () => {
+        button.addEventListener(
+            "click",
+            () => {
 
-                    navigate(
-                        button.dataset.page
-                    );
+                navigate(
+                    button.dataset.page
+                );
 
-                }
-            );
+            }
+        );
 
-        }
-    );
+    });
 
 
 function navigate(page) {
 
     document
-        .querySelectorAll(".page")
-        .forEach(
-            element => {
+        .querySelectorAll(
+            ".page"
+        )
+        .forEach(element => {
 
-                element.classList.remove(
-                    "active"
-                );
+            element.classList.remove(
+                "active"
+            );
 
-            }
-        );
+        });
 
 
     const pageElement =
@@ -1987,55 +2260,65 @@ function navigate(page) {
 
 
     document
-        .querySelectorAll(".nav")
-        .forEach(
-            button => {
+        .querySelectorAll(
+            ".nav"
+        )
+        .forEach(button => {
 
-                button.classList.remove(
+            button.classList.remove(
+                "active"
+            );
+
+
+            if (
+                button.dataset.page ===
+                page
+            ) {
+
+                button.classList.add(
                     "active"
                 );
 
-
-                if (
-                    button.dataset.page ===
-                    page
-                ) {
-
-                    button.classList.add(
-                        "active"
-                    );
-
-                }
-
             }
-        );
+
+        });
 
 
-    if (page === "home") {
+    if (
+        page ===
+        "home"
+    ) {
 
         loadFeed();
 
     }
 
 
-    if (page === "profile") {
+    if (
+        page ===
+        "profile"
+    ) {
 
         loadProfile();
 
     }
 
 
-    if (page === "notifications") {
+    if (
+        page ===
+        "notifications"
+    ) {
 
         loadNotifications();
 
     }
+
 }
 
 
-/* ==========================================
+/* =========================================================
    LOGOUT
-========================================== */
+========================================================= */
 
 document
     .getElementById(
@@ -2049,9 +2332,6 @@ document
                 .auth
                 .signOut();
 
-            currentUser = null;
-
-            currentProfile = null;
 
             location.reload();
 
@@ -2059,9 +2339,9 @@ document
     );
 
 
-/* ==========================================
+/* =========================================================
    DARK MODE
-========================================== */
+========================================================= */
 
 document
     .getElementById(
@@ -2074,15 +2354,17 @@ document
             document
                 .body
                 .classList
-                .toggle("dark");
+                .toggle(
+                    "dark"
+                );
 
         }
     );
 
 
-/* ==========================================
+/* =========================================================
    AUTH SESSION
-========================================== */
+========================================================= */
 
 async function checkSession() {
 
@@ -2098,28 +2380,34 @@ async function checkSession() {
     if (error) {
 
         console.error(
-            "SESSION ERROR:",
+            "Session error:",
             error
         );
 
         return;
+
     }
 
 
-    if (data.session) {
+    if (
+        data &&
+        data.session
+    ) {
 
         currentUser =
             data.session.user;
 
+
         await loadApp();
 
     }
+
 }
 
 
-/* ==========================================
-   AUTH STATE
-========================================== */
+/* =========================================================
+   AUTH STATE CHANGES
+========================================================= */
 
 supabaseClient
     .auth
@@ -2145,9 +2433,11 @@ supabaseClient
                 "SIGNED_OUT"
             ) {
 
-                currentUser = null;
+                currentUser =
+                    null;
 
-                currentProfile = null;
+                currentProfile =
+                    null;
 
             }
 
@@ -2155,8 +2445,8 @@ supabaseClient
     );
 
 
-/* ==========================================
-   START
-========================================== */
+/* =========================================================
+   START CONNECTX
+========================================================= */
 
 checkSession();
