@@ -1,6 +1,6 @@
 /* =========================================
    CONNECTX
-   SUPABASE APP
+   SUPABASE JAVASCRIPT
 ========================================= */
 
 let currentUser = null;
@@ -20,8 +20,7 @@ const registerForm = document.getElementById("registerForm");
 const switchAuth = document.getElementById("switchAuth");
 const authMessage = document.getElementById("authMessage");
 
-const logoutButton =
-    document.getElementById("logoutButton");
+const logoutButton = document.getElementById("logoutButton");
 
 
 /* =========================================
@@ -29,12 +28,10 @@ const logoutButton =
 ========================================= */
 
 function showAuthMessage(message, error = false) {
+    if (!authMessage) return;
 
     authMessage.textContent = message;
-
-    authMessage.style.color =
-        error ? "#e53935" : "#22c55e";
-
+    authMessage.style.color = error ? "#e53935" : "#22c55e";
 }
 
 
@@ -42,94 +39,77 @@ function showAuthMessage(message, error = false) {
    SWITCH LOGIN / REGISTER
 ========================================= */
 
-switchAuth.addEventListener("click", () => {
+if (switchAuth) {
+    switchAuth.addEventListener("click", () => {
 
-    const registering =
-        registerForm.style.display !== "none";
+        const registering =
+            registerForm.style.display !== "none";
 
-    if (registering) {
+        if (registering) {
 
-        registerForm.style.display = "none";
-        loginForm.style.display = "block";
+            registerForm.style.display = "none";
+            loginForm.style.display = "block";
 
-        switchAuth.textContent =
-            "Create an account";
+            switchAuth.textContent =
+                "Create an account";
 
-    } else {
+        } else {
 
-        registerForm.style.display = "block";
-        loginForm.style.display = "none";
+            registerForm.style.display = "block";
+            loginForm.style.display = "none";
 
-        switchAuth.textContent =
-            "Already have an account? Log in";
+            switchAuth.textContent =
+                "Already have an account? Log in";
 
-    }
+        }
 
-    authMessage.textContent = "";
+        showAuthMessage("");
 
-});
+    });
+}
 
 
 /* =========================================
    REGISTER
 ========================================= */
 
-registerForm.addEventListener("submit", async (event) => {
+if (registerForm) {
 
-    event.preventDefault();
+    registerForm.addEventListener("submit", async (event) => {
 
-    const name =
-        document.getElementById("registerName").value.trim();
+        event.preventDefault();
 
-    const username =
-        document
-            .getElementById("registerUsername")
-            .value
-            .trim()
-            .toLowerCase();
+        const name =
+            document
+                .getElementById("registerName")
+                .value
+                .trim();
 
-    const email =
-        document.getElementById("registerEmail").value.trim();
+        const username =
+            document
+                .getElementById("registerUsername")
+                .value
+                .trim()
+                .toLowerCase();
 
-    const password =
-        document.getElementById("registerPassword").value;
+        const email =
+            document
+                .getElementById("registerEmail")
+                .value
+                .trim();
 
-
-    if (!name || !username || !email || !password) {
-
-        showAuthMessage(
-            "Please fill in all fields.",
-            true
-        );
-
-        return;
-    }
-
-
-    showAuthMessage("Creating account...");
+        const password =
+            document
+                .getElementById("registerPassword")
+                .value;
 
 
-    try {
+        /* Validate */
 
-        /* Check username */
-
-        const { data: existingUsername, error: usernameError } =
-            await supabaseClient
-                .from("profiles")
-                .select("id")
-                .eq("username", username)
-                .maybeSingle();
-
-
-        if (usernameError) {
-            throw usernameError;
-        }
-
-
-        if (existingUsername) {
+        if (!name || !username || !email || !password) {
 
             showAuthMessage(
-                "That username is already taken.",
+                "Please fill in all fields.",
                 true
             );
 
@@ -137,146 +117,270 @@ registerForm.addEventListener("submit", async (event) => {
         }
 
 
-        /* Create account */
-
-        const {
-            data,
-            error
-        } = await supabaseClient.auth.signUp({
-
-            email: email,
-
-            password: password
-
-        });
-
-
-        if (error) {
-            throw error;
-        }
-
-
-        if (!data.user) {
+        if (username.length < 3) {
 
             showAuthMessage(
-                "Account created. Please check your email.",
-                false
+                "Username must be at least 3 characters.",
+                true
             );
 
             return;
         }
 
 
-        /* Create profile */
+        if (!/^[a-zA-Z0-9_]+$/.test(username)) {
 
-        const { error: profileError } =
-            await supabaseClient
-                .from("profiles")
-                .insert({
+            showAuthMessage(
+                "Username can only contain letters, numbers, and underscores.",
+                true
+            );
 
-                    id: data.user.id,
-
-                    display_name: name,
-
-                    username: username
-
-                });
-
-
-        if (profileError) {
-            throw profileError;
+            return;
         }
 
 
-        showAuthMessage(
-            "Account created successfully!"
-        );
+        if (password.length < 6) {
+
+            showAuthMessage(
+                "Password must be at least 6 characters.",
+                true
+            );
+
+            return;
+        }
 
 
-        registerForm.reset();
+        showAuthMessage("Creating account...");
 
 
-        if (data.session) {
+        try {
+
+            /* =====================================
+               CHECK USERNAME
+            ===================================== */
+
+            const {
+                data: existingUsername,
+                error: usernameError
+            } = await supabaseClient
+                .from("profiles")
+                .select("id")
+                .eq("username", username)
+                .maybeSingle();
+
+
+            if (usernameError) {
+                throw usernameError;
+            }
+
+
+            if (existingUsername) {
+
+                showAuthMessage(
+                    "That username is already taken.",
+                    true
+                );
+
+                return;
+            }
+
+
+            /* =====================================
+               CREATE SUPABASE AUTH ACCOUNT
+
+               IMPORTANT:
+               The profile is created by the
+               database trigger.
+
+               DO NOT insert into profiles here.
+            ===================================== */
+
+            const {
+                data,
+                error
+            } = await supabaseClient.auth.signUp({
+
+                email: email,
+
+                password: password,
+
+                options: {
+
+                    data: {
+
+                        display_name: name,
+
+                        username: username
+
+                    }
+
+                }
+
+            });
+
+
+            if (error) {
+                throw error;
+            }
+
+
+            /* =====================================
+               EMAIL VERIFICATION
+            ===================================== */
+
+            if (!data.user) {
+
+                showAuthMessage(
+                    "Account created. Check your email to verify your account."
+                );
+
+                registerForm.reset();
+
+                return;
+            }
+
+
+            if (!data.session) {
+
+                showAuthMessage(
+                    "Account created! Check your email to verify your account."
+                );
+
+                registerForm.reset();
+
+                return;
+            }
+
+
+            /* =====================================
+               LOGGED IN IMMEDIATELY
+            ===================================== */
+
+            currentUser = data.user;
 
             await loadUser();
 
-        } else {
+            registerForm.reset();
+
+
+        } catch (error) {
+
+            console.error(
+                "Registration error:",
+                error
+            );
+
+
+            let message =
+                error?.message ||
+                "Registration failed.";
+
+
+            if (
+                message
+                    .toLowerCase()
+                    .includes("username")
+            ) {
+
+                message =
+                    "That username is already taken.";
+
+            }
+
 
             showAuthMessage(
-                "Account created! Check your email to verify your account."
+                message,
+                true
             );
 
         }
 
-    } catch (error) {
+    });
 
-        console.error(error);
-
-        showAuthMessage(
-            error.message || "Registration failed.",
-            true
-        );
-
-    }
-
-});
+}
 
 
 /* =========================================
    LOGIN
 ========================================= */
 
-loginForm.addEventListener("submit", async (event) => {
+if (loginForm) {
 
-    event.preventDefault();
+    loginForm.addEventListener("submit", async (event) => {
 
-
-    const email =
-        document.getElementById("loginEmail").value.trim();
-
-    const password =
-        document.getElementById("loginPassword").value;
+        event.preventDefault();
 
 
-    showAuthMessage("Logging in...");
+        const email =
+            document
+                .getElementById("loginEmail")
+                .value
+                .trim();
+
+        const password =
+            document
+                .getElementById("loginPassword")
+                .value;
 
 
-    try {
+        if (!email || !password) {
 
-        const {
-            data,
-            error
-        } = await supabaseClient.auth.signInWithPassword({
+            showAuthMessage(
+                "Enter your email and password.",
+                true
+            );
 
-            email: email,
-
-            password: password
-
-        });
-
-
-        if (error) {
-            throw error;
+            return;
         }
 
 
-        currentUser = data.user;
-
-        await loadUser();
+        showAuthMessage("Logging in...");
 
 
-    } catch (error) {
+        try {
 
-        console.error(error);
+            const {
+                data,
+                error
+            } = await supabaseClient.auth.signInWithPassword({
 
-        showAuthMessage(
-            error.message || "Login failed.",
-            true
-        );
+                email: email,
 
-    }
+                password: password
 
-});
+            });
+
+
+            if (error) {
+                throw error;
+            }
+
+
+            currentUser = data.user;
+
+
+            await loadUser();
+
+
+        } catch (error) {
+
+            console.error(
+                "Login error:",
+                error
+            );
+
+
+            showAuthMessage(
+                error?.message ||
+                "Login failed.",
+                true
+            );
+
+        }
+
+    });
+
+}
 
 
 /* =========================================
@@ -285,56 +389,148 @@ loginForm.addEventListener("submit", async (event) => {
 
 async function loadUser() {
 
-    const {
-        data: {
-            user
+    try {
+
+        const {
+            data: {
+                user
+            }
+        } = await supabaseClient.auth.getUser();
+
+
+        if (!user) {
+
+            showAuth();
+
+            return;
+
         }
-    } = await supabaseClient.auth.getUser();
 
 
-    if (!user) {
+        currentUser = user;
 
-        showAuth();
 
-        return;
+        /* =====================================
+           LOAD PROFILE
+        ===================================== */
+
+        let {
+            data: profile,
+            error
+        } = await supabaseClient
+            .from("profiles")
+            .select("*")
+            .eq("id", user.id)
+            .maybeSingle();
+
+
+        if (error) {
+
+            console.error(
+                "Profile loading error:",
+                error
+            );
+
+            showAuthMessage(
+                "Could not load your profile.",
+                true
+            );
+
+            return;
+
+        }
+
+
+        /* =====================================
+           PROFILE MAY TAKE A MOMENT TO APPEAR
+           AFTER AUTH TRIGGER
+        ===================================== */
+
+        if (!profile) {
+
+            for (let i = 0; i < 5; i++) {
+
+                await sleep(500);
+
+
+                const result =
+                    await supabaseClient
+                        .from("profiles")
+                        .select("*")
+                        .eq("id", user.id)
+                        .maybeSingle();
+
+
+                if (result.error) {
+
+                    console.error(
+                        result.error
+                    );
+
+                    break;
+
+                }
+
+
+                if (result.data) {
+
+                    profile =
+                        result.data;
+
+                    break;
+
+                }
+
+            }
+
+        }
+
+
+        if (!profile) {
+
+            console.error(
+                "Profile does not exist for user:",
+                user.id
+            );
+
+            showAuthMessage(
+                "Your account was created, but your profile could not be found.",
+                true
+            );
+
+            return;
+
+        }
+
+
+        currentProfile = profile;
+
+
+        /* =====================================
+           SHOW APP
+        ===================================== */
+
+        showApp();
+
+
+        updateProfileUI();
+
+
+        await loadFeed();
+
+        await loadProfilePosts();
+
+        await loadSuggestions();
+
+
+    } catch (error) {
+
+        console.error(
+            "loadUser error:",
+            error
+        );
 
     }
-
-
-    currentUser = user;
-
-
-    const {
-        data: profile,
-        error
-    } = await supabaseClient
-        .from("profiles")
-        .select("*")
-        .eq("id", user.id)
-        .single();
-
-
-    if (error) {
-
-        console.error(error);
-
-        showAuth();
-
-        return;
-
-    }
-
-
-    currentProfile = profile;
-
-
-    showApp();
-
-    updateProfileUI();
-
-    loadFeed();
-
-    loadProfilePosts();
 
 }
 
@@ -345,9 +541,13 @@ async function loadUser() {
 
 function showAuth() {
 
-    authScreen.style.display = "flex";
+    if (authScreen) {
+        authScreen.style.display = "flex";
+    }
 
-    app.style.display = "none";
+    if (app) {
+        app.style.display = "none";
+    }
 
 }
 
@@ -358,9 +558,13 @@ function showAuth() {
 
 function showApp() {
 
-    authScreen.style.display = "none";
+    if (authScreen) {
+        authScreen.style.display = "none";
+    }
 
-    app.style.display = "grid";
+    if (app) {
+        app.style.display = "grid";
+    }
 
 }
 
@@ -369,21 +573,41 @@ function showApp() {
    LOGOUT
 ========================================= */
 
-logoutButton.addEventListener("click", async () => {
+if (logoutButton) {
 
-    await supabaseClient.auth.signOut();
+    logoutButton.addEventListener(
+        "click",
+        async () => {
 
-    currentUser = null;
+            try {
 
-    currentProfile = null;
+                await supabaseClient.auth.signOut();
 
-    showAuth();
+            } catch (error) {
 
-});
+                console.error(
+                    "Logout error:",
+                    error
+                );
+
+            }
+
+
+            currentUser = null;
+
+            currentProfile = null;
+
+
+            showAuth();
+
+        }
+    );
+
+}
 
 
 /* =========================================
-   PROFILE UI
+   UPDATE PROFILE UI
 ========================================= */
 
 function updateProfileUI() {
@@ -394,61 +618,123 @@ function updateProfileUI() {
 
 
     const name =
-        currentProfile.display_name || "User";
+        currentProfile.display_name ||
+        "User";
+
 
     const username =
-        currentProfile.username || "user";
+        currentProfile.username ||
+        "user";
 
 
-    document.getElementById(
-        "sidebarName"
-    ).textContent = name;
+    /* Sidebar */
+
+    const sidebarName =
+        document.getElementById(
+            "sidebarName"
+        );
 
 
-    document.getElementById(
-        "sidebarUsername"
-    ).textContent =
-        "@" + username;
+    if (sidebarName) {
+        sidebarName.textContent = name;
+    }
 
 
-    document.getElementById(
-        "profileName"
-    ).textContent = name;
+    const sidebarUsername =
+        document.getElementById(
+            "sidebarUsername"
+        );
 
 
-    document.getElementById(
-        "profileUsername"
-    ).textContent =
-        "@" + username;
+    if (sidebarUsername) {
+
+        sidebarUsername.textContent =
+            "@" + username;
+
+    }
 
 
-    document.getElementById(
-        "profileBio"
-    ).textContent =
-        currentProfile.bio ||
-        "Welcome to ConnectX!";
+    /* Profile */
+
+    const profileName =
+        document.getElementById(
+            "profileName"
+        );
 
 
-    const avatarLetter =
-        name.charAt(0).toUpperCase();
+    if (profileName) {
+        profileName.textContent = name;
+    }
 
 
-    document.getElementById(
-        "sidebarAvatar"
-    ).textContent =
-        avatarLetter;
+    const profileUsername =
+        document.getElementById(
+            "profileUsername"
+        );
 
 
-    document.getElementById(
-        "composerAvatar"
-    ).textContent =
-        avatarLetter;
+    if (profileUsername) {
+
+        profileUsername.textContent =
+            "@" + username;
+
+    }
 
 
-    document.getElementById(
-        "profileAvatar"
-    ).textContent =
-        avatarLetter;
+    const profileBio =
+        document.getElementById(
+            "profileBio"
+        );
+
+
+    if (profileBio) {
+
+        profileBio.textContent =
+            currentProfile.bio ||
+            "Welcome to ConnectX!";
+
+    }
+
+
+    /* Avatar */
+
+    const letter =
+        name
+            .charAt(0)
+            .toUpperCase();
+
+
+    const sidebarAvatar =
+        document.getElementById(
+            "sidebarAvatar"
+        );
+
+
+    if (sidebarAvatar) {
+        sidebarAvatar.textContent = letter;
+    }
+
+
+    const composerAvatar =
+        document.getElementById(
+            "composerAvatar"
+        );
+
+
+    if (composerAvatar) {
+        composerAvatar.textContent = letter;
+    }
+
+
+    const profileAvatar =
+        document.getElementById(
+            "profileAvatar"
+        );
+
+
+    if (profileAvatar) {
+        profileAvatar.textContent = letter;
+    }
 
 }
 
@@ -458,27 +744,64 @@ function updateProfileUI() {
 ========================================= */
 
 const postInput =
-    document.getElementById("postInput");
+    document.getElementById(
+        "postInput"
+    );
+
 
 const postButton =
-    document.getElementById("postButton");
+    document.getElementById(
+        "postButton"
+    );
+
 
 const characterCount =
-    document.getElementById("characterCount");
+    document.getElementById(
+        "characterCount"
+    );
 
 
-postInput.addEventListener("input", () => {
+if (postInput) {
 
-    characterCount.textContent =
-        `${postInput.value.length}/280`;
+    postInput.addEventListener(
+        "input",
+        () => {
 
-});
+            if (characterCount) {
+
+                characterCount.textContent =
+                    `${postInput.value.length}/280`;
+
+            }
+
+        }
+    );
+
+}
 
 
-postButton.addEventListener("click", createPost);
+if (postButton) {
+
+    postButton.addEventListener(
+        "click",
+        createPost
+    );
+
+}
 
 
 async function createPost() {
+
+    if (!currentUser) {
+
+        alert(
+            "You must be logged in to post."
+        );
+
+        return;
+
+    }
+
 
     const content =
         postInput.value.trim();
@@ -489,14 +812,21 @@ async function createPost() {
     }
 
 
-    if (!currentUser) {
+    if (content.length > 280) {
+
+        alert(
+            "Your post is too long."
+        );
+
         return;
+
     }
 
 
     postButton.disabled = true;
 
-    postButton.textContent = "Posting...";
+    postButton.textContent =
+        "Posting...";
 
 
     try {
@@ -507,9 +837,11 @@ async function createPost() {
             .from("posts")
             .insert({
 
-                user_id: currentUser.id,
+                user_id:
+                    currentUser.id,
 
-                content: content
+                content:
+                    content
 
             });
 
@@ -521,7 +853,13 @@ async function createPost() {
 
         postInput.value = "";
 
-        characterCount.textContent = "0/280";
+
+        if (characterCount) {
+
+            characterCount.textContent =
+                "0/280";
+
+        }
 
 
         await loadFeed();
@@ -531,10 +869,14 @@ async function createPost() {
 
     } catch (error) {
 
-        console.error(error);
+        console.error(
+            "Post error:",
+            error
+        );
+
 
         alert(
-            error.message ||
+            error?.message ||
             "Could not create post."
         );
 
@@ -543,7 +885,8 @@ async function createPost() {
 
     postButton.disabled = false;
 
-    postButton.textContent = "Post";
+    postButton.textContent =
+        "Post";
 
 }
 
@@ -555,236 +898,303 @@ async function createPost() {
 async function loadFeed() {
 
     const feed =
-        document.getElementById("feed");
-
-
-    feed.innerHTML =
-        `<div class="loading">Loading posts...</div>`;
-
-
-    const {
-        data,
-        error
-    } = await supabaseClient
-        .from("posts")
-        .select(`
-            id,
-            content,
-            created_at,
-            profiles (
-                display_name,
-                username
-            )
-        `)
-        .order(
-            "created_at",
-            {
-                ascending: false
-            }
+        document.getElementById(
+            "feed"
         );
 
 
-    if (error) {
+    if (!feed) {
+        return;
+    }
 
-        console.error(error);
+
+    feed.innerHTML =
+        `<div class="loading">
+            Loading posts...
+        </div>`;
+
+
+    try {
+
+        const {
+            data,
+            error
+        } = await supabaseClient
+            .from("posts")
+            .select(`
+                id,
+                content,
+                created_at,
+                profiles (
+                    display_name,
+                    username
+                )
+            `)
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            );
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        if (!data || data.length === 0) {
+
+            feed.innerHTML =
+                `<div class="empty">
+                    No posts yet. Be the first to post!
+                </div>`;
+
+            return;
+
+        }
+
+
+        feed.innerHTML = "";
+
+
+        data.forEach(post => {
+
+            const profile =
+                post.profiles;
+
+
+            const name =
+                profile?.display_name ||
+                "User";
+
+
+            const username =
+                profile?.username ||
+                "user";
+
+
+            const article =
+                document.createElement(
+                    "article"
+                );
+
+
+            article.className =
+                "post";
+
+
+            article.innerHTML = `
+
+                <div class="post-avatar avatar">
+                    ${escapeHTML(
+                        name.charAt(0).toUpperCase()
+                    )}
+                </div>
+
+                <div class="post-content">
+
+                    <div class="post-header">
+
+                        <strong>
+                            ${escapeHTML(name)}
+                        </strong>
+
+                        <span>
+                            @${escapeHTML(username)}
+                        </span>
+
+                        <time>
+                            ${formatDate(
+                                post.created_at
+                            )}
+                        </time>
+
+                    </div>
+
+                    <p>
+                        ${escapeHTML(
+                            post.content
+                        )}
+                    </p>
+
+                </div>
+
+            `;
+
+
+            feed.appendChild(article);
+
+        });
+
+
+    } catch (error) {
+
+        console.error(
+            "Feed error:",
+            error
+        );
+
 
         feed.innerHTML =
             `<div class="error">
                 Failed to load posts.
             </div>`;
 
-        return;
     }
-
-
-    if (!data || data.length === 0) {
-
-        feed.innerHTML =
-            `<div class="empty">
-                No posts yet. Be the first to post!
-            </div>`;
-
-        return;
-
-    }
-
-
-    feed.innerHTML = "";
-
-
-    data.forEach(post => {
-
-        const profile =
-            post.profiles;
-
-
-        const name =
-            profile?.display_name ||
-            "User";
-
-
-        const username =
-            profile?.username ||
-            "user";
-
-
-        const article =
-            document.createElement("article");
-
-
-        article.className = "post";
-
-
-        article.innerHTML = `
-
-            <div class="post-avatar avatar">
-                ${escapeHTML(
-                    name.charAt(0).toUpperCase()
-                )}
-            </div>
-
-            <div class="post-content">
-
-                <div class="post-header">
-
-                    <strong>
-                        ${escapeHTML(name)}
-                    </strong>
-
-                    <span>
-                        @${escapeHTML(username)}
-                    </span>
-
-                    <time>
-                        ${formatDate(post.created_at)}
-                    </time>
-
-                </div>
-
-                <p>
-                    ${escapeHTML(post.content)}
-                </p>
-
-            </div>
-
-        `;
-
-
-        feed.appendChild(article);
-
-    });
 
 }
 
 
 /* =========================================
-   PROFILE POSTS
+   LOAD PROFILE POSTS
 ========================================= */
 
 async function loadProfilePosts() {
 
-    if (!currentUser) {
+    if (!currentUser || !currentProfile) {
         return;
     }
 
 
     const container =
-        document.getElementById("profilePosts");
-
-
-    const {
-        data,
-        error
-    } = await supabaseClient
-        .from("posts")
-        .select("*")
-        .eq(
-            "user_id",
-            currentUser.id
-        )
-        .order(
-            "created_at",
-            {
-                ascending: false
-            }
+        document.getElementById(
+            "profilePosts"
         );
 
 
-    if (error) {
-
-        console.error(error);
-
+    if (!container) {
         return;
-
     }
 
 
-    container.innerHTML = "";
+    try {
+
+        const {
+            data,
+            error
+        } = await supabaseClient
+            .from("posts")
+            .select("*")
+            .eq(
+                "user_id",
+                currentUser.id
+            )
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            );
 
 
-    document.getElementById(
-        "postCount"
-    ).textContent =
-        data.length;
+        if (error) {
+            throw error;
+        }
 
 
-    data.forEach(post => {
-
-        const element =
-            document.createElement("article");
+        container.innerHTML = "";
 
 
-        element.className = "post";
+        const postCount =
+            document.getElementById(
+                "postCount"
+            );
 
 
-        element.innerHTML = `
+        if (postCount) {
 
-            <div class="post-avatar avatar">
-                ${escapeHTML(
-                    currentProfile.display_name
-                        .charAt(0)
-                        .toUpperCase()
-                )}
-            </div>
+            postCount.textContent =
+                data?.length || 0;
 
-            <div class="post-content">
+        }
 
-                <div class="post-header">
 
-                    <strong>
+        if (!data || data.length === 0) {
+
+            container.innerHTML =
+                `<div class="empty">
+                    You haven't posted anything yet.
+                </div>`;
+
+            return;
+
+        }
+
+
+        data.forEach(post => {
+
+            const element =
+                document.createElement(
+                    "article"
+                );
+
+
+            element.className =
+                "post";
+
+
+            element.innerHTML = `
+
+                <div class="post-avatar avatar">
+                    ${escapeHTML(
+                        currentProfile
+                            .display_name
+                            .charAt(0)
+                            .toUpperCase()
+                    )}
+                </div>
+
+                <div class="post-content">
+
+                    <div class="post-header">
+
+                        <strong>
+                            ${escapeHTML(
+                                currentProfile
+                                    .display_name
+                            )}
+                        </strong>
+
+                        <span>
+                            @${escapeHTML(
+                                currentProfile
+                                    .username
+                            )}
+                        </span>
+
+                        <time>
+                            ${formatDate(
+                                post.created_at
+                            )}
+                        </time>
+
+                    </div>
+
+                    <p>
                         ${escapeHTML(
-                            currentProfile.display_name
+                            post.content
                         )}
-                    </strong>
-
-                    <span>
-                        @${escapeHTML(
-                            currentProfile.username
-                        )}
-                    </span>
-
-                    <time>
-                        ${formatDate(
-                            post.created_at
-                        )}
-                    </time>
+                    </p>
 
                 </div>
 
-                <p>
-                    ${escapeHTML(
-                        post.content
-                    )}
-                </p>
-
-            </div>
-
-        `;
+            `;
 
 
-        container.appendChild(element);
+            container.appendChild(element);
 
-    });
+        });
+
+
+    } catch (error) {
+
+        console.error(
+            "Profile posts error:",
+            error
+        );
+
+    }
 
 }
 
@@ -862,85 +1272,32 @@ document
 
 
 /* =========================================
-   POST BUTTONS
+   SIDEBAR POST BUTTON
 ========================================= */
 
-document
-    .getElementById("sidebarPostButton")
-    .addEventListener("click", () => {
-
-        document
-            .getElementById("postInput")
-            .focus();
-
-    });
+const sidebarPostButton =
+    document.getElementById(
+        "sidebarPostButton"
+    );
 
 
-document
-    .getElementById("mobilePost")
-    .addEventListener("click", () => {
+if (sidebarPostButton) {
 
-        document
-            .getElementById("postInput")
-            .focus();
+    sidebarPostButton.addEventListener(
+        "click",
+        () => {
 
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
+            if (postInput) {
 
-    });
+                postInput.focus();
 
+                postInput.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
 
-/* =========================================
-   DARK MODE
-========================================= */
+            }
 
-document
-    .getElementById("darkModeButton")
-    .addEventListener("click", () => {
-
-        document.body.classList.toggle(
-            "dark"
-        );
-
-
-        localStorage.setItem(
-            "connectx-dark",
-            document.body.classList.contains(
-                "dark"
-            )
-        );
-
-    });
-
-
-if (
-    localStorage.getItem("connectx-dark") === "true"
-) {
-
-    document.body.classList.add("dark");
-
-}
-
-
-/* =========================================
-   DATE
-========================================= */
-
-function formatDate(date) {
-
-    const d =
-        new Date(date);
-
-
-    return d.toLocaleString(
-        [],
-        {
-            month: "short",
-            day: "numeric",
-            hour: "numeric",
-            minute: "2-digit"
         }
     );
 
@@ -948,18 +1305,81 @@ function formatDate(date) {
 
 
 /* =========================================
-   SECURITY
+   MOBILE POST BUTTON
 ========================================= */
 
-function escapeHTML(value) {
+const mobilePost =
+    document.getElementById(
+        "mobilePost"
+    );
 
-    const div =
-        document.createElement("div");
 
-    div.textContent =
-        value ?? "";
+if (mobilePost) {
 
-    return div.innerHTML;
+    mobilePost.addEventListener(
+        "click",
+        () => {
+
+            if (postInput) {
+
+                postInput.focus();
+
+                postInput.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================
+   DARK MODE
+========================================= */
+
+const darkModeButton =
+    document.getElementById(
+        "darkModeButton"
+    );
+
+
+if (darkModeButton) {
+
+    darkModeButton.addEventListener(
+        "click",
+        () => {
+
+            document.body.classList.toggle(
+                "dark"
+            );
+
+
+            localStorage.setItem(
+                "connectx-dark",
+                document.body.classList.contains(
+                    "dark"
+                )
+            );
+
+        }
+    );
+
+}
+
+
+if (
+    localStorage.getItem(
+        "connectx-dark"
+    ) === "true"
+) {
+
+    document.body.classList.add(
+        "dark"
+    );
 
 }
 
@@ -974,30 +1394,236 @@ const searchInput =
     );
 
 
-searchInput.addEventListener(
-    "input",
-    async () => {
+if (searchInput) {
 
-        const query =
-            searchInput.value
-                .trim()
-                .toLowerCase();
+    searchInput.addEventListener(
+        "input",
+        async () => {
 
-
-        const results =
-            document.getElementById(
-                "searchResults"
-            );
+            const query =
+                searchInput.value
+                    .trim()
+                    .toLowerCase();
 
 
-        if (!query) {
+            const results =
+                document.getElementById(
+                    "searchResults"
+                );
 
-            results.innerHTML = "";
 
-            return;
+            if (!results) {
+                return;
+            }
+
+
+            if (!query) {
+
+                results.innerHTML = "";
+
+                return;
+
+            }
+
+
+            try {
+
+                const {
+                    data,
+                    error
+                } = await supabaseClient
+                    .from("profiles")
+                    .select(
+                        "display_name, username"
+                    )
+                    .or(
+                        `username.ilike.%${query}%,display_name.ilike.%${query}%`
+                    )
+                    .limit(20);
+
+
+                if (error) {
+                    throw error;
+                }
+
+
+                results.innerHTML = "";
+
+
+                if (!data || data.length === 0) {
+
+                    results.innerHTML =
+                        `<div class="empty">
+                            No users found.
+                        </div>`;
+
+                    return;
+
+                }
+
+
+                data.forEach(profile => {
+
+                    const div =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    div.className =
+                        "search-result";
+
+
+                    const name =
+                        profile.display_name ||
+                        "User";
+
+
+                    div.innerHTML = `
+
+                        <div class="avatar">
+                            ${escapeHTML(
+                                name
+                                    .charAt(0)
+                                    .toUpperCase()
+                            )}
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                ${escapeHTML(name)}
+                            </strong>
+
+                            <span>
+                                @${escapeHTML(
+                                    profile.username
+                                )}
+                            </span>
+
+                        </div>
+
+                    `;
+
+
+                    results.appendChild(div);
+
+                });
+
+
+            } catch (error) {
+
+                console.error(
+                    "Search error:",
+                    error
+                );
+
+            }
 
         }
+    );
 
+}
+
+
+/* =========================================
+   RIGHT SIDEBAR SEARCH
+========================================= */
+
+const rightSearch =
+    document.getElementById(
+        "rightSearch"
+    );
+
+
+if (rightSearch) {
+
+    rightSearch.addEventListener(
+        "keydown",
+        event => {
+
+            if (event.key === "Enter") {
+
+                const query =
+                    rightSearch.value.trim();
+
+
+                if (!query) {
+                    return;
+                }
+
+
+                /* Switch to Explore */
+
+                document
+                    .querySelectorAll(".page")
+                    .forEach(page => {
+
+                        page.classList.remove(
+                            "active"
+                        );
+
+                    });
+
+
+                const explore =
+                    document.getElementById(
+                        "explorePage"
+                    );
+
+
+                if (explore) {
+
+                    explore.classList.add(
+                        "active"
+                    );
+
+                }
+
+
+                const exploreSearch =
+                    document.getElementById(
+                        "searchInput"
+                    );
+
+
+                if (exploreSearch) {
+
+                    exploreSearch.value =
+                        query;
+
+                    exploreSearch.dispatchEvent(
+                        new Event("input")
+                    );
+
+                }
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================
+   LOAD SUGGESTIONS
+========================================= */
+
+async function loadSuggestions() {
+
+    const container =
+        document.getElementById(
+            "suggestions"
+        );
+
+
+    if (!container || !currentUser) {
+        return;
+    }
+
+
+    try {
 
         const {
             data,
@@ -1005,41 +1631,57 @@ searchInput.addEventListener(
         } = await supabaseClient
             .from("profiles")
             .select(
-                "display_name, username"
+                "id, display_name, username"
             )
-            .or(
-                `username.ilike.%${query}%,display_name.ilike.%${query}%`
+            .neq(
+                "id",
+                currentUser.id
             )
-            .limit(20);
+            .limit(5);
 
 
         if (error) {
+            throw error;
+        }
 
-            console.error(error);
+
+        container.innerHTML = "";
+
+
+        if (!data || data.length === 0) {
+
+            container.innerHTML =
+                `<p class="muted">
+                    No suggestions yet.
+                </p>`;
 
             return;
 
         }
 
 
-        results.innerHTML = "";
-
-
         data.forEach(profile => {
 
             const div =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
 
 
             div.className =
-                "search-result";
+                "suggestion";
+
+
+            const name =
+                profile.display_name ||
+                "User";
 
 
             div.innerHTML = `
 
                 <div class="avatar">
                     ${escapeHTML(
-                        profile.display_name
+                        name
                             .charAt(0)
                             .toUpperCase()
                     )}
@@ -1048,28 +1690,35 @@ searchInput.addEventListener(
                 <div>
 
                     <strong>
-                        ${escapeHTML(
-                            profile.display_name
-                        )}
+                        ${escapeHTML(name)}
                     </strong>
 
-                    <span>
+                    <small>
                         @${escapeHTML(
                             profile.username
                         )}
-                    </span>
+                    </small>
 
                 </div>
 
             `;
 
 
-            results.appendChild(div);
+            container.appendChild(div);
 
         });
 
+
+    } catch (error) {
+
+        console.error(
+            "Suggestions error:",
+            error
+        );
+
     }
-);
+
+}
 
 
 /* =========================================
@@ -1078,6 +1727,12 @@ searchInput.addEventListener(
 
 supabaseClient.auth.onAuthStateChange(
     async (event, session) => {
+
+        console.log(
+            "Auth event:",
+            event
+        );
+
 
         if (session) {
 
@@ -1101,21 +1756,109 @@ supabaseClient.auth.onAuthStateChange(
 
 
 /* =========================================
-   START APP
+   HELPERS
+========================================= */
+
+function escapeHTML(value) {
+
+    const div =
+        document.createElement(
+            "div"
+        );
+
+
+    div.textContent =
+        value ?? "";
+
+
+    return div.innerHTML;
+
+}
+
+
+function formatDate(date) {
+
+    const d =
+        new Date(date);
+
+
+    if (Number.isNaN(d.getTime())) {
+        return "";
+    }
+
+
+    return d.toLocaleString(
+        [],
+        {
+            month: "short",
+            day: "numeric",
+            hour: "numeric",
+            minute: "2-digit"
+        }
+    );
+
+}
+
+
+function sleep(ms) {
+
+    return new Promise(
+        resolve => setTimeout(
+            resolve,
+            ms
+        )
+    );
+
+}
+
+
+/* =========================================
+   START CONNECTX
 ========================================= */
 
 async function startApp() {
 
-    const {
-        data
-    } = await supabaseClient.auth.getSession();
+    try {
+
+        const {
+            data,
+            error
+        } = await supabaseClient.auth.getSession();
 
 
-    if (data.session) {
+        if (error) {
 
-        await loadUser();
+            console.error(
+                "Session error:",
+                error
+            );
 
-    } else {
+            showAuth();
+
+            return;
+
+        }
+
+
+        if (data.session) {
+
+            currentUser =
+                data.session.user;
+
+            await loadUser();
+
+        } else {
+
+            showAuth();
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Startup error:",
+            error
+        );
 
         showAuth();
 
