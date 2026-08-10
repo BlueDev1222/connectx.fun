@@ -1,391 +1,910 @@
-/* =========================================
+/* =====================================================
    CONNECTX
-   SUPABASE JAVASCRIPT
-========================================= */
+   SUPABASE AUTH + APP
+===================================================== */
+
 
 let currentUser = null;
 let currentProfile = null;
 
+let authMethod = "email";
 
-/* =========================================
+let pendingIdentifier = "";
+
+let pendingName = "";
+let pendingUsername = "";
+
+
+
+/* =====================================================
    ELEMENTS
-========================================= */
+===================================================== */
 
-const authScreen = document.getElementById("authScreen");
-const app = document.getElementById("app");
+const authScreen =
+    document.getElementById("authScreen");
 
-const loginForm = document.getElementById("loginForm");
-const registerForm = document.getElementById("registerForm");
+const app =
+    document.getElementById("app");
 
-const switchAuth = document.getElementById("switchAuth");
-const authMessage = document.getElementById("authMessage");
+const emailMethod =
+    document.getElementById("emailMethod");
 
-const logoutButton = document.getElementById("logoutButton");
+const phoneMethod =
+    document.getElementById("phoneMethod");
+
+const emailInputContainer =
+    document.getElementById(
+        "emailInputContainer"
+    );
+
+const phoneInputContainer =
+    document.getElementById(
+        "phoneInputContainer"
+    );
+
+const authEmail =
+    document.getElementById("authEmail");
+
+const authPhone =
+    document.getElementById("authPhone");
+
+const authName =
+    document.getElementById("authName");
+
+const authUsername =
+    document.getElementById("authUsername");
+
+const sendCodeButton =
+    document.getElementById(
+        "sendCodeButton"
+    );
+
+const otpContainer =
+    document.getElementById(
+        "otpContainer"
+    );
+
+const otpInput =
+    document.getElementById("otpInput");
+
+const verifyCodeButton =
+    document.getElementById(
+        "verifyCodeButton"
+    );
+
+const resendCodeButton =
+    document.getElementById(
+        "resendCodeButton"
+    );
+
+const authMessage =
+    document.getElementById(
+        "authMessage"
+    );
+
+const logoutButton =
+    document.getElementById(
+        "logoutButton"
+    );
 
 
-/* =========================================
+
+/* =====================================================
    AUTH MESSAGE
-========================================= */
+===================================================== */
 
-function showAuthMessage(message, error = false) {
-    if (!authMessage) return;
+function showAuthMessage(
+    message,
+    error = false
+) {
 
-    authMessage.textContent = message;
-    authMessage.style.color = error ? "#e53935" : "#22c55e";
+    authMessage.textContent =
+        message;
+
+    authMessage.style.color =
+        error
+            ? "#e53935"
+            : "#22c55e";
+
 }
 
 
-/* =========================================
-   SWITCH LOGIN / REGISTER
-========================================= */
 
-if (switchAuth) {
-    switchAuth.addEventListener("click", () => {
+/* =====================================================
+   EMAIL / PHONE SWITCH
+===================================================== */
 
-        const registering =
-            registerForm.style.display !== "none";
+emailMethod.addEventListener(
+    "click",
+    () => {
 
-        if (registering) {
+        authMethod = "email";
 
-            registerForm.style.display = "none";
-            loginForm.style.display = "block";
+        emailMethod.classList.add(
+            "active"
+        );
 
-            switchAuth.textContent =
-                "Create an account";
+        phoneMethod.classList.remove(
+            "active"
+        );
 
-        } else {
+        emailInputContainer.style.display =
+            "block";
 
-            registerForm.style.display = "block";
-            loginForm.style.display = "none";
+        phoneInputContainer.style.display =
+            "none";
 
-            switchAuth.textContent =
-                "Already have an account? Log in";
+        otpContainer.style.display =
+            "none";
 
-        }
+        sendCodeButton.style.display =
+            "block";
 
         showAuthMessage("");
 
-    });
+    }
+);
+
+
+phoneMethod.addEventListener(
+    "click",
+    () => {
+
+        authMethod = "phone";
+
+        phoneMethod.classList.add(
+            "active"
+        );
+
+        emailMethod.classList.remove(
+            "active"
+        );
+
+        phoneInputContainer.style.display =
+            "block";
+
+        emailInputContainer.style.display =
+            "none";
+
+        otpContainer.style.display =
+            "none";
+
+        sendCodeButton.style.display =
+            "block";
+
+        showAuthMessage("");
+
+    }
+);
+
+
+
+/* =====================================================
+   VALIDATE USERNAME
+===================================================== */
+
+function validateUsername(
+    username
+) {
+
+    if (username.length < 3) {
+
+        return "Username must be at least 3 characters.";
+
+    }
+
+
+    if (username.length > 20) {
+
+        return "Username must be 20 characters or less.";
+
+    }
+
+
+    if (
+        !/^[a-zA-Z0-9_]+$/.test(
+            username
+        )
+    ) {
+
+        return "Username can only contain letters, numbers, and underscores.";
+
+    }
+
+
+    return null;
+
 }
 
 
-/* =========================================
-   REGISTER
-========================================= */
 
-if (registerForm) {
+/* =====================================================
+   SEND OTP
+===================================================== */
 
-    registerForm.addEventListener("submit", async (event) => {
-
-        event.preventDefault();
-
-        const name =
-            document
-                .getElementById("registerName")
-                .value
-                .trim();
-
-        const username =
-            document
-                .getElementById("registerUsername")
-                .value
-                .trim()
-                .toLowerCase();
-
-        const email =
-            document
-                .getElementById("registerEmail")
-                .value
-                .trim();
-
-        const password =
-            document
-                .getElementById("registerPassword")
-                .value;
+sendCodeButton.addEventListener(
+    "click",
+    sendOTP
+);
 
 
-        /* Validate */
+async function sendOTP() {
 
-        if (!name || !username || !email || !password) {
+    const name =
+        authName.value.trim();
+
+    const username =
+        authUsername.value
+            .trim()
+            .toLowerCase();
+
+
+    /* ================================================
+       VALIDATE NAME
+    ================================================= */
+
+    if (!name) {
+
+        showAuthMessage(
+            "Enter your display name.",
+            true
+        );
+
+        return;
+
+    }
+
+
+    /* ================================================
+       VALIDATE USERNAME
+    ================================================= */
+
+    const usernameError =
+        validateUsername(
+            username
+        );
+
+
+    if (usernameError) {
+
+        showAuthMessage(
+            usernameError,
+            true
+        );
+
+        return;
+
+    }
+
+
+    /* ================================================
+       CHECK USERNAME
+    ================================================= */
+
+    showAuthMessage(
+        "Checking username..."
+    );
+
+
+    try {
+
+        const {
+            data,
+            error
+        } = await supabaseClient
+            .from("profiles")
+            .select("id")
+            .eq(
+                "username",
+                username
+            )
+            .maybeSingle();
+
+
+        if (error) {
+
+            throw error;
+
+        }
+
+
+        if (data) {
 
             showAuthMessage(
-                "Please fill in all fields.",
+                "That username is already taken.",
                 true
             );
 
             return;
+
         }
 
 
-        if (username.length < 3) {
+    } catch (error) {
+
+        console.error(
+            "Username check:",
+            error
+        );
+
+        showAuthMessage(
+            error.message ||
+            "Could not check username.",
+            true
+        );
+
+        return;
+
+    }
+
+
+    /* ================================================
+       GET EMAIL OR PHONE
+    ================================================= */
+
+    let identifier;
+
+
+    if (authMethod === "email") {
+
+        identifier =
+            authEmail.value.trim();
+
+
+        if (!identifier) {
 
             showAuthMessage(
-                "Username must be at least 3 characters.",
+                "Enter your email address.",
                 true
             );
 
             return;
+
         }
 
 
-        if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+        if (
+            !/^[^\s@]+@[^\s@]+\.[^\s@]+$/
+                .test(identifier)
+        ) {
 
             showAuthMessage(
-                "Username can only contain letters, numbers, and underscores.",
+                "Enter a valid email address.",
                 true
             );
 
             return;
+
         }
 
+    } else {
 
-        if (password.length < 6) {
+        identifier =
+            authPhone.value.trim();
+
+
+        if (!identifier) {
 
             showAuthMessage(
-                "Password must be at least 6 characters.",
+                "Enter your phone number.",
                 true
             );
 
             return;
+
         }
 
 
-        showAuthMessage("Creating account...");
+        /*
+         * Basic E.164-style validation.
+         *
+         * Example:
+         * +15551234567
+         */
+
+        if (
+            !/^\+[1-9]\d{7,14}$/
+                .test(
+                    identifier
+                )
+        ) {
+
+            showAuthMessage(
+                "Use your full phone number with country code. Example: +15551234567",
+                true
+            );
+
+            return;
+
+        }
+
+    }
+
+
+    /* ================================================
+       SAVE DATA
+    ================================================= */
+
+    pendingIdentifier =
+        identifier;
+
+    pendingName =
+        name;
+
+    pendingUsername =
+        username;
+
+
+    sendCodeButton.disabled =
+        true;
+
+    sendCodeButton.textContent =
+        "Sending...";
+
+
+    showAuthMessage(
+        "Sending verification code..."
+    );
+
+
+    try {
+
+        let result;
+
+
+        /* ==========================================
+           EMAIL OTP
+        ========================================== */
+
+        if (
+            authMethod === "email"
+        ) {
+
+            result =
+                await supabaseClient.auth
+                    .signInWithOtp({
+
+                        email:
+                            identifier,
+
+                        options: {
+
+                            shouldCreateUser:
+                                true,
+
+                            data: {
+
+                                display_name:
+                                    name,
+
+                                username:
+                                    username
+
+                            }
+
+                        }
+
+                    });
+
+        }
+
+
+        /* ==========================================
+           PHONE OTP
+        ========================================== */
+
+        else {
+
+            result =
+                await supabaseClient.auth
+                    .signInWithOtp({
+
+                        phone:
+                            identifier,
+
+                        options: {
+
+                            shouldCreateUser:
+                                true,
+
+                            data: {
+
+                                display_name:
+                                    name,
+
+                                username:
+                                    username
+
+                            }
+
+                        }
+
+                    });
+
+        }
+
+
+        if (result.error) {
+
+            throw result.error;
+
+        }
+
+
+        /* ==========================================
+           SHOW OTP BOX
+        ========================================== */
+
+        otpContainer.style.display =
+            "block";
+
+        sendCodeButton.style.display =
+            "none";
+
+
+        if (
+            authMethod === "email"
+        ) {
+
+            showAuthMessage(
+                "We sent a verification code to your email."
+            );
+
+        } else {
+
+            showAuthMessage(
+                "We sent a 6-digit code to your phone."
+            );
+
+        }
+
+
+        otpInput.focus();
+
+
+    } catch (error) {
+
+        console.error(
+            "OTP error:",
+            error
+        );
+
+
+        showAuthMessage(
+            error.message ||
+            "Could not send verification code.",
+            true
+        );
+
+    }
+
+
+    sendCodeButton.disabled =
+        false;
+
+    sendCodeButton.textContent =
+        "Send verification code";
+
+}
+
+
+
+/* =====================================================
+   VERIFY OTP
+===================================================== */
+
+verifyCodeButton.addEventListener(
+    "click",
+    verifyOTP
+);
+
+
+async function verifyOTP() {
+
+    const token =
+        otpInput.value.trim();
+
+
+    if (!token) {
+
+        showAuthMessage(
+            "Enter the verification code.",
+            true
+        );
+
+        return;
+
+    }
+
+
+    if (!/^\d{6}$/.test(token)) {
+
+        showAuthMessage(
+            "The verification code must be 6 digits.",
+            true
+        );
+
+        return;
+
+    }
+
+
+    verifyCodeButton.disabled =
+        true;
+
+    verifyCodeButton.textContent =
+        "Verifying...";
+
+
+    try {
+
+        let result;
+
+
+        /* ==========================================
+           EMAIL
+        ========================================== */
+
+        if (
+            authMethod === "email"
+        ) {
+
+            result =
+                await supabaseClient.auth
+                    .verifyOtp({
+
+                        email:
+                            pendingIdentifier,
+
+                        token:
+                            token,
+
+                        type:
+                            "email"
+
+                    });
+
+        }
+
+
+        /* ==========================================
+           PHONE
+        ========================================== */
+
+        else {
+
+            result =
+                await supabaseClient.auth
+                    .verifyOtp({
+
+                        phone:
+                            pendingIdentifier,
+
+                        token:
+                            token,
+
+                        type:
+                            "sms"
+
+                    });
+
+        }
+
+
+        if (result.error) {
+
+            throw result.error;
+
+        }
+
+
+        currentUser =
+            result.data.user;
+
+
+        showAuthMessage(
+            "Verification successful!"
+        );
+
+
+        /*
+         * The database trigger should create
+         * the ConnectX profile automatically.
+         */
+
+        await waitForProfile();
+
+
+        await loadUser();
+
+
+    } catch (error) {
+
+        console.error(
+            "Verification error:",
+            error
+        );
+
+
+        showAuthMessage(
+            error.message ||
+            "Invalid or expired verification code.",
+            true
+        );
+
+    }
+
+
+    verifyCodeButton.disabled =
+        false;
+
+    verifyCodeButton.textContent =
+        "Verify code";
+
+}
+
+
+
+/* =====================================================
+   RESEND OTP
+===================================================== */
+
+resendCodeButton.addEventListener(
+    "click",
+    async () => {
+
+        /*
+         * Reset OTP input.
+         */
+
+        otpInput.value = "";
+
+
+        /*
+         * Supabase has rate limits.
+         * Don't repeatedly click this button.
+         */
+
+        if (!pendingIdentifier) {
+
+            return;
+
+        }
 
 
         try {
 
-            /* =====================================
-               CHECK USERNAME
-            ===================================== */
-
-            const {
-                data: existingUsername,
-                error: usernameError
-            } = await supabaseClient
-                .from("profiles")
-                .select("id")
-                .eq("username", username)
-                .maybeSingle();
-
-
-            if (usernameError) {
-                throw usernameError;
-            }
-
-
-            if (existingUsername) {
-
-                showAuthMessage(
-                    "That username is already taken.",
-                    true
-                );
-
-                return;
-            }
-
-
-            /* =====================================
-               CREATE SUPABASE AUTH ACCOUNT
-
-               IMPORTANT:
-               The profile is created by the
-               database trigger.
-
-               DO NOT insert into profiles here.
-            ===================================== */
-
-            const {
-                data,
-                error
-            } = await supabaseClient.auth.signUp({
-
-                email: email,
-
-                password: password,
-
-                options: {
-
-                    data: {
-
-                        display_name: name,
-
-                        username: username
-
-                    }
-
-                }
-
-            });
-
-
-            if (error) {
-                throw error;
-            }
-
-
-            /* =====================================
-               EMAIL VERIFICATION
-            ===================================== */
-
-            if (!data.user) {
-
-                showAuthMessage(
-                    "Account created. Check your email to verify your account."
-                );
-
-                registerForm.reset();
-
-                return;
-            }
-
-
-            if (!data.session) {
-
-                showAuthMessage(
-                    "Account created! Check your email to verify your account."
-                );
-
-                registerForm.reset();
-
-                return;
-            }
-
-
-            /* =====================================
-               LOGGED IN IMMEDIATELY
-            ===================================== */
-
-            currentUser = data.user;
-
-            await loadUser();
-
-            registerForm.reset();
-
-
-        } catch (error) {
-
-            console.error(
-                "Registration error:",
-                error
-            );
-
-
-            let message =
-                error?.message ||
-                "Registration failed.";
+            let result;
 
 
             if (
-                message
-                    .toLowerCase()
-                    .includes("username")
+                authMethod === "email"
             ) {
 
-                message =
-                    "That username is already taken.";
+                result =
+                    await supabaseClient.auth
+                        .signInWithOtp({
+
+                            email:
+                                pendingIdentifier,
+
+                            options: {
+
+                                shouldCreateUser:
+                                    true
+
+                            }
+
+                        });
+
+            } else {
+
+                result =
+                    await supabaseClient.auth
+                        .signInWithOtp({
+
+                            phone:
+                                pendingIdentifier,
+
+                            options: {
+
+                                shouldCreateUser:
+                                    true
+
+                            }
+
+                        });
+
+            }
+
+
+            if (result.error) {
+
+                throw result.error;
 
             }
 
 
             showAuthMessage(
-                message,
-                true
+                "A new verification code was sent."
             );
-
-        }
-
-    });
-
-}
-
-
-/* =========================================
-   LOGIN
-========================================= */
-
-if (loginForm) {
-
-    loginForm.addEventListener("submit", async (event) => {
-
-        event.preventDefault();
-
-
-        const email =
-            document
-                .getElementById("loginEmail")
-                .value
-                .trim();
-
-        const password =
-            document
-                .getElementById("loginPassword")
-                .value;
-
-
-        if (!email || !password) {
-
-            showAuthMessage(
-                "Enter your email and password.",
-                true
-            );
-
-            return;
-        }
-
-
-        showAuthMessage("Logging in...");
-
-
-        try {
-
-            const {
-                data,
-                error
-            } = await supabaseClient.auth.signInWithPassword({
-
-                email: email,
-
-                password: password
-
-            });
-
-
-            if (error) {
-                throw error;
-            }
-
-
-            currentUser = data.user;
-
-
-            await loadUser();
 
 
         } catch (error) {
 
             console.error(
-                "Login error:",
+                "Resend error:",
                 error
             );
 
 
             showAuthMessage(
-                error?.message ||
-                "Login failed.",
+                error.message ||
+                "Could not resend the code.",
                 true
             );
 
         }
 
-    });
+    }
+);
+
+
+
+/* =====================================================
+   WAIT FOR PROFILE
+===================================================== */
+
+async function waitForProfile() {
+
+    if (!currentUser) {
+        return;
+    }
+
+
+    for (
+        let attempt = 0;
+        attempt < 10;
+        attempt++
+    ) {
+
+        const {
+            data,
+            error
+        } = await supabaseClient
+            .from("profiles")
+            .select("*")
+            .eq(
+                "id",
+                currentUser.id
+            )
+            .maybeSingle();
+
+
+        if (
+            !error &&
+            data
+        ) {
+
+            currentProfile =
+                data;
+
+            return;
+
+        }
+
+
+        await sleep(500);
+
+    }
 
 }
 
 
-/* =========================================
+
+/* =====================================================
    LOAD USER
-========================================= */
+===================================================== */
 
 async function loadUser() {
 
@@ -395,7 +914,9 @@ async function loadUser() {
             data: {
                 user
             }
-        } = await supabaseClient.auth.getUser();
+        } =
+            await supabaseClient.auth
+                .getUser();
 
 
         if (!user) {
@@ -407,27 +928,28 @@ async function loadUser() {
         }
 
 
-        currentUser = user;
+        currentUser =
+            user;
 
 
-        /* =====================================
-           LOAD PROFILE
-        ===================================== */
-
-        let {
+        const {
             data: profile,
             error
-        } = await supabaseClient
-            .from("profiles")
-            .select("*")
-            .eq("id", user.id)
-            .maybeSingle();
+        } =
+            await supabaseClient
+                .from("profiles")
+                .select("*")
+                .eq(
+                    "id",
+                    user.id
+                )
+                .maybeSingle();
 
 
         if (error) {
 
             console.error(
-                "Profile loading error:",
+                "Profile error:",
                 error
             );
 
@@ -441,60 +963,23 @@ async function loadUser() {
         }
 
 
-        /* =====================================
-           PROFILE MAY TAKE A MOMENT TO APPEAR
-           AFTER AUTH TRIGGER
-        ===================================== */
-
         if (!profile) {
 
-            for (let i = 0; i < 5; i++) {
-
-                await sleep(500);
+            await waitForProfile();
 
 
-                const result =
-                    await supabaseClient
-                        .from("profiles")
-                        .select("*")
-                        .eq("id", user.id)
-                        .maybeSingle();
+        } else {
 
-
-                if (result.error) {
-
-                    console.error(
-                        result.error
-                    );
-
-                    break;
-
-                }
-
-
-                if (result.data) {
-
-                    profile =
-                        result.data;
-
-                    break;
-
-                }
-
-            }
+            currentProfile =
+                profile;
 
         }
 
 
-        if (!profile) {
-
-            console.error(
-                "Profile does not exist for user:",
-                user.id
-            );
+        if (!currentProfile) {
 
             showAuthMessage(
-                "Your account was created, but your profile could not be found.",
+                "Your account exists, but your ConnectX profile could not be created.",
                 true
             );
 
@@ -502,13 +987,6 @@ async function loadUser() {
 
         }
 
-
-        currentProfile = profile;
-
-
-        /* =====================================
-           SHOW APP
-        ===================================== */
 
         showApp();
 
@@ -526,7 +1004,7 @@ async function loadUser() {
     } catch (error) {
 
         console.error(
-            "loadUser error:",
+            "Load user error:",
             error
         );
 
@@ -535,80 +1013,65 @@ async function loadUser() {
 }
 
 
-/* =========================================
+
+/* =====================================================
    SHOW AUTH
-========================================= */
+===================================================== */
 
 function showAuth() {
 
-    if (authScreen) {
-        authScreen.style.display = "flex";
-    }
+    authScreen.style.display =
+        "flex";
 
-    if (app) {
-        app.style.display = "none";
-    }
+    app.style.display =
+        "none";
 
 }
 
 
-/* =========================================
+
+/* =====================================================
    SHOW APP
-========================================= */
+===================================================== */
 
 function showApp() {
 
-    if (authScreen) {
-        authScreen.style.display = "none";
-    }
+    authScreen.style.display =
+        "none";
 
-    if (app) {
-        app.style.display = "grid";
-    }
+    app.style.display =
+        "grid";
 
 }
 
 
-/* =========================================
+
+/* =====================================================
    LOGOUT
-========================================= */
+===================================================== */
 
-if (logoutButton) {
+logoutButton.addEventListener(
+    "click",
+    async () => {
 
-    logoutButton.addEventListener(
-        "click",
-        async () => {
+        await supabaseClient.auth.signOut();
 
-            try {
+        currentUser =
+            null;
 
-                await supabaseClient.auth.signOut();
+        currentProfile =
+            null;
 
-            } catch (error) {
+        showAuth();
 
-                console.error(
-                    "Logout error:",
-                    error
-                );
-
-            }
+    }
+);
 
 
-            currentUser = null;
 
-            currentProfile = null;
-
-
-            showAuth();
-
-        }
-    );
-
-}
-
-
-/* =========================================
+/* =====================================================
    UPDATE PROFILE UI
-========================================= */
+===================================================== */
 
 function updateProfileUI() {
 
@@ -627,133 +1090,77 @@ function updateProfileUI() {
         "user";
 
 
-    /* Sidebar */
-
-    const sidebarName =
-        document.getElementById(
-            "sidebarName"
-        );
-
-
-    if (sidebarName) {
-        sidebarName.textContent = name;
-    }
-
-
-    const sidebarUsername =
-        document.getElementById(
-            "sidebarUsername"
-        );
-
-
-    if (sidebarUsername) {
-
-        sidebarUsername.textContent =
-            "@" + username;
-
-    }
-
-
-    /* Profile */
-
-    const profileName =
-        document.getElementById(
-            "profileName"
-        );
-
-
-    if (profileName) {
-        profileName.textContent = name;
-    }
-
-
-    const profileUsername =
-        document.getElementById(
-            "profileUsername"
-        );
-
-
-    if (profileUsername) {
-
-        profileUsername.textContent =
-            "@" + username;
-
-    }
-
-
-    const profileBio =
-        document.getElementById(
-            "profileBio"
-        );
-
-
-    if (profileBio) {
-
-        profileBio.textContent =
-            currentProfile.bio ||
-            "Welcome to ConnectX!";
-
-    }
-
-
-    /* Avatar */
-
-    const letter =
+    const avatarLetter =
         name
             .charAt(0)
             .toUpperCase();
 
 
-    const sidebarAvatar =
-        document.getElementById(
-            "sidebarAvatar"
-        );
+    document.getElementById(
+        "sidebarName"
+    ).textContent =
+        name;
 
 
-    if (sidebarAvatar) {
-        sidebarAvatar.textContent = letter;
-    }
+    document.getElementById(
+        "sidebarUsername"
+    ).textContent =
+        "@" + username;
 
 
-    const composerAvatar =
-        document.getElementById(
-            "composerAvatar"
-        );
+    document.getElementById(
+        "profileName"
+    ).textContent =
+        name;
 
 
-    if (composerAvatar) {
-        composerAvatar.textContent = letter;
-    }
+    document.getElementById(
+        "profileUsername"
+    ).textContent =
+        "@" + username;
 
 
-    const profileAvatar =
-        document.getElementById(
-            "profileAvatar"
-        );
+    document.getElementById(
+        "profileBio"
+    ).textContent =
+        currentProfile.bio ||
+        "Welcome to ConnectX!";
 
 
-    if (profileAvatar) {
-        profileAvatar.textContent = letter;
-    }
+    document.getElementById(
+        "sidebarAvatar"
+    ).textContent =
+        avatarLetter;
+
+
+    document.getElementById(
+        "composerAvatar"
+    ).textContent =
+        avatarLetter;
+
+
+    document.getElementById(
+        "profileAvatar"
+    ).textContent =
+        avatarLetter;
 
 }
 
 
-/* =========================================
+
+/* =====================================================
    CREATE POST
-========================================= */
+===================================================== */
 
 const postInput =
     document.getElementById(
         "postInput"
     );
 
-
 const postButton =
     document.getElementById(
         "postButton"
     );
-
 
 const characterCount =
     document.getElementById(
@@ -761,42 +1168,26 @@ const characterCount =
     );
 
 
-if (postInput) {
+postInput.addEventListener(
+    "input",
+    () => {
 
-    postInput.addEventListener(
-        "input",
-        () => {
+        characterCount.textContent =
+            `${postInput.value.length}/280`;
 
-            if (characterCount) {
-
-                characterCount.textContent =
-                    `${postInput.value.length}/280`;
-
-            }
-
-        }
-    );
-
-}
+    }
+);
 
 
-if (postButton) {
-
-    postButton.addEventListener(
-        "click",
-        createPost
-    );
-
-}
+postButton.addEventListener(
+    "click",
+    createPost
+);
 
 
 async function createPost() {
 
     if (!currentUser) {
-
-        alert(
-            "You must be logged in to post."
-        );
 
         return;
 
@@ -808,22 +1199,14 @@ async function createPost() {
 
 
     if (!content) {
-        return;
-    }
-
-
-    if (content.length > 280) {
-
-        alert(
-            "Your post is too long."
-        );
 
         return;
 
     }
 
 
-    postButton.disabled = true;
+    postButton.disabled =
+        true;
 
     postButton.textContent =
         "Posting...";
@@ -833,33 +1216,32 @@ async function createPost() {
 
         const {
             error
-        } = await supabaseClient
-            .from("posts")
-            .insert({
+        } =
+            await supabaseClient
+                .from("posts")
+                .insert({
 
-                user_id:
-                    currentUser.id,
+                    user_id:
+                        currentUser.id,
 
-                content:
-                    content
+                    content:
+                        content
 
-            });
+                });
 
 
         if (error) {
+
             throw error;
-        }
-
-
-        postInput.value = "";
-
-
-        if (characterCount) {
-
-            characterCount.textContent =
-                "0/280";
 
         }
+
+
+        postInput.value =
+            "";
+
+        characterCount.textContent =
+            "0/280";
 
 
         await loadFeed();
@@ -876,14 +1258,15 @@ async function createPost() {
 
 
         alert(
-            error?.message ||
+            error.message ||
             "Could not create post."
         );
 
     }
 
 
-    postButton.disabled = false;
+    postButton.disabled =
+        false;
 
     postButton.textContent =
         "Post";
@@ -891,9 +1274,10 @@ async function createPost() {
 }
 
 
-/* =========================================
+
+/* =====================================================
    LOAD FEED
-========================================= */
+===================================================== */
 
 async function loadFeed() {
 
@@ -919,31 +1303,37 @@ async function loadFeed() {
         const {
             data,
             error
-        } = await supabaseClient
-            .from("posts")
-            .select(`
-                id,
-                content,
-                created_at,
-                profiles (
-                    display_name,
-                    username
-                )
-            `)
-            .order(
-                "created_at",
-                {
-                    ascending: false
-                }
-            );
+        } =
+            await supabaseClient
+                .from("posts")
+                .select(`
+                    id,
+                    content,
+                    created_at,
+                    profiles (
+                        display_name,
+                        username
+                    )
+                `)
+                .order(
+                    "created_at",
+                    {
+                        ascending: false
+                    }
+                );
 
 
         if (error) {
+
             throw error;
+
         }
 
 
-        if (!data || data.length === 0) {
+        if (
+            !data ||
+            data.length === 0
+        ) {
 
             feed.innerHTML =
                 `<div class="empty">
@@ -955,77 +1345,88 @@ async function loadFeed() {
         }
 
 
-        feed.innerHTML = "";
+        feed.innerHTML =
+            "";
 
 
-        data.forEach(post => {
+        data.forEach(
+            post => {
 
-            const profile =
-                post.profiles;
-
-
-            const name =
-                profile?.display_name ||
-                "User";
+                const profile =
+                    post.profiles;
 
 
-            const username =
-                profile?.username ||
-                "user";
+                const name =
+                    profile?.display_name ||
+                    "User";
 
 
-            const article =
-                document.createElement(
-                    "article"
-                );
+                const username =
+                    profile?.username ||
+                    "user";
 
 
-            article.className =
-                "post";
+                const article =
+                    document.createElement(
+                        "article"
+                    );
 
 
-            article.innerHTML = `
+                article.className =
+                    "post";
 
-                <div class="post-avatar avatar">
-                    ${escapeHTML(
-                        name.charAt(0).toUpperCase()
-                    )}
-                </div>
 
-                <div class="post-content">
+                article.innerHTML = `
 
-                    <div class="post-header">
+                    <div class="post-avatar avatar">
 
-                        <strong>
-                            ${escapeHTML(name)}
-                        </strong>
-
-                        <span>
-                            @${escapeHTML(username)}
-                        </span>
-
-                        <time>
-                            ${formatDate(
-                                post.created_at
-                            )}
-                        </time>
+                        ${escapeHTML(
+                            name
+                                .charAt(0)
+                                .toUpperCase()
+                        )}
 
                     </div>
 
-                    <p>
-                        ${escapeHTML(
-                            post.content
-                        )}
-                    </p>
 
-                </div>
+                    <div class="post-content">
 
-            `;
+                        <div class="post-header">
+
+                            <strong>
+                                ${escapeHTML(name)}
+                            </strong>
+
+                            <span>
+                                @${escapeHTML(username)}
+                            </span>
+
+                            <time>
+                                ${formatDate(
+                                    post.created_at
+                                )}
+                            </time>
+
+                        </div>
 
 
-            feed.appendChild(article);
+                        <p>
+                            ${escapeHTML(
+                                post.content
+                            )}
+                        </p>
 
-        });
+                    </div>
+
+                `;
+
+
+                feed.appendChild(
+                    article
+                );
+
+            }
+        );
 
 
     } catch (error) {
@@ -1046,14 +1447,20 @@ async function loadFeed() {
 }
 
 
-/* =========================================
-   LOAD PROFILE POSTS
-========================================= */
+
+/* =====================================================
+   PROFILE POSTS
+===================================================== */
 
 async function loadProfilePosts() {
 
-    if (!currentUser || !currentProfile) {
+    if (
+        !currentUser ||
+        !currentProfile
+    ) {
+
         return;
+
     }
 
 
@@ -1063,54 +1470,48 @@ async function loadProfilePosts() {
         );
 
 
-    if (!container) {
-        return;
-    }
-
-
     try {
 
         const {
             data,
             error
-        } = await supabaseClient
-            .from("posts")
-            .select("*")
-            .eq(
-                "user_id",
-                currentUser.id
-            )
-            .order(
-                "created_at",
-                {
-                    ascending: false
-                }
-            );
+        } =
+            await supabaseClient
+                .from("posts")
+                .select("*")
+                .eq(
+                    "user_id",
+                    currentUser.id
+                )
+                .order(
+                    "created_at",
+                    {
+                        ascending: false
+                    }
+                );
 
 
         if (error) {
+
             throw error;
-        }
-
-
-        container.innerHTML = "";
-
-
-        const postCount =
-            document.getElementById(
-                "postCount"
-            );
-
-
-        if (postCount) {
-
-            postCount.textContent =
-                data?.length || 0;
 
         }
 
 
-        if (!data || data.length === 0) {
+        container.innerHTML =
+            "";
+
+
+        document.getElementById(
+            "postCount"
+        ).textContent =
+            data?.length || 0;
+
+
+        if (
+            !data ||
+            data.length === 0
+        ) {
 
             container.innerHTML =
                 `<div class="empty">
@@ -1122,75 +1523,85 @@ async function loadProfilePosts() {
         }
 
 
-        data.forEach(post => {
+        data.forEach(
+            post => {
 
-            const element =
-                document.createElement(
-                    "article"
-                );
-
-
-            element.className =
-                "post";
+                const element =
+                    document.createElement(
+                        "article"
+                    );
 
 
-            element.innerHTML = `
+                element.className =
+                    "post";
 
-                <div class="post-avatar avatar">
-                    ${escapeHTML(
-                        currentProfile
-                            .display_name
-                            .charAt(0)
-                            .toUpperCase()
-                    )}
-                </div>
 
-                <div class="post-content">
+                element.innerHTML = `
 
-                    <div class="post-header">
+                    <div class="post-avatar avatar">
 
-                        <strong>
-                            ${escapeHTML(
-                                currentProfile
-                                    .display_name
-                            )}
-                        </strong>
-
-                        <span>
-                            @${escapeHTML(
-                                currentProfile
-                                    .username
-                            )}
-                        </span>
-
-                        <time>
-                            ${formatDate(
-                                post.created_at
-                            )}
-                        </time>
+                        ${escapeHTML(
+                            currentProfile
+                                .display_name
+                                .charAt(0)
+                                .toUpperCase()
+                        )}
 
                     </div>
 
-                    <p>
-                        ${escapeHTML(
-                            post.content
-                        )}
-                    </p>
 
-                </div>
+                    <div class="post-content">
 
-            `;
+                        <div class="post-header">
+
+                            <strong>
+                                ${escapeHTML(
+                                    currentProfile
+                                        .display_name
+                                )}
+                            </strong>
 
 
-            container.appendChild(element);
+                            <span>
+                                @${escapeHTML(
+                                    currentProfile
+                                        .username
+                                )}
+                            </span>
 
-        });
+
+                            <time>
+                                ${formatDate(
+                                    post.created_at
+                                )}
+                            </time>
+
+                        </div>
+
+
+                        <p>
+                            ${escapeHTML(
+                                post.content
+                            )}
+                        </p>
+
+                    </div>
+
+                `;
+
+
+                container.appendChild(
+                    element
+                );
+
+            }
+        );
 
 
     } catch (error) {
 
         console.error(
-            "Profile posts error:",
+            "Profile posts:",
             error
         );
 
@@ -1199,157 +1610,142 @@ async function loadProfilePosts() {
 }
 
 
-/* =========================================
+
+/* =====================================================
    NAVIGATION
-========================================= */
+===================================================== */
 
 document
-    .querySelectorAll("[data-page]")
-    .forEach(button => {
+    .querySelectorAll(
+        "[data-page]"
+    )
+    .forEach(
+        button => {
 
-        button.addEventListener(
-            "click",
-            () => {
+            button.addEventListener(
+                "click",
+                () => {
 
-                const page =
-                    button.dataset.page;
+                    const page =
+                        button.dataset.page;
 
 
-                document
-                    .querySelectorAll(".page")
-                    .forEach(section => {
+                    document
+                        .querySelectorAll(
+                            ".page"
+                        )
+                        .forEach(
+                            section => {
 
-                        section.classList.remove(
+                                section.classList
+                                    .remove(
+                                        "active"
+                                    );
+
+                            }
+                        );
+
+
+                    const target =
+                        document.getElementById(
+                            page + "Page"
+                        );
+
+
+                    if (target) {
+
+                        target.classList.add(
                             "active"
                         );
 
-                    });
+                    }
 
 
-                const target =
-                    document.getElementById(
-                        page + "Page"
-                    );
+                    document
+                        .querySelectorAll(
+                            ".nav"
+                        )
+                        .forEach(
+                            nav => {
+
+                                nav.classList
+                                    .remove(
+                                        "active"
+                                    );
+
+                            }
+                        );
 
 
-                if (target) {
+                    document
+                        .querySelectorAll(
+                            `.nav[data-page="${page}"]`
+                        )
+                        .forEach(
+                            nav => {
 
-                    target.classList.add(
-                        "active"
-                    );
+                                nav.classList.add(
+                                    "active"
+                                );
+
+                            }
+                        );
 
                 }
+            );
+
+        }
+    );
 
 
-                document
-                    .querySelectorAll(".nav")
-                    .forEach(nav => {
 
-                        nav.classList.remove(
-                            "active"
-                        );
+/* =====================================================
+   POST BUTTONS
+===================================================== */
 
-                    });
-
-
-                document
-                    .querySelectorAll(
-                        `.nav[data-page="${page}"]`
-                    )
-                    .forEach(nav => {
-
-                        nav.classList.add(
-                            "active"
-                        );
-
-                    });
-
-            }
-
-        );
-
-    });
-
-
-/* =========================================
-   SIDEBAR POST BUTTON
-========================================= */
-
-const sidebarPostButton =
-    document.getElementById(
+document
+    .getElementById(
         "sidebarPostButton"
-    );
-
-
-if (sidebarPostButton) {
-
-    sidebarPostButton.addEventListener(
+    )
+    .addEventListener(
         "click",
         () => {
 
-            if (postInput) {
-
-                postInput.focus();
-
-                postInput.scrollIntoView({
-                    behavior: "smooth",
-                    block: "center"
-                });
-
-            }
+            postInput.focus();
 
         }
     );
 
-}
 
-
-/* =========================================
-   MOBILE POST BUTTON
-========================================= */
-
-const mobilePost =
-    document.getElementById(
+document
+    .getElementById(
         "mobilePost"
-    );
-
-
-if (mobilePost) {
-
-    mobilePost.addEventListener(
+    )
+    .addEventListener(
         "click",
         () => {
 
-            if (postInput) {
+            postInput.focus();
 
-                postInput.focus();
-
-                postInput.scrollIntoView({
-                    behavior: "smooth",
-                    block: "center"
-                });
-
-            }
+            postInput.scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+            });
 
         }
     );
 
-}
 
 
-/* =========================================
+/* =====================================================
    DARK MODE
-========================================= */
+===================================================== */
 
-const darkModeButton =
-    document.getElementById(
+document
+    .getElementById(
         "darkModeButton"
-    );
-
-
-if (darkModeButton) {
-
-    darkModeButton.addEventListener(
+    )
+    .addEventListener(
         "click",
         () => {
 
@@ -1368,8 +1764,6 @@ if (darkModeButton) {
         }
     );
 
-}
-
 
 if (
     localStorage.getItem(
@@ -1384,9 +1778,10 @@ if (
 }
 
 
-/* =========================================
+
+/* =====================================================
    SEARCH
-========================================= */
+===================================================== */
 
 const searchInput =
     document.getElementById(
@@ -1394,44 +1789,39 @@ const searchInput =
     );
 
 
-if (searchInput) {
+searchInput.addEventListener(
+    "input",
+    async () => {
 
-    searchInput.addEventListener(
-        "input",
-        async () => {
-
-            const query =
-                searchInput.value
-                    .trim()
-                    .toLowerCase();
+        const query =
+            searchInput.value
+                .trim()
+                .toLowerCase();
 
 
-            const results =
-                document.getElementById(
-                    "searchResults"
-                );
+        const results =
+            document.getElementById(
+                "searchResults"
+            );
 
 
-            if (!results) {
-                return;
-            }
+        if (!query) {
+
+            results.innerHTML =
+                "";
+
+            return;
+
+        }
 
 
-            if (!query) {
+        try {
 
-                results.innerHTML = "";
-
-                return;
-
-            }
-
-
-            try {
-
-                const {
-                    data,
-                    error
-                } = await supabaseClient
+            const {
+                data,
+                error
+            } =
+                await supabaseClient
                     .from("profiles")
                     .select(
                         "display_name, username"
@@ -1442,27 +1832,19 @@ if (searchInput) {
                     .limit(20);
 
 
-                if (error) {
-                    throw error;
-                }
+            if (error) {
+
+                throw error;
+
+            }
 
 
-                results.innerHTML = "";
+            results.innerHTML =
+                "";
 
 
-                if (!data || data.length === 0) {
-
-                    results.innerHTML =
-                        `<div class="empty">
-                            No users found.
-                        </div>`;
-
-                    return;
-
-                }
-
-
-                data.forEach(profile => {
+            data.forEach(
+                profile => {
 
                     const div =
                         document.createElement(
@@ -1482,12 +1864,15 @@ if (searchInput) {
                     div.innerHTML = `
 
                         <div class="avatar">
+
                             ${escapeHTML(
                                 name
                                     .charAt(0)
                                     .toUpperCase()
                             )}
+
                         </div>
+
 
                         <div>
 
@@ -1506,109 +1891,31 @@ if (searchInput) {
                     `;
 
 
-                    results.appendChild(div);
+                    results.appendChild(
+                        div
+                    );
 
-                });
+                }
+            );
 
 
-            } catch (error) {
+        } catch (error) {
 
-                console.error(
-                    "Search error:",
-                    error
-                );
-
-            }
+            console.error(
+                "Search error:",
+                error
+            );
 
         }
-    );
 
-}
-
-
-/* =========================================
-   RIGHT SIDEBAR SEARCH
-========================================= */
-
-const rightSearch =
-    document.getElementById(
-        "rightSearch"
-    );
+    }
+);
 
 
-if (rightSearch) {
 
-    rightSearch.addEventListener(
-        "keydown",
-        event => {
-
-            if (event.key === "Enter") {
-
-                const query =
-                    rightSearch.value.trim();
-
-
-                if (!query) {
-                    return;
-                }
-
-
-                /* Switch to Explore */
-
-                document
-                    .querySelectorAll(".page")
-                    .forEach(page => {
-
-                        page.classList.remove(
-                            "active"
-                        );
-
-                    });
-
-
-                const explore =
-                    document.getElementById(
-                        "explorePage"
-                    );
-
-
-                if (explore) {
-
-                    explore.classList.add(
-                        "active"
-                    );
-
-                }
-
-
-                const exploreSearch =
-                    document.getElementById(
-                        "searchInput"
-                    );
-
-
-                if (exploreSearch) {
-
-                    exploreSearch.value =
-                        query;
-
-                    exploreSearch.dispatchEvent(
-                        new Event("input")
-                    );
-
-                }
-
-            }
-
-        }
-    );
-
-}
-
-
-/* =========================================
-   LOAD SUGGESTIONS
-========================================= */
+/* =====================================================
+   SUGGESTIONS
+===================================================== */
 
 async function loadSuggestions() {
 
@@ -1618,8 +1925,13 @@ async function loadSuggestions() {
         );
 
 
-    if (!container || !currentUser) {
+    if (
+        !container ||
+        !currentUser
+    ) {
+
         return;
+
     }
 
 
@@ -1628,91 +1940,90 @@ async function loadSuggestions() {
         const {
             data,
             error
-        } = await supabaseClient
-            .from("profiles")
-            .select(
-                "id, display_name, username"
-            )
-            .neq(
-                "id",
-                currentUser.id
-            )
-            .limit(5);
+        } =
+            await supabaseClient
+                .from("profiles")
+                .select(
+                    "id, display_name, username"
+                )
+                .neq(
+                    "id",
+                    currentUser.id
+                )
+                .limit(5);
 
 
         if (error) {
+
             throw error;
-        }
-
-
-        container.innerHTML = "";
-
-
-        if (!data || data.length === 0) {
-
-            container.innerHTML =
-                `<p class="muted">
-                    No suggestions yet.
-                </p>`;
-
-            return;
 
         }
 
 
-        data.forEach(profile => {
+        container.innerHTML =
+            "";
 
-            const div =
-                document.createElement(
-                    "div"
+
+        data.forEach(
+            profile => {
+
+                const div =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                div.className =
+                    "suggestion";
+
+
+                const name =
+                    profile.display_name ||
+                    "User";
+
+
+                div.innerHTML = `
+
+                    <div class="avatar">
+
+                        ${escapeHTML(
+                            name
+                                .charAt(0)
+                                .toUpperCase()
+                        )}
+
+                    </div>
+
+
+                    <div>
+
+                        <strong>
+                            ${escapeHTML(name)}
+                        </strong>
+
+                        <small>
+                            @${escapeHTML(
+                                profile.username
+                            )}
+                        </small>
+
+                    </div>
+
+                `;
+
+
+                container.appendChild(
+                    div
                 );
 
-
-            div.className =
-                "suggestion";
-
-
-            const name =
-                profile.display_name ||
-                "User";
-
-
-            div.innerHTML = `
-
-                <div class="avatar">
-                    ${escapeHTML(
-                        name
-                            .charAt(0)
-                            .toUpperCase()
-                    )}
-                </div>
-
-                <div>
-
-                    <strong>
-                        ${escapeHTML(name)}
-                    </strong>
-
-                    <small>
-                        @${escapeHTML(
-                            profile.username
-                        )}
-                    </small>
-
-                </div>
-
-            `;
-
-
-            container.appendChild(div);
-
-        });
+            }
+        );
 
 
     } catch (error) {
 
         console.error(
-            "Suggestions error:",
+            "Suggestions:",
             error
         );
 
@@ -1721,12 +2032,16 @@ async function loadSuggestions() {
 }
 
 
-/* =========================================
+
+/* =====================================================
    AUTH STATE
-========================================= */
+===================================================== */
 
 supabaseClient.auth.onAuthStateChange(
-    async (event, session) => {
+    async (
+        event,
+        session
+    ) => {
 
         console.log(
             "Auth event:",
@@ -1739,13 +2054,17 @@ supabaseClient.auth.onAuthStateChange(
             currentUser =
                 session.user;
 
+
             await loadUser();
 
         } else {
 
-            currentUser = null;
+            currentUser =
+                null;
 
-            currentProfile = null;
+            currentProfile =
+                null;
+
 
             showAuth();
 
@@ -1755,11 +2074,14 @@ supabaseClient.auth.onAuthStateChange(
 );
 
 
-/* =========================================
-   HELPERS
-========================================= */
 
-function escapeHTML(value) {
+/* =====================================================
+   HELPERS
+===================================================== */
+
+function escapeHTML(
+    value
+) {
 
     const div =
         document.createElement(
@@ -1776,14 +2098,23 @@ function escapeHTML(value) {
 }
 
 
-function formatDate(date) {
+
+function formatDate(
+    date
+) {
 
     const d =
         new Date(date);
 
 
-    if (Number.isNaN(d.getTime())) {
+    if (
+        Number.isNaN(
+            d.getTime()
+        )
+    ) {
+
         return "";
+
     }
 
 
@@ -1800,21 +2131,26 @@ function formatDate(date) {
 }
 
 
-function sleep(ms) {
+
+function sleep(
+    milliseconds
+) {
 
     return new Promise(
-        resolve => setTimeout(
-            resolve,
-            ms
-        )
+        resolve =>
+            setTimeout(
+                resolve,
+                milliseconds
+            )
     );
 
 }
 
 
-/* =========================================
-   START CONNECTX
-========================================= */
+
+/* =====================================================
+   START
+===================================================== */
 
 async function startApp() {
 
@@ -1823,13 +2159,15 @@ async function startApp() {
         const {
             data,
             error
-        } = await supabaseClient.auth.getSession();
+        } =
+            await supabaseClient.auth
+                .getSession();
 
 
         if (error) {
 
             console.error(
-                "Session error:",
+                "Session:",
                 error
             );
 
@@ -1845,6 +2183,7 @@ async function startApp() {
             currentUser =
                 data.session.user;
 
+
             await loadUser();
 
         } else {
@@ -1853,12 +2192,14 @@ async function startApp() {
 
         }
 
+
     } catch (error) {
 
         console.error(
-            "Startup error:",
+            "Startup:",
             error
         );
+
 
         showAuth();
 
