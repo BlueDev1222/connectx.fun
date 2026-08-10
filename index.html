@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 
     <meta charset="UTF-8">
@@ -17,75 +16,64 @@
         content="ConnectX - Connect with everyone."
     >
 
-    <!-- =====================================================
-         BROWSER TAB ICON
-    ====================================================== -->
-
+    <!-- ConnectX browser tab icon -->
     <link
         rel="icon"
         type="image/png"
-        sizes="100x100"
+        href="Connectx App Logo.png"
+    >
+
+    <link
+        rel="shortcut icon"
+        type="image/png"
         href="Connectx App Logo.png"
     >
 
     <link
         rel="apple-touch-icon"
-        sizes="100x100"
         href="Connectx App Logo.png"
     >
-
-
-    <!-- =====================================================
-         CONNECTX STYLES
-    ====================================================== -->
 
     <link
         rel="stylesheet"
         href="style.css"
     >
 
-</head>
+    <!-- Supabase -->
+    <script
+        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+    ></script>
 
+</head>
 
 <body>
 
-
     <!-- =====================================================
-         AUTHENTICATION SCREEN
+         AUTH SCREEN
     ====================================================== -->
 
     <div id="authScreen">
 
         <div class="auth-card">
 
-
-            <!-- CONNECTX LOGO -->
-
             <img
                 src="Connectx App Logo.png"
-                alt="ConnectX Logo"
-                class="logo-image"
-                width="100"
-                height="100"
+                class="auth-logo"
+                alt="ConnectX"
             >
-
 
             <h1>
                 ConnectX
             </h1>
-
 
             <p class="subtitle">
                 Connect with everyone.
             </p>
 
 
-            <!-- =================================================
-                 LOGIN
-            ================================================== -->
+            <!-- LOGIN -->
 
             <form id="loginForm">
-
 
                 <input
                     id="loginEmail"
@@ -95,7 +83,6 @@
                     required
                 >
 
-
                 <input
                     id="loginPassword"
                     type="password"
@@ -104,24 +91,19 @@
                     required
                 >
 
-
                 <button type="submit">
                     Log in
                 </button>
 
-
             </form>
 
 
-            <!-- =================================================
-                 REGISTER
-            ================================================== -->
+            <!-- REGISTER -->
 
             <form
                 id="registerForm"
                 style="display:none;"
             >
-
 
                 <input
                     id="registerName"
@@ -132,7 +114,6 @@
                     required
                 >
 
-
                 <input
                     id="registerUsername"
                     type="text"
@@ -142,7 +123,6 @@
                     required
                 >
 
-
                 <input
                     id="registerEmail"
                     type="email"
@@ -150,7 +130,6 @@
                     autocomplete="email"
                     required
                 >
-
 
                 <input
                     id="registerPassword"
@@ -161,28 +140,18 @@
                     required
                 >
 
-
                 <button type="submit">
                     Create account
                 </button>
 
-
             </form>
 
-
-            <!-- =================================================
-                 AUTH MESSAGE
-            ================================================== -->
 
             <div
                 id="authMessage"
                 class="auth-message"
             ></div>
 
-
-            <!-- =================================================
-                 SWITCH LOGIN / REGISTER
-            ================================================== -->
 
             <button
                 id="switchAuth"
@@ -192,11 +161,9 @@
                 Create an account
             </button>
 
-
         </div>
 
     </div>
-
 
 
     <!-- =====================================================
@@ -208,7 +175,6 @@
         style="display:none;"
     >
 
-
         <div class="layout">
 
 
@@ -218,31 +184,20 @@
 
             <aside class="sidebar">
 
-
-                <!-- CONNECTX BRAND -->
-
                 <div class="brand">
-
 
                     <img
                         src="Connectx App Logo.png"
+                        class="brand-icon"
                         alt="ConnectX"
-                        class="brand-logo"
-                        width="42"
-                        height="42"
                     >
-
 
                     <span>
                         ConnectX
                     </span>
 
-
                 </div>
 
-
-
-                <!-- HOME -->
 
                 <button
                     class="nav active"
@@ -254,9 +209,6 @@
                 </button>
 
 
-
-                <!-- EXPLORE -->
-
                 <button
                     class="nav"
                     data-page="explore"
@@ -266,9 +218,6 @@
                     Explore
                 </button>
 
-
-
-                <!-- NOTIFICATIONS -->
 
                 <button
                     class="nav"
@@ -280,9 +229,6 @@
                 </button>
 
 
-
-                <!-- PROFILE -->
-
                 <button
                     class="nav"
                     data-page="profile"
@@ -292,9 +238,6 @@
                     Profile
                 </button>
 
-
-
-                <!-- LOG OUT -->
 
                 <button
                     id="logoutButton"
@@ -306,9 +249,6 @@
                 </button>
 
 
-
-                <!-- DARK MODE -->
-
                 <button
                     id="darkModeButton"
                     class="nav"
@@ -319,9 +259,6 @@
                 </button>
 
 
-
-                <!-- POST -->
-
                 <button
                     id="sidebarPostButton"
                     class="post-button"
@@ -331,11 +268,7 @@
                 </button>
 
 
-
-                <!-- ACCOUNT -->
-
                 <div class="account">
-
 
                     <div
                         id="sidebarAvatar"
@@ -344,27 +277,21 @@
                         U
                     </div>
 
-
                     <div>
 
                         <strong id="sidebarName">
                             User
                         </strong>
 
-
                         <small id="sidebarUsername">
                             @user
                         </small>
 
-
                     </div>
-
 
                 </div>
 
-
             </aside>
-
 
 
             <!-- =================================================
@@ -383,17 +310,14 @@
                     class="page active"
                 >
 
-
                     <header>
                         Home
                     </header>
 
 
-
                     <!-- POST COMPOSER -->
 
                     <div class="composer">
-
 
                         <div
                             id="composerAvatar"
@@ -402,9 +326,7 @@
                             U
                         </div>
 
-
                         <div class="composer-body">
-
 
                             <textarea
                                 id="postInput"
@@ -412,14 +334,11 @@
                                 placeholder="What's happening?"
                             ></textarea>
 
-
                             <div class="composer-bottom">
-
 
                                 <span id="characterCount">
                                     0/280
                                 </span>
-
 
                                 <button
                                     id="postButton"
@@ -428,24 +347,24 @@
                                     Post
                                 </button>
 
-
                             </div>
 
-
                         </div>
-
 
                     </div>
 
 
-
                     <!-- FEED -->
 
-                    <div id="feed"></div>
+                    <div id="feed">
 
+                        <div class="empty">
+                            Loading posts...
+                        </div>
+
+                    </div>
 
                 </section>
-
 
 
                 <!-- =================================================
@@ -457,7 +376,6 @@
                     class="page"
                 >
 
-
                     <header>
                         Explore
                     </header>
@@ -465,28 +383,20 @@
 
                     <div class="search">
 
-
-                        <span>
-                            🔎
-                        </span>
-
+                        🔎
 
                         <input
                             id="searchInput"
                             type="text"
                             placeholder="Search ConnectX"
-                            autocomplete="off"
                         >
-
 
                     </div>
 
 
                     <div id="searchResults"></div>
 
-
                 </section>
-
 
 
                 <!-- =================================================
@@ -498,17 +408,20 @@
                     class="page"
                 >
 
-
                     <header>
                         Notifications
                     </header>
 
 
-                    <div id="notifications"></div>
+                    <div id="notifications">
 
+                        <div class="empty">
+                            Loading notifications...
+                        </div>
+
+                    </div>
 
                 </section>
-
 
 
                 <!-- =================================================
@@ -520,23 +433,15 @@
                     class="page"
                 >
 
-
                     <header>
                         Profile
                     </header>
 
 
-
-                    <!-- COVER -->
-
                     <div class="profile-cover"></div>
 
 
-
                     <div class="profile">
-
-
-                        <!-- PROFILE AVATAR -->
 
                         <div
                             id="profileAvatar"
@@ -546,16 +451,23 @@
                         </div>
 
 
+                        <div class="profile-name-row">
 
-                        <!-- NAME -->
+                            <h2 id="profileName">
+                                User
+                            </h2>
 
-                        <h2 id="profileName">
-                            User
-                        </h2>
+                            <!-- Verification badge -->
+                            <img
+                                id="profileVerifiedBadge"
+                                class="verified-badge"
+                                src="Verified ConnectX.jpg"
+                                alt="Verified"
+                                style="display:none;"
+                            >
 
+                        </div>
 
-
-                        <!-- USERNAME -->
 
                         <p
                             id="profileUsername"
@@ -565,19 +477,12 @@
                         </p>
 
 
-
-                        <!-- BIO -->
-
                         <p id="profileBio">
                             Welcome to ConnectX!
                         </p>
 
 
-
-                        <!-- STATS -->
-
                         <div class="stats">
-
 
                             <span>
 
@@ -611,24 +516,16 @@
 
                             </span>
 
-
                         </div>
-
 
                     </div>
 
 
-
-                    <!-- PROFILE POSTS -->
-
                     <div id="profilePosts"></div>
-
 
                 </section>
 
-
             </main>
-
 
 
             <!-- =================================================
@@ -638,57 +535,39 @@
             <aside class="rightbar">
 
 
-                <!-- SEARCH -->
-
                 <div class="search">
 
-
-                    <span>
-                        🔎
-                    </span>
-
+                    🔎
 
                     <input
                         placeholder="Search"
                         id="rightSearch"
                         type="text"
-                        autocomplete="off"
                     >
-
 
                 </div>
 
 
-
-                <!-- WHO TO FOLLOW -->
-
                 <div class="card">
-
 
                     <h2>
                         Who to follow
                     </h2>
 
-
                     <div id="suggestions"></div>
-
 
                 </div>
 
-
             </aside>
-
 
         </div>
 
 
-
-        <!-- =====================================================
+        <!-- =================================================
              MOBILE NAVIGATION
-        ====================================================== -->
+        ================================================== -->
 
         <nav class="mobile-nav">
-
 
             <button
                 data-page="home"
@@ -734,32 +613,16 @@
                 👤
             </button>
 
-
         </nav>
-
 
     </div>
 
 
-
     <!-- =====================================================
-         SUPABASE
+         APP JAVASCRIPT
     ====================================================== -->
 
-    <script
-        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
-    ></script>
-
-
-    <!-- =====================================================
-         CONNECTX JAVASCRIPT
-    ====================================================== -->
-
-    <script
-        src="app.js"
-    ></script>
-
+    <script src="app.js"></script>
 
 </body>
-
 </html>
