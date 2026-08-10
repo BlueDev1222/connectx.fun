@@ -1,3 +1,7 @@
+/* =========================================================
+   CONNECTX - GLOBAL RESET
+========================================================= */
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -6,13 +10,15 @@
 
 
 /* =========================================================
-   ROOT
+   VARIABLES
 ========================================================= */
 
 :root {
+
     --blue: #1877f2;
 
     --background: #ffffff;
+
     --surface: #ffffff;
 
     --text: #0f1419;
@@ -22,11 +28,18 @@
     --border: #e5e7eb;
 
     --hover: #f5f8fa;
+
 }
 
 
+/* =========================================================
+   DARK MODE
+========================================================= */
+
 body.dark {
+
     --background: #000000;
+
     --surface: #000000;
 
     --text: #f7f9f9;
@@ -36,6 +49,7 @@ body.dark {
     --border: #2f3336;
 
     --hover: #16181c;
+
 }
 
 
@@ -44,6 +58,7 @@ body.dark {
 ========================================================= */
 
 body {
+
     font-family:
         Arial,
         Helvetica,
@@ -56,6 +71,7 @@ body {
         var(--text);
 
     min-height: 100vh;
+
 }
 
 
@@ -64,6 +80,7 @@ body {
 ========================================================= */
 
 #authScreen {
+
     min-height: 100vh;
 
     display: flex;
@@ -86,17 +103,23 @@ body {
             transparent 35%
         ),
         #050b18;
+
 }
 
 
+/* =========================================================
+   AUTH CARD
+========================================================= */
+
 .auth-card {
+
     width: 100%;
 
     max-width: 420px;
 
-    background: white;
+    background: #ffffff;
 
-    color: #111;
+    color: #111111;
 
     padding: 35px;
 
@@ -104,38 +127,78 @@ body {
 
     box-shadow:
         0 25px 70px #0008;
+
 }
 
 
 /* =========================================================
-   CONNECTX LOGO
+   LOGIN LOGO
+   100 x 100
 ========================================================= */
 
 .logo-image {
-    width: 65px;
 
-    height: 65px;
+    width: 100px !important;
 
-    margin: auto;
+    height: 100px !important;
+
+    min-width: 100px;
+
+    min-height: 100px;
+
+    max-width: 100px !important;
+
+    max-height: 100px !important;
+
+    margin:
+        0 auto 15px auto;
 
     display: block;
 
     object-fit: contain;
 
-    border-radius: 18px;
+    object-position: center;
+
+    border-radius: 20px;
+
 }
 
 
-.brand-logo {
-    width: 42px;
+/* =========================================================
+   OLD LOGO SUPPORT
+========================================================= */
 
-    height: 42px;
+.logo {
 
-    border-radius: 12px;
+    width: 100px;
 
-    object-fit: contain;
+    height: 100px;
 
-    flex-shrink: 0;
+    margin:
+        0 auto 15px auto;
+
+    border-radius: 20px;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    color: white;
+
+    font-size: 25px;
+
+    font-weight: 900;
+
+    background:
+        linear-gradient(
+            135deg,
+            #00c6ff,
+            #1877f2,
+            #6f00ff
+        );
+
 }
 
 
@@ -144,20 +207,27 @@ body {
 ========================================================= */
 
 .auth-card h1 {
+
     text-align: center;
 
     margin-top: 15px;
 
-    font-size: 30px;
 }
 
 
+/* =========================================================
+   SUBTITLE
+========================================================= */
+
 .subtitle {
+
     text-align: center;
 
-    color: #666;
+    color: #666666;
 
-    margin: 5px 0 25px;
+    margin:
+        5px 0 25px;
+
 }
 
 
@@ -166,21 +236,28 @@ body {
 ========================================================= */
 
 .auth-card form {
+
     display: flex;
 
     flex-direction: column;
 
     gap: 12px;
+
 }
 
 
+/* =========================================================
+   AUTH INPUTS
+========================================================= */
+
 .auth-card input {
+
     width: 100%;
 
     padding: 13px;
 
     border:
-        1px solid #ddd;
+        1px solid #dddddd;
 
     border-radius: 10px;
 
@@ -188,22 +265,26 @@ body {
 
     font-size: 15px;
 
-    background: #fff;
-
-    color: #111;
 }
 
 
 .auth-card input:focus {
+
     border-color:
         var(--blue);
 
     box-shadow:
         0 0 0 3px #1877f220;
+
 }
 
 
+/* =========================================================
+   AUTH BUTTON
+========================================================= */
+
 .auth-card form button {
+
     border: 0;
 
     padding: 13px;
@@ -219,33 +300,29 @@ body {
 
     cursor: pointer;
 
-    font-size: 15px;
-
     transition:
-        transform 0.15s ease,
-        opacity 0.15s ease;
+        0.2s ease;
+
 }
 
 
 .auth-card form button:hover {
-    opacity: 0.9;
 
     transform:
         translateY(-1px);
-}
 
+    filter:
+        brightness(1.05);
 
-.auth-card form button:active {
-    transform:
-        translateY(0);
 }
 
 
 /* =========================================================
-   SWITCH BUTTON
+   SWITCH AUTH
 ========================================================= */
 
 .switch {
+
     width: 100%;
 
     border: 0;
@@ -259,12 +336,6 @@ body {
 
     cursor: pointer;
 
-    font-size: 14px;
-}
-
-
-.switch:hover {
-    text-decoration: underline;
 }
 
 
@@ -273,15 +344,15 @@ body {
 ========================================================= */
 
 .auth-message {
+
     margin-top: 15px;
 
     text-align: center;
 
-    color: #d00;
+    color: #d00000;
 
     font-size: 14px;
 
-    line-height: 1.4;
 }
 
 
@@ -290,7 +361,9 @@ body {
 ========================================================= */
 
 #app {
+
     min-height: 100vh;
+
 }
 
 
@@ -299,6 +372,7 @@ body {
 ========================================================= */
 
 .layout {
+
     max-width: 1250px;
 
     margin: auto;
@@ -311,14 +385,16 @@ body {
         250px
         minmax(400px, 650px)
         320px;
+
 }
 
 
 /* =========================================================
-   LEFT SIDEBAR
+   SIDEBAR
 ========================================================= */
 
 .sidebar {
+
     border-right:
         1px solid var(--border);
 
@@ -329,6 +405,7 @@ body {
     top: 0;
 
     height: 100vh;
+
 }
 
 
@@ -337,6 +414,7 @@ body {
 ========================================================= */
 
 .brand {
+
     display: flex;
 
     align-items: center;
@@ -350,6 +428,72 @@ body {
     padding: 10px;
 
     margin-bottom: 15px;
+
+}
+
+
+/* =========================================================
+   SIDEBAR CONNECTX LOGO
+   42 x 42
+========================================================= */
+
+.brand-logo {
+
+    width: 42px !important;
+
+    height: 42px !important;
+
+    min-width: 42px !important;
+
+    min-height: 42px !important;
+
+    max-width: 42px !important;
+
+    max-height: 42px !important;
+
+    display: block !important;
+
+    object-fit: contain !important;
+
+    object-position: center;
+
+    border-radius: 12px;
+
+    flex-shrink: 0;
+
+}
+
+
+/* =========================================================
+   OLD BRAND ICON
+========================================================= */
+
+.brand-icon {
+
+    width: 42px;
+
+    height: 42px;
+
+    border-radius: 12px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: white;
+
+    font-weight: 900;
+
+    background:
+        linear-gradient(
+            135deg,
+            #00c6ff,
+            #1877f2,
+            #6f00ff
+        );
+
 }
 
 
@@ -358,6 +502,7 @@ body {
 ========================================================= */
 
 .nav {
+
     width: 100%;
 
     border: 0;
@@ -378,14 +523,17 @@ body {
     cursor: pointer;
 
     transition:
-        background 0.15s ease;
+        0.15s ease;
+
 }
 
 
 .nav:hover,
 .nav.active {
+
     background:
         var(--hover);
+
 }
 
 
@@ -394,6 +542,7 @@ body {
 ========================================================= */
 
 .post-button {
+
     width: 100%;
 
     margin-top: 15px;
@@ -413,17 +562,14 @@ body {
 
     cursor: pointer;
 
-    transition:
-        opacity 0.15s ease,
-        transform 0.15s ease;
 }
 
 
 .post-button:hover {
-    opacity: 0.9;
 
-    transform:
-        translateY(-1px);
+    filter:
+        brightness(1.05);
+
 }
 
 
@@ -432,29 +578,27 @@ body {
 ========================================================= */
 
 .account {
+
     position: absolute;
 
     bottom: 20px;
-
-    left: 15px;
-
-    right: 15px;
 
     display: flex;
 
     align-items: center;
 
     gap: 10px;
+
 }
 
 
 .account small {
+
     display: block;
 
     color:
         var(--muted);
 
-    margin-top: 2px;
 }
 
 
@@ -463,9 +607,18 @@ body {
 ========================================================= */
 
 .avatar {
+
     width: 42px;
 
     height: 42px;
+
+    min-width: 42px;
+
+    min-height: 42px;
+
+    max-width: 42px;
+
+    max-height: 42px;
 
     border-radius: 50%;
 
@@ -488,16 +641,6 @@ body {
             #6f00ff
         );
 
-    overflow: hidden;
-}
-
-
-.avatar img {
-    width: 100%;
-
-    height: 100%;
-
-    object-fit: cover;
 }
 
 
@@ -506,10 +649,10 @@ body {
 ========================================================= */
 
 main {
+
     border-right:
         1px solid var(--border);
 
-    min-width: 0;
 }
 
 
@@ -518,12 +661,16 @@ main {
 ========================================================= */
 
 .page {
+
     display: none;
+
 }
 
 
 .page.active {
+
     display: block;
+
 }
 
 
@@ -532,13 +679,15 @@ main {
 ========================================================= */
 
 header {
+
     position: sticky;
 
     top: 0;
 
     z-index: 5;
 
-    padding: 18px 20px;
+    padding:
+        18px 20px;
 
     font-size: 20px;
 
@@ -556,6 +705,7 @@ header {
 
     backdrop-filter:
         blur(10px);
+
 }
 
 
@@ -564,6 +714,7 @@ header {
 ========================================================= */
 
 .composer {
+
     display: flex;
 
     gap: 12px;
@@ -572,17 +723,19 @@ header {
 
     border-bottom:
         1px solid var(--border);
+
 }
 
 
 .composer-body {
+
     flex: 1;
 
-    min-width: 0;
 }
 
 
 .composer textarea {
+
     width: 100%;
 
     min-height: 80px;
@@ -601,43 +754,40 @@ header {
     font-size: 18px;
 
     font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-}
+        inherit;
 
-
-.composer textarea::placeholder {
-    color:
-        var(--muted);
 }
 
 
 .composer-bottom {
+
     display: flex;
 
     align-items: center;
 
     justify-content: space-between;
 
-    gap: 10px;
 }
 
 
 #characterCount {
+
     color:
         var(--muted);
 
     font-size: 13px;
+
 }
 
 
 #postButton {
+
     border: 0;
 
     border-radius: 25px;
 
-    padding: 9px 20px;
+    padding:
+        9px 20px;
 
     color: white;
 
@@ -647,11 +797,7 @@ header {
     font-weight: 900;
 
     cursor: pointer;
-}
 
-
-#postButton:hover {
-    opacity: 0.9;
 }
 
 
@@ -660,6 +806,7 @@ header {
 ========================================================= */
 
 .post {
+
     display: flex;
 
     gap: 12px;
@@ -668,23 +815,29 @@ header {
 
     border-bottom:
         1px solid var(--border);
+
 }
 
 
 .post:hover {
+
     background:
         rgba(128, 128, 128, 0.03);
+
 }
 
 
 .post-body {
+
     flex: 1;
 
     min-width: 0;
+
 }
 
 
 .post-header {
+
     display: flex;
 
     gap: 5px;
@@ -692,23 +845,27 @@ header {
     align-items: center;
 
     flex-wrap: wrap;
+
 }
 
 
 .post-name {
+
     font-weight: 900;
+
 }
 
 
 .post-user {
+
     color:
         var(--muted);
 
-    font-size: 14px;
 }
 
 
 .post-content {
+
     margin-top: 7px;
 
     white-space: pre-wrap;
@@ -716,6 +873,7 @@ header {
     word-break: break-word;
 
     line-height: 1.5;
+
 }
 
 
@@ -724,6 +882,7 @@ header {
 ========================================================= */
 
 .actions {
+
     display: flex;
 
     justify-content: space-between;
@@ -731,10 +890,12 @@ header {
     margin-top: 12px;
 
     max-width: 450px;
+
 }
 
 
 .action {
+
     border: 0;
 
     background: transparent;
@@ -746,24 +907,72 @@ header {
 
     padding: 5px;
 
-    font-size: 14px;
+    font-size: 15px;
 
-    border-radius: 8px;
 }
 
 
 .action:hover {
+
     color:
         var(--blue);
 
-    background:
-        var(--hover);
 }
 
 
 .action.liked {
+
     color:
         #ef4444;
+
+}
+
+
+/* =========================================================
+   VERIFIED BADGE
+========================================================= */
+
+.verified-badge {
+
+    width: 18px;
+
+    height: 18px;
+
+    min-width: 18px;
+
+    min-height: 18px;
+
+    max-width: 18px;
+
+    max-height: 18px;
+
+    object-fit: contain;
+
+    object-position: center;
+
+    border-radius: 50%;
+
+    display: inline-block;
+
+    vertical-align: middle;
+
+    margin-left: 2px;
+
+}
+
+
+/* =========================================================
+   VERIFIED CONNECTX ACCOUNT
+========================================================= */
+
+.connectx-official {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 4px;
+
 }
 
 
@@ -772,7 +981,9 @@ header {
 ========================================================= */
 
 .rightbar {
+
     padding: 15px;
+
 }
 
 
@@ -781,6 +992,7 @@ header {
 ========================================================= */
 
 .search {
+
     display: flex;
 
     align-items: center;
@@ -790,13 +1002,16 @@ header {
     background:
         var(--hover);
 
-    padding: 10px 15px;
+    padding:
+        10px 15px;
 
     border-radius: 25px;
+
 }
 
 
 .search input {
+
     width: 100%;
 
     border: 0;
@@ -808,13 +1023,8 @@ header {
     color:
         var(--text);
 
-    font-size: 14px;
-}
+    font-size: 15px;
 
-
-.search input::placeholder {
-    color:
-        var(--muted);
 }
 
 
@@ -823,6 +1033,7 @@ header {
 ========================================================= */
 
 .card {
+
     margin-top: 20px;
 
     padding: 18px;
@@ -831,21 +1042,23 @@ header {
         var(--hover);
 
     border-radius: 18px;
+
 }
 
 
 .card h2 {
+
     margin-bottom: 15px;
 
-    font-size: 20px;
 }
 
 
 /* =========================================================
-   PROFILE
+   PROFILE COVER
 ========================================================= */
 
 .profile-cover {
+
     height: 160px;
 
     background:
@@ -855,19 +1068,35 @@ header {
             #1877f2,
             #6f00ff
         );
+
 }
 
 
+/* =========================================================
+   PROFILE
+========================================================= */
+
 .profile {
+
     padding:
         0 20px 20px;
+
 }
 
 
 .profile-avatar {
+
     width: 90px;
 
     height: 90px;
+
+    min-width: 90px;
+
+    min-height: 90px;
+
+    max-width: 90px;
+
+    max-height: 90px;
 
     margin-top: -45px;
 
@@ -875,23 +1104,31 @@ header {
         5px solid var(--background);
 
     font-size: 28px;
+
 }
 
 
 .profile h2 {
+
     margin-top: 10px;
 
-    font-size: 24px;
 }
 
 
 .muted {
+
     color:
         var(--muted);
+
 }
 
 
+/* =========================================================
+   PROFILE STATS
+========================================================= */
+
 .stats {
+
     display: flex;
 
     gap: 25px;
@@ -902,35 +1139,43 @@ header {
         var(--muted);
 
     flex-wrap: wrap;
+
 }
 
 
 .stats strong {
+
     color:
         var(--text);
+
 }
 
 
 /* =========================================================
-   EMPTY / ERROR STATES
+   EMPTY / ERROR
 ========================================================= */
 
 .empty {
-    padding: 40px 20px;
+
+    padding: 40px;
 
     text-align: center;
 
     color:
         var(--muted);
+
 }
 
 
 .error {
-    padding: 30px 20px;
+
+    padding: 30px;
 
     text-align: center;
 
-    color: #d00;
+    color:
+        #d00000;
+
 }
 
 
@@ -939,11 +1184,14 @@ header {
 ========================================================= */
 
 .mobile-nav {
+
     display: none;
+
 }
 
 
 .mobile-nav button {
+
     border: 0;
 
     background: transparent;
@@ -955,15 +1203,6 @@ header {
 
     cursor: pointer;
 
-    width: 20%;
-
-    height: 60px;
-}
-
-
-.mobile-nav button:hover {
-    background:
-        var(--hover);
 }
 
 
@@ -974,46 +1213,43 @@ header {
 @media (max-width: 1000px) {
 
     .layout {
+
         grid-template-columns:
             75px
             minmax(400px, 650px);
+
     }
 
 
     .sidebar span,
     .account div:not(.avatar),
     .post-button {
+
         display: none;
+
     }
 
 
     .rightbar {
+
         display: none;
+
     }
 
 
     .brand {
+
         justify-content: center;
 
-        padding:
-            10px 0;
     }
 
 
     .nav {
+
         text-align: center;
 
-        font-size: 20px;
     }
 
-
-    .account {
-        justify-content: center;
-
-        left: 15px;
-
-        right: 15px;
-    }
 }
 
 
@@ -1024,25 +1260,28 @@ header {
 @media (max-width: 700px) {
 
     .layout {
+
         display: block;
 
-        width: 100%;
     }
 
 
     .sidebar {
+
         display: none;
+
     }
 
 
     main {
+
         border: 0;
 
-        width: 100%;
     }
 
 
     .mobile-nav {
+
         position: fixed;
 
         bottom: 0;
@@ -1066,53 +1305,62 @@ header {
             1px solid var(--border);
 
         z-index: 100;
+
+    }
+
+
+    .mobile-nav button {
+
+        width: 20%;
+
+        height: 60px;
+
+        display: flex;
+
+        justify-content: center;
+
+        align-items: center;
+
     }
 
 
     main {
+
         padding-bottom: 60px;
+
     }
 
 
-    header {
-        padding:
-            16px;
+    .auth-card {
 
-        font-size: 19px;
-    }
+        padding: 28px 20px;
 
-
-    .composer {
-        padding:
-            15px;
     }
 
 
     .post {
+
         padding:
-            15px;
+            15px 12px;
+
     }
 
 
-    .profile-cover {
-        height: 130px;
+    .composer {
+
+        padding:
+            15px 12px;
+
     }
 
 
-    .profile-avatar {
-        width: 80px;
+    header {
 
-        height: 80px;
+        padding:
+            16px;
 
-        margin-top: -40px;
     }
 
-
-    .stats {
-        gap: 15px;
-
-        font-size: 14px;
-    }
 }
 
 
@@ -1120,47 +1368,32 @@ header {
    SMALL PHONES
 ========================================================= */
 
-@media (max-width: 450px) {
+@media (max-width: 400px) {
 
     .auth-card {
-        padding:
-            25px 20px;
 
-        border-radius: 20px;
+        border-radius: 18px;
+
+        padding: 25px 16px;
+
     }
 
 
     .logo-image {
-        width: 60px;
 
-        height: 60px;
+        width: 100px !important;
+
+        height: 100px !important;
+
     }
 
 
-    .auth-card h1 {
-        font-size: 27px;
+    .stats {
+
+        gap: 12px;
+
+        font-size: 13px;
+
     }
 
-
-    .post {
-        gap: 9px;
-    }
-
-
-    .avatar {
-        width: 38px;
-
-        height: 38px;
-    }
-
-
-    .composer textarea {
-        font-size: 16px;
-    }
-
-
-    #postButton {
-        padding:
-            8px 16px;
-    }
 }
