@@ -5,7 +5,6 @@
 }
 
 :root {
-
     --blue: #1877f2;
 
     --background: #ffffff;
@@ -18,27 +17,18 @@
     --border: #e5e7eb;
 
     --hover: #f5f8fa;
-
 }
 
 body.dark {
-
     --background: #000000;
-
     --surface: #000000;
-
     --text: #f7f9f9;
-
     --muted: #8b98a5;
-
     --border: #2f3336;
-
     --hover: #16181c;
-
 }
 
 body {
-
     font-family:
         Arial,
         Helvetica,
@@ -49,16 +39,14 @@ body {
 
     color:
         var(--text);
-
 }
 
 
 /* =========================
-   AUTH
+AUTH
 ========================= */
 
 #authScreen {
-
     min-height: 100vh;
 
     display: flex;
@@ -81,11 +69,9 @@ body {
             transparent 35%
         ),
         #050b18;
-
 }
 
 .auth-card {
-
     width: 100%;
 
     max-width: 420px;
@@ -100,11 +86,9 @@ body {
 
     box-shadow:
         0 25px 70px #0008;
-
 }
 
 .logo {
-
     width: 65px;
 
     height: 65px;
@@ -132,64 +116,171 @@ body {
             #1877f2,
             #6f00ff
         );
-
 }
 
 .auth-card h1 {
-
     text-align: center;
 
     margin-top: 15px;
-
 }
 
 .subtitle {
-
     text-align: center;
 
     color: #666;
 
     margin: 5px 0 25px;
-
 }
 
-.auth-card form {
 
+/* =========================
+AUTH METHOD BUTTONS
+========================= */
+
+.auth-methods {
+    display: flex;
+
+    gap: 8px;
+
+    margin-bottom: 2px;
+}
+
+.auth-methods .method {
+    flex: 1;
+
+    padding: 13px;
+
+    border: 0;
+
+    border-radius: 25px;
+
+    background:
+        #f5f5f5;
+
+    color:
+        #111;
+
+    font-size: 15px;
+
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition:
+        0.2s ease;
+}
+
+.auth-methods .method:hover {
+    background:
+        #e9e9e9;
+}
+
+.auth-methods .method.active {
+    background:
+        var(--blue);
+
+    color:
+        white;
+}
+
+
+/* =========================
+AUTH FORM
+========================= */
+
+.auth-card form {
     display: flex;
 
     flex-direction: column;
 
     gap: 12px;
-
 }
 
-.auth-card input {
 
-    padding: 13px;
+/* =========================
+AUTH INPUTS
+========================= */
+
+.auth-card input {
+    width: 100%;
+
+    padding: 13px 15px;
 
     border:
         1px solid #ddd;
 
-    border-radius: 10px;
+    border-radius: 25px;
 
     outline: none;
 
+    background:
+        #f5f8fa;
+
+    color:
+        #111;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size: 15px;
+
+    transition:
+        0.2s ease;
+}
+
+.auth-card input:hover {
+    background:
+        #eef2f5;
 }
 
 .auth-card input:focus {
-
     border-color:
         var(--blue);
 
+    background:
+        white;
+
+    box-shadow:
+        0 0 0 2px #1877f222;
 }
 
-.auth-card form button {
+.auth-card input::placeholder {
+    color:
+        #667085;
+}
 
+
+/* =========================
+PHONE HELP TEXT
+========================= */
+
+#phoneInputContainer small {
+    display: block;
+
+    margin-top: 6px;
+
+    margin-left: 5px;
+
+    color:
+        #667085;
+
+    font-size:
+        12px;
+}
+
+
+/* =========================
+AUTH BUTTON
+========================= */
+
+.auth-card form button {
     border: 0;
 
     padding: 13px;
 
-    border-radius: 10px;
+    border-radius: 25px;
 
     color: white;
 
@@ -199,48 +290,119 @@ body {
     font-weight: 800;
 
     cursor: pointer;
-
 }
 
-.switch {
 
+/* =========================
+SEND CODE
+========================= */
+
+#sendCodeButton,
+#verifyCodeButton {
+    width: 100%;
+
+    border: 0;
+
+    padding: 13px;
+
+    margin-top: 4px;
+
+    border-radius: 25px;
+
+    color: white;
+
+    background:
+        var(--blue);
+
+    font-weight: 800;
+
+    font-size: 15px;
+
+    cursor: pointer;
+
+    transition:
+        0.2s ease;
+}
+
+#sendCodeButton:hover,
+#verifyCodeButton:hover {
+    filter:
+        brightness(0.92);
+}
+
+#sendCodeButton:active,
+#verifyCodeButton:active {
+    transform:
+        scale(0.98);
+}
+
+
+/* =========================
+OTP
+========================= */
+
+#otpContainer {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+#otpContainer input {
+    margin-top: 10px;
+}
+
+
+/* =========================
+RESEND
+========================= */
+
+.switch {
     width: 100%;
 
     border: 0;
 
     background: none;
 
-    color: var(--blue);
+    color:
+        var(--blue);
 
-    margin-top: 20px;
+    margin-top: 10px;
 
     cursor: pointer;
 
+    font-weight: 700;
 }
 
-.auth-message {
+.switch:hover {
+    text-decoration:
+        underline;
+}
 
+
+/* =========================
+AUTH MESSAGE
+========================= */
+
+.auth-message {
     margin-top: 15px;
 
     text-align: center;
 
     color: #d00;
-
 }
 
 
 /* =========================
-   LAYOUT
+LAYOUT
 ========================= */
 
 #app {
-
     min-height: 100vh;
-
 }
 
 .layout {
-
     max-width: 1250px;
 
     margin: auto;
@@ -253,16 +415,14 @@ body {
         250px
         minmax(400px, 650px)
         320px;
-
 }
 
 
 /* =========================
-   SIDEBAR
+SIDEBAR
 ========================= */
 
 .sidebar {
-
     border-right:
         1px solid var(--border);
 
@@ -273,11 +433,9 @@ body {
     top: 0;
 
     height: 100vh;
-
 }
 
 .brand {
-
     display: flex;
 
     align-items: center;
@@ -291,11 +449,9 @@ body {
     padding: 10px;
 
     margin-bottom: 15px;
-
 }
 
 .brand-icon {
-
     width: 42px;
 
     height: 42px;
@@ -319,11 +475,9 @@ body {
             #1877f2,
             #6f00ff
         );
-
 }
 
 .nav {
-
     width: 100%;
 
     border: 0;
@@ -341,19 +495,15 @@ body {
     font-size: 16px;
 
     cursor: pointer;
-
 }
 
 .nav:hover,
 .nav.active {
-
     background:
         var(--hover);
-
 }
 
 .post-button {
-
     width: 100%;
 
     margin-top: 15px;
@@ -372,11 +522,9 @@ body {
     font-weight: 900;
 
     cursor: pointer;
-
 }
 
 .account {
-
     position: absolute;
 
     bottom: 20px;
@@ -386,24 +534,20 @@ body {
     align-items: center;
 
     gap: 10px;
-
 }
 
 .account small {
-
     display: block;
 
     color: var(--muted);
-
 }
 
 
 /* =========================
-   AVATAR
+AVATAR
 ========================= */
 
 .avatar {
-
     width: 42px;
 
     height: 42px;
@@ -428,35 +572,27 @@ body {
             #1877f2,
             #6f00ff
         );
-
 }
 
 
 /* =========================
-   MAIN
+MAIN
 ========================= */
 
 main {
-
     border-right:
         1px solid var(--border);
-
 }
 
 .page {
-
     display: none;
-
 }
 
 .page.active {
-
     display: block;
-
 }
 
 header {
-
     position: sticky;
 
     top: 0;
@@ -481,16 +617,14 @@ header {
 
     backdrop-filter:
         blur(10px);
-
 }
 
 
 /* =========================
-   COMPOSER
+COMPOSER
 ========================= */
 
 .composer {
-
     display: flex;
 
     gap: 12px;
@@ -499,17 +633,13 @@ header {
 
     border-bottom:
         1px solid var(--border);
-
 }
 
 .composer-body {
-
     flex: 1;
-
 }
 
 .composer textarea {
-
     width: 100%;
 
     min-height: 80px;
@@ -525,29 +655,23 @@ header {
     color: var(--text);
 
     font-size: 18px;
-
 }
 
 .composer-bottom {
-
     display: flex;
 
     align-items: center;
 
     justify-content: space-between;
-
 }
 
 #characterCount {
-
     color: var(--muted);
 
     font-size: 13px;
-
 }
 
 #postButton {
-
     border: 0;
 
     border-radius: 25px;
@@ -556,21 +680,20 @@ header {
 
     color: white;
 
-    background: var(--blue);
+    background:
+        var(--blue);
 
     font-weight: 900;
 
     cursor: pointer;
-
 }
 
 
 /* =========================
-   POSTS
+POSTS
 ========================= */
 
 .post {
-
     display: flex;
 
     gap: 12px;
@@ -579,46 +702,34 @@ header {
 
     border-bottom:
         1px solid var(--border);
-
 }
 
 .post:hover {
-
     background:
         rgba(128,128,128,.03);
-
 }
 
 .post-body {
-
     flex: 1;
-
 }
 
 .post-header {
-
     display: flex;
 
     gap: 5px;
 
     align-items: center;
-
 }
 
 .post-name {
-
     font-weight: 900;
-
 }
 
 .post-user {
-
     color: var(--muted);
-
 }
 
 .post-content {
-
     margin-top: 7px;
 
     white-space: pre-wrap;
@@ -626,11 +737,9 @@ header {
     word-break: break-word;
 
     line-height: 1.5;
-
 }
 
 .actions {
-
     display: flex;
 
     justify-content: space-between;
@@ -638,11 +747,9 @@ header {
     margin-top: 12px;
 
     max-width: 450px;
-
 }
 
 .action {
-
     border: 0;
 
     background: transparent;
@@ -652,34 +759,26 @@ header {
     cursor: pointer;
 
     padding: 5px;
-
 }
 
 .action:hover {
-
     color: var(--blue);
-
 }
 
 .action.liked {
-
     color: #ef4444;
-
 }
 
 
 /* =========================
-   RIGHT
+RIGHT
 ========================= */
 
 .rightbar {
-
     padding: 15px;
-
 }
 
 .search {
-
     display: flex;
 
     align-items: center;
@@ -692,11 +791,9 @@ header {
     padding: 10px 15px;
 
     border-radius: 25px;
-
 }
 
 .search input {
-
     width: 100%;
 
     border: 0;
@@ -706,11 +803,9 @@ header {
     background: transparent;
 
     color: var(--text);
-
 }
 
 .card {
-
     margin-top: 20px;
 
     padding: 18px;
@@ -719,22 +814,18 @@ header {
         var(--hover);
 
     border-radius: 18px;
-
 }
 
 .card h2 {
-
     margin-bottom: 15px;
-
 }
 
 
 /* =========================
-   PROFILE
+PROFILE
 ========================= */
 
 .profile-cover {
-
     height: 160px;
 
     background:
@@ -744,17 +835,13 @@ header {
             #1877f2,
             #6f00ff
         );
-
 }
 
 .profile {
-
     padding: 0 20px 20px;
-
 }
 
 .profile-avatar {
-
     width: 90px;
 
     height: 90px;
@@ -764,23 +851,17 @@ header {
     border: 5px solid var(--background);
 
     font-size: 28px;
-
 }
 
 .profile h2 {
-
     margin-top: 10px;
-
 }
 
 .muted {
-
     color: var(--muted);
-
 }
 
 .stats {
-
     display: flex;
 
     gap: 25px;
@@ -788,74 +869,55 @@ header {
     margin-top: 15px;
 
     color: var(--muted);
-
 }
 
 .stats strong {
-
     color: var(--text);
-
 }
 
 
 /* =========================
-   MOBILE
+MOBILE
 ========================= */
 
 .mobile-nav {
-
     display: none;
-
 }
 
 @media(max-width: 1000px) {
 
     .layout {
-
         grid-template-columns:
             75px
             minmax(400px, 650px);
-
     }
 
     .sidebar span,
     .account div:not(.avatar),
     .post-button {
-
         display: none;
-
     }
 
     .rightbar {
-
         display: none;
-
     }
-
 }
 
 @media(max-width: 700px) {
 
     .layout {
-
         display: block;
-
     }
 
     .sidebar {
-
         display: none;
-
     }
 
     main {
-
         border: 0;
-
     }
 
     .mobile-nav {
-
         position: fixed;
 
         bottom: 0;
@@ -879,11 +941,9 @@ header {
             1px solid var(--border);
 
         z-index: 100;
-
     }
 
     .mobile-nav button {
-
         border: 0;
 
         background: transparent;
@@ -891,13 +951,9 @@ header {
         color: var(--text);
 
         font-size: 20px;
-
     }
 
     main {
-
         padding-bottom: 60px;
-
     }
-
 }
