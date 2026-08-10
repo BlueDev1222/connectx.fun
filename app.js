@@ -2,17 +2,11 @@
    CONNECTX + SUPABASE
 ========================================== */
 
-
-/* ==========================================
-   SUPABASE
-========================================== */
-
 const SUPABASE_URL =
     "https://onvmeffhmruzshqlwakx.supabase.co";
 
 const SUPABASE_KEY =
     "sb_publishable_9VzEW8DurRpM51GgQ282BQ_qQ3e1WkX";
-
 
 const supabaseClient =
     window.supabase.createClient(
@@ -26,54 +20,7 @@ const supabaseClient =
 ========================================== */
 
 let currentUser = null;
-
 let currentProfile = null;
-
-
-/* ==========================================
-   CONNECTX VERIFIED SYSTEM
-========================================== */
-
-/*
-    @connectx is the official ConnectX account.
-
-    The verified badge is automatically displayed
-    for this username.
-
-    Make sure this file exists:
-
-    Verified ConnectX.jpg
-*/
-
-function isVerified(profile) {
-
-    if (!profile)
-        return false;
-
-    return (
-        String(profile.username)
-            .toLowerCase() === "connectx"
-    );
-}
-
-
-function verifiedBadge(
-    profile,
-    className = "verified-badge"
-) {
-
-    if (!isVerified(profile))
-        return "";
-
-    return `
-        <img
-            src="Verified ConnectX.jpg"
-            class="${className}"
-            alt="Verified"
-            title="Verified"
-        >
-    `;
-}
 
 
 /* ==========================================
@@ -82,8 +29,9 @@ function verifiedBadge(
 
 function initials(name) {
 
-    if (!name)
+    if (!name) {
         return "U";
+    }
 
     return name
         .split(" ")
@@ -91,7 +39,6 @@ function initials(name) {
         .join("")
         .slice(0, 2)
         .toUpperCase();
-
 }
 
 
@@ -103,7 +50,6 @@ function escapeHTML(text) {
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
-
 }
 
 
@@ -114,33 +60,28 @@ function timeAgo(date) {
             (Date.now() - new Date(date)) / 1000
         );
 
-
-    if (seconds < 60)
+    if (seconds < 60) {
         return `${seconds}s`;
-
+    }
 
     const minutes =
         Math.floor(seconds / 60);
 
-
-    if (minutes < 60)
+    if (minutes < 60) {
         return `${minutes}m`;
-
+    }
 
     const hours =
         Math.floor(minutes / 60);
 
-
-    if (hours < 24)
+    if (hours < 24) {
         return `${hours}h`;
-
+    }
 
     const days =
         Math.floor(hours / 24);
 
-
     return `${days}d`;
-
 }
 
 
@@ -158,20 +99,17 @@ function authMessage(
             "authMessage"
         );
 
-
-    if (!element)
+    if (!element) {
         return;
-
+    }
 
     element.textContent =
         message;
-
 
     element.style.color =
         error
             ? "#d00"
             : "#16803c";
-
 }
 
 
@@ -187,13 +125,11 @@ document
 
             event.preventDefault();
 
-
             const email =
                 document
                     .getElementById("loginEmail")
                     .value
                     .trim();
-
 
             const password =
                 document
@@ -205,8 +141,7 @@ document
                 data,
                 error
             } =
-                await supabaseClient
-                    .auth
+                await supabaseClient.auth
                     .signInWithPassword({
 
                         email,
@@ -223,13 +158,11 @@ document
                 );
 
                 return;
-
             }
 
 
             currentUser =
                 data.user;
-
 
             await loadApp();
 
@@ -256,7 +189,6 @@ document
                     .value
                     .trim();
 
-
             const username =
                 document
                     .getElementById("registerUsername")
@@ -264,13 +196,11 @@ document
                     .trim()
                     .toLowerCase();
 
-
             const email =
                 document
                     .getElementById("registerEmail")
                     .value
                     .trim();
-
 
             const password =
                 document
@@ -287,12 +217,11 @@ document
                 );
 
                 return;
-
             }
 
 
             /*
-                Check username first.
+                Check username.
             */
 
             const {
@@ -312,9 +241,15 @@ document
             if (usernameError) {
 
                 console.error(
+                    "Username check error:",
                     usernameError
                 );
 
+                authMessage(
+                    usernameError.message
+                );
+
+                return;
             }
 
 
@@ -325,7 +260,6 @@ document
                 );
 
                 return;
-
             }
 
 
@@ -337,8 +271,7 @@ document
                 data,
                 error
             } =
-                await supabaseClient
-                    .auth
+                await supabaseClient.auth
                     .signUp({
 
                         email,
@@ -368,7 +301,6 @@ document
                 );
 
                 return;
-
             }
 
 
@@ -386,7 +318,6 @@ document
 
                 currentUser =
                     data.user;
-
 
                 await loadApp();
 
@@ -418,12 +349,10 @@ document
                     "loginForm"
                 );
 
-
             const register =
                 document.getElementById(
                     "registerForm"
                 );
-
 
             const switchButton =
                 document.getElementById(
@@ -439,10 +368,8 @@ document
                 login.style.display =
                     "flex";
 
-
                 register.style.display =
                     "none";
-
 
                 switchButton.textContent =
                     "Create an account";
@@ -452,10 +379,8 @@ document
                 login.style.display =
                     "none";
 
-
                 register.style.display =
                     "flex";
-
 
                 switchButton.textContent =
                     "Already have an account? Log in";
@@ -472,8 +397,9 @@ document
 
 async function loadApp() {
 
-    if (!currentUser)
+    if (!currentUser) {
         return;
+    }
 
 
     const {
@@ -492,10 +418,12 @@ async function loadApp() {
 
     if (error) {
 
-        console.error(error);
+        console.error(
+            "Profile loading error:",
+            error
+        );
 
         return;
-
     }
 
 
@@ -503,20 +431,34 @@ async function loadApp() {
         profile;
 
 
-    document
-        .getElementById("authScreen")
-        .style.display =
-        "none";
+    const authScreen =
+        document.getElementById(
+            "authScreen"
+        );
+
+    const app =
+        document.getElementById(
+            "app"
+        );
 
 
-    document
-        .getElementById("app")
-        .style.display =
-        "block";
+    if (authScreen) {
+
+        authScreen.style.display =
+            "none";
+
+    }
+
+
+    if (app) {
+
+        app.style.display =
+            "block";
+
+    }
 
 
     updateUserUI();
-
 
     await loadFeed();
 
@@ -525,7 +467,6 @@ async function loadApp() {
     await loadProfile();
 
     await loadNotifications();
-
 }
 
 
@@ -535,8 +476,9 @@ async function loadApp() {
 
 function updateUserUI() {
 
-    if (!currentProfile)
+    if (!currentProfile) {
         return;
+    }
 
 
     const name =
@@ -545,24 +487,11 @@ function updateUserUI() {
         "User";
 
 
-    /*
-        Sidebar name
-    */
-
     document
         .getElementById("sidebarName")
-        .innerHTML =
-        `
-            ${escapeHTML(name)}
-            ${verifiedBadge(
-                currentProfile
-            )}
-        `;
+        .textContent =
+        name;
 
-
-    /*
-        Sidebar username
-    */
 
     document
         .getElementById("sidebarUsername")
@@ -571,19 +500,11 @@ function updateUserUI() {
         currentProfile.username;
 
 
-    /*
-        Sidebar avatar
-    */
-
     document
         .getElementById("sidebarAvatar")
         .textContent =
         initials(name);
 
-
-    /*
-        Composer avatar
-    */
 
     document
         .getElementById("composerAvatar")
@@ -591,15 +512,10 @@ function updateUserUI() {
         initials(name);
 
 
-    /*
-        Profile avatar
-    */
-
     document
         .getElementById("profileAvatar")
         .textContent =
         initials(name);
-
 }
 
 
@@ -615,6 +531,27 @@ async function loadFeed() {
         );
 
 
+    if (!feed) {
+        return;
+    }
+
+
+    feed.innerHTML = `
+        <div style="
+            padding:30px;
+            color:var(--muted);
+            text-align:center;
+        ">
+            Loading posts...
+        </div>
+    `;
+
+
+    /*
+        Explicitly use the posts -> profiles
+        foreign-key relationship.
+    */
+
     const {
         data: posts,
         error
@@ -626,7 +563,7 @@ async function loadFeed() {
                 user_id,
                 content,
                 created_at,
-                profiles (
+                profiles!posts_user_id_fkey (
                     id,
                     username,
                     display_name,
@@ -647,31 +584,53 @@ async function loadFeed() {
 
     if (error) {
 
-        console.error(error);
+        console.error(
+            "SUPABASE FEED ERROR:",
+            error
+        );
 
-        feed.innerHTML =
-            `
-                <p class="error">
+
+        feed.innerHTML = `
+            <div style="
+                padding:30px;
+                color:#d00;
+            ">
+
+                <strong>
                     Failed to load posts.
-                </p>
-            `;
+                </strong>
+
+                <br><br>
+
+                <small>
+                    ${escapeHTML(
+                        error.message
+                    )}
+                </small>
+
+            </div>
+        `;
 
         return;
-
     }
 
 
-    if (!posts.length) {
+    if (
+        !posts ||
+        posts.length === 0
+    ) {
 
-        feed.innerHTML =
-            `
-                <div class="empty">
-                    No posts yet.
-                </div>
-            `;
+        feed.innerHTML = `
+            <div style="
+                padding:30px;
+                color:var(--muted);
+                text-align:center;
+            ">
+                No posts yet.
+            </div>
+        `;
 
         return;
-
     }
 
 
@@ -679,7 +638,6 @@ async function loadFeed() {
         posts
             .map(renderPost)
             .join("");
-
 }
 
 
@@ -691,10 +649,6 @@ function renderPost(post) {
 
     const profile =
         post.profiles;
-
-
-    if (!profile)
-        return "";
 
 
     const likes =
@@ -714,17 +668,23 @@ function renderPost(post) {
         currentUser.id;
 
 
+    const displayName =
+        profile?.display_name ||
+        "Unknown User";
+
+
+    const username =
+        profile?.username ||
+        "user";
+
+
     return `
 
         <article class="post">
 
             <div class="avatar">
 
-                ${
-                    initials(
-                        profile.display_name
-                    )
-                }
+                ${initials(displayName)}
 
             </div>
 
@@ -735,24 +695,17 @@ function renderPost(post) {
 
                     <strong class="post-name">
 
-                        ${
-                            escapeHTML(
-                                profile.display_name
-                            )
-                        }
+                        ${escapeHTML(
+                            displayName
+                        )}
 
                     </strong>
-
-
-                    ${verifiedBadge(
-                        profile
-                    )}
 
 
                     <span class="post-user">
 
                         @${escapeHTML(
-                            profile.username
+                            username
                         )}
 
                     </span>
@@ -771,11 +724,9 @@ function renderPost(post) {
 
                 <div class="post-content">
 
-                    ${
-                        escapeHTML(
-                            post.content
-                        )
-                    }
+                    ${escapeHTML(
+                        post.content
+                    )}
 
                 </div>
 
@@ -822,12 +773,12 @@ function renderPost(post) {
                         own
                             ?
                             `
-                                <button
-                                    class="action"
-                                    onclick="deletePost('${post.id}')"
-                                >
-                                    🗑
-                                </button>
+                            <button
+                                class="action"
+                                onclick="deletePost('${post.id}')"
+                            >
+                                🗑
+                            </button>
                             `
                             :
                             ""
@@ -840,12 +791,11 @@ function renderPost(post) {
         </article>
 
     `;
-
 }
 
 
 /* ==========================================
-   CHARACTER COUNT
+   CREATE POST
 ========================================== */
 
 document
@@ -872,10 +822,6 @@ document
         }
     );
 
-
-/* ==========================================
-   CREATE POST BUTTONS
-========================================== */
 
 document
     .getElementById("postButton")
@@ -917,11 +863,12 @@ document
     );
 
 
-/* ==========================================
-   CREATE POST
-========================================== */
-
 async function createPost() {
+
+    if (!currentUser) {
+        return;
+    }
+
 
     const input =
         document.getElementById(
@@ -933,8 +880,9 @@ async function createPost() {
         input.value.trim();
 
 
-    if (!content)
+    if (!content) {
         return;
+    }
 
 
     const {
@@ -954,12 +902,16 @@ async function createPost() {
 
     if (error) {
 
+        console.error(
+            "CREATE POST ERROR:",
+            error
+        );
+
         alert(
             error.message
         );
 
         return;
-
     }
 
 
@@ -977,7 +929,6 @@ async function createPost() {
     await loadFeed();
 
     await loadProfile();
-
 }
 
 
@@ -987,8 +938,14 @@ async function createPost() {
 
 async function toggleLike(postId) {
 
+    if (!currentUser) {
+        return;
+    }
+
+
     const {
-        data: existing
+        data: existing,
+        error: checkError
     } =
         await supabaseClient
             .from("likes")
@@ -1004,54 +961,92 @@ async function toggleLike(postId) {
             .maybeSingle();
 
 
+    if (checkError) {
+
+        console.error(
+            "LIKE CHECK ERROR:",
+            checkError
+        );
+
+        alert(
+            checkError.message
+        );
+
+        return;
+    }
+
+
     if (existing) {
 
-        await supabaseClient
-            .from("likes")
-            .delete()
-            .eq(
-                "post_id",
-                postId
-            )
-            .eq(
-                "user_id",
-                currentUser.id
+        const {
+            error
+        } =
+            await supabaseClient
+                .from("likes")
+                .delete()
+                .eq(
+                    "post_id",
+                    postId
+                )
+                .eq(
+                    "user_id",
+                    currentUser.id
+                );
+
+
+        if (error) {
+
+            alert(
+                error.message
             );
+
+            return;
+        }
 
     } else {
 
-        await supabaseClient
-            .from("likes")
-            .insert({
+        const {
+            error
+        } =
+            await supabaseClient
+                .from("likes")
+                .insert({
 
-                post_id:
-                    postId,
+                    post_id:
+                        postId,
 
-                user_id:
-                    currentUser.id
+                    user_id:
+                        currentUser.id
 
-            });
+                });
 
+
+        if (error) {
+
+            alert(
+                error.message
+            );
+
+            return;
+        }
     }
 
 
     await loadFeed();
-
 }
 
 
 /* ==========================================
-   DELETE POST
+   DELETE
 ========================================== */
 
 async function deletePost(postId) {
 
-    if (
-        !confirm(
-            "Delete this post?"
-        )
-    )
+    if (!confirm(
+        "Delete this post?"
+    )) {
         return;
+    }
 
 
     const {
@@ -1077,14 +1072,12 @@ async function deletePost(postId) {
         );
 
         return;
-
     }
 
 
     await loadFeed();
 
     await loadProfile();
-
 }
 
 
@@ -1103,8 +1096,9 @@ async function commentPost(postId) {
     if (
         !content ||
         !content.trim()
-    )
+    ) {
         return;
+    }
 
 
     const {
@@ -1133,14 +1127,12 @@ async function commentPost(postId) {
         );
 
         return;
-
     }
 
 
     alert(
         "Comment posted!"
     );
-
 }
 
 
@@ -1158,17 +1150,26 @@ async function sharePost(postId) {
         navigator.clipboard
     ) {
 
-        await navigator.clipboard.writeText(
-            url
-        );
+        try {
 
+            await navigator.clipboard
+                .writeText(url);
 
-        alert(
-            "Post link copied!"
-        );
+            alert(
+                "Post link copied!"
+            );
+
+        } catch {
+
+            alert(url);
+
+        }
+
+    } else {
+
+        alert(url);
 
     }
-
 }
 
 
@@ -1182,6 +1183,11 @@ async function loadSuggestions() {
         document.getElementById(
             "suggestions"
         );
+
+
+    if (!container) {
+        return;
+    }
 
 
     const {
@@ -1200,10 +1206,12 @@ async function loadSuggestions() {
 
     if (error) {
 
-        console.error(error);
+        console.error(
+            "SUGGESTIONS ERROR:",
+            error
+        );
 
         return;
-
     }
 
 
@@ -1232,7 +1240,7 @@ async function loadSuggestions() {
 
 
     container.innerHTML =
-        profiles
+        (profiles || [])
             .map(
                 profile => `
 
@@ -1258,14 +1266,11 @@ async function loadSuggestions() {
 
                             <strong>
 
-                                ${escapeHTML(
-                                    profile.display_name
-                                )}
-
-                                ${verifiedBadge(
-                                    profile,
-                                    "suggestion-verified"
-                                )}
+                                ${
+                                    escapeHTML(
+                                        profile.display_name
+                                    )
+                                }
 
                             </strong>
 
@@ -1317,7 +1322,6 @@ async function loadSuggestions() {
                 `
             )
             .join("");
-
 }
 
 
@@ -1328,7 +1332,8 @@ async function loadSuggestions() {
 async function toggleFollow(userId) {
 
     const {
-        data: existing
+        data: existing,
+        error: checkError
     } =
         await supabaseClient
             .from("follows")
@@ -1346,41 +1351,75 @@ async function toggleFollow(userId) {
             .maybeSingle();
 
 
+    if (checkError) {
+
+        alert(
+            checkError.message
+        );
+
+        return;
+    }
+
+
     if (existing) {
 
-        await supabaseClient
-            .from("follows")
-            .delete()
-            .eq(
-                "follower_id",
-                currentUser.id
-            )
-            .eq(
-                "following_id",
-                userId
+        const {
+            error
+        } =
+            await supabaseClient
+                .from("follows")
+                .delete()
+                .eq(
+                    "follower_id",
+                    currentUser.id
+                )
+                .eq(
+                    "following_id",
+                    userId
+                );
+
+
+        if (error) {
+
+            alert(
+                error.message
             );
+
+            return;
+        }
 
     } else {
 
-        await supabaseClient
-            .from("follows")
-            .insert({
+        const {
+            error
+        } =
+            await supabaseClient
+                .from("follows")
+                .insert({
 
-                follower_id:
-                    currentUser.id,
+                    follower_id:
+                        currentUser.id,
 
-                following_id:
-                    userId
+                    following_id:
+                        userId
 
-            });
+                });
 
+
+        if (error) {
+
+            alert(
+                error.message
+            );
+
+            return;
+        }
     }
 
 
     await loadSuggestions();
 
     await loadProfile();
-
 }
 
 
@@ -1390,34 +1429,18 @@ async function toggleFollow(userId) {
 
 async function loadProfile() {
 
-    if (!currentProfile)
+    if (!currentProfile) {
         return;
+    }
 
-
-    /*
-        Profile name
-    */
 
     document
         .getElementById(
             "profileName"
         )
-        .innerHTML =
-        `
-            ${escapeHTML(
-                currentProfile.display_name
-            )}
+        .textContent =
+        currentProfile.display_name;
 
-            ${verifiedBadge(
-                currentProfile,
-                "profile-verified"
-            )}
-        `;
-
-
-    /*
-        Username
-    */
 
     document
         .getElementById(
@@ -1428,10 +1451,6 @@ async function loadProfile() {
         currentProfile.username;
 
 
-    /*
-        Bio
-    */
-
     document
         .getElementById(
             "profileBio"
@@ -1440,10 +1459,6 @@ async function loadProfile() {
         currentProfile.bio ||
         "Welcome to ConnectX!";
 
-
-    /*
-        Post count
-    */
 
     const {
         count: posts
@@ -1455,7 +1470,8 @@ async function loadProfile() {
                 {
                     count:
                         "exact",
-                    head: true
+                    head:
+                        true
                 }
             )
             .eq(
@@ -1463,10 +1479,6 @@ async function loadProfile() {
                 currentUser.id
             );
 
-
-    /*
-        Followers
-    */
 
     const {
         count: followers
@@ -1478,7 +1490,8 @@ async function loadProfile() {
                 {
                     count:
                         "exact",
-                    head: true
+                    head:
+                        true
                 }
             )
             .eq(
@@ -1486,10 +1499,6 @@ async function loadProfile() {
                 currentUser.id
             );
 
-
-    /*
-        Following
-    */
 
     const {
         count: following
@@ -1501,7 +1510,8 @@ async function loadProfile() {
                 {
                     count:
                         "exact",
-                    head: true
+                    head:
+                        true
                 }
             )
             .eq(
@@ -1534,12 +1544,9 @@ async function loadProfile() {
         following || 0;
 
 
-    /*
-        User posts
-    */
-
     const {
-        data
+        data,
+        error
     } =
         await supabaseClient
             .from("posts")
@@ -1548,7 +1555,7 @@ async function loadProfile() {
                 user_id,
                 content,
                 created_at,
-                profiles (
+                profiles!posts_user_id_fkey (
                     id,
                     username,
                     display_name
@@ -1569,6 +1576,17 @@ async function loadProfile() {
             );
 
 
+    if (error) {
+
+        console.error(
+            "PROFILE POSTS ERROR:",
+            error
+        );
+
+        return;
+    }
+
+
     document
         .getElementById(
             "profilePosts"
@@ -1577,7 +1595,6 @@ async function loadProfile() {
         (data || [])
             .map(renderPost)
             .join("");
-
 }
 
 
@@ -1591,6 +1608,11 @@ async function loadNotifications() {
         document.getElementById(
             "notifications"
         );
+
+
+    if (!container) {
+        return;
+    }
 
 
     const {
@@ -1621,29 +1643,36 @@ async function loadNotifications() {
 
     if (error) {
 
-        console.error(error);
+        console.error(
+            "NOTIFICATIONS ERROR:",
+            error
+        );
+
+        container.innerHTML = `
+            <div style="
+                padding:30px;
+                color:var(--muted);
+            ">
+                No notifications available.
+            </div>
+        `;
 
         return;
-
     }
 
 
-    if (!data.length) {
+    if (!data || !data.length) {
 
-        container.innerHTML =
-            `
-                <div
-                    style="
-                        padding:30px;
-                        color:var(--muted)
-                    "
-                >
-                    No notifications yet.
-                </div>
-            `;
+        container.innerHTML = `
+            <div style="
+                padding:30px;
+                color:var(--muted);
+            ">
+                No notifications yet.
+            </div>
+        `;
 
         return;
-
     }
 
 
@@ -1689,7 +1718,6 @@ async function loadNotifications() {
                 `
             )
             .join("");
-
 }
 
 
@@ -1738,16 +1766,15 @@ async function search() {
 
     if (!query) {
 
-        results.innerHTML =
-            "";
+        results.innerHTML = "";
 
         return;
-
     }
 
 
     const {
-        data: users
+        data: users,
+        error: userError
     } =
         await supabaseClient
             .from("profiles")
@@ -1758,8 +1785,19 @@ async function search() {
             .limit(20);
 
 
+    if (userError) {
+
+        console.error(
+            "USER SEARCH ERROR:",
+            userError
+        );
+
+    }
+
+
     const {
-        data: posts
+        data: posts,
+        error: postError
     } =
         await supabaseClient
             .from("posts")
@@ -1768,7 +1806,7 @@ async function search() {
                 user_id,
                 content,
                 created_at,
-                profiles (
+                profiles!posts_user_id_fkey (
                     id,
                     username,
                     display_name
@@ -1784,16 +1822,20 @@ async function search() {
             .limit(20);
 
 
+    if (postError) {
+
+        console.error(
+            "POST SEARCH ERROR:",
+            postError
+        );
+
+    }
+
+
     let html = "";
 
 
-    /*
-        PEOPLE
-    */
-
-    if (
-        users?.length
-    ) {
+    if (users?.length) {
 
         html += `
             <h2 style="padding:20px">
@@ -1806,9 +1848,7 @@ async function search() {
             .map(
                 user => `
 
-                    <div
-                        class="post"
-                    >
+                    <div class="post">
 
                         <div class="avatar">
 
@@ -1827,16 +1867,10 @@ async function search() {
                                     user.display_name
                                 )}
 
-                                ${verifiedBadge(
-                                    user
-                                )}
-
                             </strong>
 
 
-                            <div
-                                class="post-user"
-                            >
+                            <div class="post-user">
 
                                 @${escapeHTML(
                                     user.username
@@ -1860,17 +1894,10 @@ async function search() {
                 `
             )
             .join("");
-
     }
 
 
-    /*
-        POSTS
-    */
-
-    if (
-        posts?.length
-    ) {
+    if (posts?.length) {
 
         html += `
             <h2 style="padding:20px">
@@ -1882,30 +1909,24 @@ async function search() {
         html += posts
             .map(renderPost)
             .join("");
-
     }
 
 
     if (!html) {
 
-        html =
-            `
-                <div
-                    style="
-                        padding:30px;
-                        color:var(--muted)
-                    "
-                >
-                    No results found.
-                </div>
-            `;
-
+        html = `
+            <div style="
+                padding:30px;
+                color:var(--muted);
+            ">
+                No results found.
+            </div>
+        `;
     }
 
 
     results.innerHTML =
         html;
-
 }
 
 
@@ -1990,17 +2011,25 @@ function navigate(page) {
         );
 
 
-    if (page === "home")
+    if (page === "home") {
+
         loadFeed();
 
+    }
 
-    if (page === "profile")
+
+    if (page === "profile") {
+
         loadProfile();
 
+    }
 
-    if (page === "notifications")
+
+    if (page === "notifications") {
+
         loadNotifications();
 
+    }
 }
 
 
@@ -2020,6 +2049,9 @@ document
                 .auth
                 .signOut();
 
+            currentUser = null;
+
+            currentProfile = null;
 
             location.reload();
 
@@ -2042,9 +2074,7 @@ document
             document
                 .body
                 .classList
-                .toggle(
-                    "dark"
-                );
+                .toggle("dark");
 
         }
     );
@@ -2057,27 +2087,39 @@ document
 async function checkSession() {
 
     const {
-        data
+        data,
+        error
     } =
         await supabaseClient
             .auth
             .getSession();
 
 
-    if (
-        data.session
-    ) {
+    if (error) {
+
+        console.error(
+            "SESSION ERROR:",
+            error
+        );
+
+        return;
+    }
+
+
+    if (data.session) {
 
         currentUser =
             data.session.user;
 
-
         await loadApp();
 
     }
-
 }
 
+
+/* ==========================================
+   AUTH STATE
+========================================== */
 
 supabaseClient
     .auth
@@ -2097,12 +2139,24 @@ supabaseClient
 
             }
 
+
+            if (
+                event ===
+                "SIGNED_OUT"
+            ) {
+
+                currentUser = null;
+
+                currentProfile = null;
+
+            }
+
         }
     );
 
 
 /* ==========================================
-   START CONNECTX
+   START
 ========================================== */
 
 checkSession();
