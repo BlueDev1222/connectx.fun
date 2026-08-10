@@ -3,18 +3,9 @@
 ========================================== */
 
 
-/*
-    PUT YOUR SUPABASE INFORMATION HERE
-
-    Example:
-
-    const SUPABASE_URL =
-        "https://abcdefghijkl.supabase.co";
-
-    const SUPABASE_KEY =
-        "sb_publishable_xxxxxxxxx";
-
-*/
+/* ==========================================
+   SUPABASE
+========================================== */
 
 const SUPABASE_URL =
     "https://onvmeffhmruzshqlwakx.supabase.co";
@@ -35,7 +26,54 @@ const supabaseClient =
 ========================================== */
 
 let currentUser = null;
+
 let currentProfile = null;
+
+
+/* ==========================================
+   CONNECTX VERIFIED SYSTEM
+========================================== */
+
+/*
+    @connectx is the official ConnectX account.
+
+    The verified badge is automatically displayed
+    for this username.
+
+    Make sure this file exists:
+
+    Verified ConnectX.jpg
+*/
+
+function isVerified(profile) {
+
+    if (!profile)
+        return false;
+
+    return (
+        String(profile.username)
+            .toLowerCase() === "connectx"
+    );
+}
+
+
+function verifiedBadge(
+    profile,
+    className = "verified-badge"
+) {
+
+    if (!isVerified(profile))
+        return "";
+
+    return `
+        <img
+            src="Verified ConnectX.jpg"
+            class="${className}"
+            alt="Verified"
+            title="Verified"
+        >
+    `;
+}
 
 
 /* ==========================================
@@ -43,6 +81,9 @@ let currentProfile = null;
 ========================================== */
 
 function initials(name) {
+
+    if (!name)
+        return "U";
 
     return name
         .split(" ")
@@ -56,7 +97,7 @@ function initials(name) {
 
 function escapeHTML(text) {
 
-    return String(text)
+    return String(text ?? "")
         .replaceAll("&", "&amp;")
         .replaceAll("<", "&lt;")
         .replaceAll(">", "&gt;")
@@ -73,23 +114,30 @@ function timeAgo(date) {
             (Date.now() - new Date(date)) / 1000
         );
 
+
     if (seconds < 60)
         return `${seconds}s`;
+
 
     const minutes =
         Math.floor(seconds / 60);
 
+
     if (minutes < 60)
         return `${minutes}m`;
+
 
     const hours =
         Math.floor(minutes / 60);
 
+
     if (hours < 24)
         return `${hours}h`;
 
+
     const days =
         Math.floor(hours / 24);
+
 
     return `${days}d`;
 
@@ -110,11 +158,19 @@ function authMessage(
             "authMessage"
         );
 
+
+    if (!element)
+        return;
+
+
     element.textContent =
         message;
 
+
     element.style.color =
-        error ? "#d00" : "#16803c";
+        error
+            ? "#d00"
+            : "#16803c";
 
 }
 
@@ -131,11 +187,13 @@ document
 
             event.preventDefault();
 
+
             const email =
                 document
                     .getElementById("loginEmail")
                     .value
                     .trim();
+
 
             const password =
                 document
@@ -147,13 +205,15 @@ document
                 data,
                 error
             } =
-                await supabaseClient.auth.signInWithPassword({
+                await supabaseClient
+                    .auth
+                    .signInWithPassword({
 
-                    email,
+                        email,
 
-                    password
+                        password
 
-                });
+                    });
 
 
             if (error) {
@@ -169,6 +229,7 @@ document
 
             currentUser =
                 data.user;
+
 
             await loadApp();
 
@@ -195,6 +256,7 @@ document
                     .value
                     .trim();
 
+
             const username =
                 document
                     .getElementById("registerUsername")
@@ -202,11 +264,13 @@ document
                     .trim()
                     .toLowerCase();
 
+
             const email =
                 document
                     .getElementById("registerEmail")
                     .value
                     .trim();
+
 
             const password =
                 document
@@ -232,13 +296,26 @@ document
             */
 
             const {
-                data: existing
+                data: existing,
+                error: usernameError
             } =
                 await supabaseClient
                     .from("profiles")
                     .select("id")
-                    .eq("username", username)
+                    .eq(
+                        "username",
+                        username
+                    )
                     .maybeSingle();
+
+
+            if (usernameError) {
+
+                console.error(
+                    usernameError
+                );
+
+            }
 
 
             if (existing) {
@@ -260,26 +337,28 @@ document
                 data,
                 error
             } =
-                await supabaseClient.auth.signUp({
+                await supabaseClient
+                    .auth
+                    .signUp({
 
-                    email,
+                        email,
 
-                    password,
+                        password,
 
-                    options: {
+                        options: {
 
-                        data: {
+                            data: {
 
-                            username,
+                                username,
 
-                            display_name:
-                                name
+                                display_name:
+                                    name
+
+                            }
 
                         }
 
-                    }
-
-                });
+                    });
 
 
             if (error) {
@@ -292,11 +371,6 @@ document
 
             }
 
-
-            /*
-                If email confirmation is disabled,
-                the user will immediately be logged in.
-            */
 
             if (data.user) {
 
@@ -312,6 +386,7 @@ document
 
                 currentUser =
                     data.user;
+
 
                 await loadApp();
 
@@ -343,10 +418,18 @@ document
                     "loginForm"
                 );
 
+
             const register =
                 document.getElementById(
                     "registerForm"
                 );
+
+
+            const switchButton =
+                document.getElementById(
+                    "switchAuth"
+                );
+
 
             if (
                 login.style.display ===
@@ -356,14 +439,12 @@ document
                 login.style.display =
                     "flex";
 
+
                 register.style.display =
                     "none";
 
-                document
-                    .getElementById(
-                        "switchAuth"
-                    )
-                    .textContent =
+
+                switchButton.textContent =
                     "Create an account";
 
             } else {
@@ -371,14 +452,12 @@ document
                 login.style.display =
                     "none";
 
+
                 register.style.display =
                     "flex";
 
-                document
-                    .getElementById(
-                        "switchAuth"
-                    )
-                    .textContent =
+
+                switchButton.textContent =
                     "Already have an account? Log in";
 
             }
@@ -404,7 +483,10 @@ async function loadApp() {
         await supabaseClient
             .from("profiles")
             .select("*")
-            .eq("id", currentUser.id)
+            .eq(
+                "id",
+                currentUser.id
+            )
             .single();
 
 
@@ -435,6 +517,7 @@ async function loadApp() {
 
     updateUserUI();
 
+
     await loadFeed();
 
     await loadSuggestions();
@@ -457,14 +540,29 @@ function updateUserUI() {
 
 
     const name =
-        currentProfile.display_name;
+        currentProfile.display_name ||
+        currentProfile.username ||
+        "User";
 
+
+    /*
+        Sidebar name
+    */
 
     document
         .getElementById("sidebarName")
-        .textContent =
-        name;
+        .innerHTML =
+        `
+            ${escapeHTML(name)}
+            ${verifiedBadge(
+                currentProfile
+            )}
+        `;
 
+
+    /*
+        Sidebar username
+    */
 
     document
         .getElementById("sidebarUsername")
@@ -473,17 +571,29 @@ function updateUserUI() {
         currentProfile.username;
 
 
+    /*
+        Sidebar avatar
+    */
+
     document
         .getElementById("sidebarAvatar")
         .textContent =
         initials(name);
 
 
+    /*
+        Composer avatar
+    */
+
     document
         .getElementById("composerAvatar")
         .textContent =
         initials(name);
 
+
+    /*
+        Profile avatar
+    */
 
     document
         .getElementById("profileAvatar")
@@ -540,9 +650,11 @@ async function loadFeed() {
         console.error(error);
 
         feed.innerHTML =
-            `<p class="error">
-                Failed to load posts.
-            </p>`;
+            `
+                <p class="error">
+                    Failed to load posts.
+                </p>
+            `;
 
         return;
 
@@ -552,9 +664,11 @@ async function loadFeed() {
     if (!posts.length) {
 
         feed.innerHTML =
-            `<div class="empty">
-                No posts yet.
-            </div>`;
+            `
+                <div class="empty">
+                    No posts yet.
+                </div>
+            `;
 
         return;
 
@@ -577,6 +691,10 @@ function renderPost(post) {
 
     const profile =
         post.profiles;
+
+
+    if (!profile)
+        return "";
 
 
     const likes =
@@ -624,6 +742,11 @@ function renderPost(post) {
                         }
 
                     </strong>
+
+
+                    ${verifiedBadge(
+                        profile
+                    )}
 
 
                     <span class="post-user">
@@ -675,6 +798,7 @@ function renderPost(post) {
                         }"
                         onclick="toggleLike('${post.id}')"
                     >
+
                         ${
                             liked
                                 ? "♥"
@@ -697,12 +821,14 @@ function renderPost(post) {
                     ${
                         own
                             ?
-                            `<button
-                                class="action"
-                                onclick="deletePost('${post.id}')"
-                            >
-                                🗑
-                            </button>`
+                            `
+                                <button
+                                    class="action"
+                                    onclick="deletePost('${post.id}')"
+                                >
+                                    🗑
+                                </button>
+                            `
                             :
                             ""
                     }
@@ -719,7 +845,7 @@ function renderPost(post) {
 
 
 /* ==========================================
-   CREATE POST
+   CHARACTER COUNT
 ========================================== */
 
 document
@@ -746,6 +872,10 @@ document
         }
     );
 
+
+/* ==========================================
+   CREATE POST BUTTONS
+========================================== */
 
 document
     .getElementById("postButton")
@@ -787,6 +917,10 @@ document
     );
 
 
+/* ==========================================
+   CREATE POST
+========================================== */
+
 async function createPost() {
 
     const input =
@@ -820,7 +954,9 @@ async function createPost() {
 
     if (error) {
 
-        alert(error.message);
+        alert(
+            error.message
+        );
 
         return;
 
@@ -828,6 +964,7 @@ async function createPost() {
 
 
     input.value = "";
+
 
     document
         .getElementById(
@@ -856,7 +993,10 @@ async function toggleLike(postId) {
         await supabaseClient
             .from("likes")
             .select("post_id")
-            .eq("post_id", postId)
+            .eq(
+                "post_id",
+                postId
+            )
             .eq(
                 "user_id",
                 currentUser.id
@@ -901,7 +1041,7 @@ async function toggleLike(postId) {
 
 
 /* ==========================================
-   DELETE
+   DELETE POST
 ========================================== */
 
 async function deletePost(postId) {
@@ -920,7 +1060,10 @@ async function deletePost(postId) {
         await supabaseClient
             .from("posts")
             .delete()
-            .eq("id", postId)
+            .eq(
+                "id",
+                postId
+            )
             .eq(
                 "user_id",
                 currentUser.id
@@ -929,7 +1072,9 @@ async function deletePost(postId) {
 
     if (error) {
 
-        alert(error.message);
+        alert(
+            error.message
+        );
 
         return;
 
@@ -955,7 +1100,8 @@ async function commentPost(postId) {
         );
 
 
-    if (!content ||
+    if (
+        !content ||
         !content.trim()
     )
         return;
@@ -982,14 +1128,18 @@ async function commentPost(postId) {
 
     if (error) {
 
-        alert(error.message);
+        alert(
+            error.message
+        );
 
         return;
 
     }
 
 
-    alert("Comment posted!");
+    alert(
+        "Comment posted!"
+    );
 
 }
 
@@ -1011,6 +1161,7 @@ async function sharePost(postId) {
         await navigator.clipboard.writeText(
             url
         );
+
 
         alert(
             "Post link copied!"
@@ -1061,7 +1212,9 @@ async function loadSuggestions() {
     } =
         await supabaseClient
             .from("follows")
-            .select("following_id")
+            .select(
+                "following_id"
+            )
             .eq(
                 "follower_id",
                 currentUser.id
@@ -1105,13 +1258,17 @@ async function loadSuggestions() {
 
                             <strong>
 
-                                ${
-                                    escapeHTML(
-                                        profile.display_name
-                                    )
-                                }
+                                ${escapeHTML(
+                                    profile.display_name
+                                )}
+
+                                ${verifiedBadge(
+                                    profile,
+                                    "suggestion-verified"
+                                )}
 
                             </strong>
+
 
                             <small
                                 style="
@@ -1119,9 +1276,11 @@ async function loadSuggestions() {
                                     color:var(--muted);
                                 "
                             >
+
                                 @${escapeHTML(
                                     profile.username
                                 )}
+
                             </small>
 
                         </div>
@@ -1145,10 +1304,10 @@ async function loadSuggestions() {
                                 followingIds.has(
                                     profile.id
                                 )
-                                ?
-                                "Following"
-                                :
-                                "Follow"
+                                    ?
+                                    "Following"
+                                    :
+                                    "Follow"
                             }
 
                         </button>
@@ -1173,7 +1332,9 @@ async function toggleFollow(userId) {
     } =
         await supabaseClient
             .from("follows")
-            .select("follower_id")
+            .select(
+                "follower_id"
+            )
             .eq(
                 "follower_id",
                 currentUser.id
@@ -1233,13 +1394,30 @@ async function loadProfile() {
         return;
 
 
+    /*
+        Profile name
+    */
+
     document
         .getElementById(
             "profileName"
         )
-        .textContent =
-        currentProfile.display_name;
+        .innerHTML =
+        `
+            ${escapeHTML(
+                currentProfile.display_name
+            )}
 
+            ${verifiedBadge(
+                currentProfile,
+                "profile-verified"
+            )}
+        `;
+
+
+    /*
+        Username
+    */
 
     document
         .getElementById(
@@ -1250,6 +1428,10 @@ async function loadProfile() {
         currentProfile.username;
 
 
+    /*
+        Bio
+    */
+
     document
         .getElementById(
             "profileBio"
@@ -1258,6 +1440,10 @@ async function loadProfile() {
         currentProfile.bio ||
         "Welcome to ConnectX!";
 
+
+    /*
+        Post count
+    */
 
     const {
         count: posts
@@ -1278,6 +1464,10 @@ async function loadProfile() {
             );
 
 
+    /*
+        Followers
+    */
+
     const {
         count: followers
     } =
@@ -1296,6 +1486,10 @@ async function loadProfile() {
                 currentUser.id
             );
 
+
+    /*
+        Following
+    */
 
     const {
         count: following
@@ -1339,6 +1533,10 @@ async function loadProfile() {
         .textContent =
         following || 0;
 
+
+    /*
+        User posts
+    */
 
     const {
         data
@@ -1433,9 +1631,16 @@ async function loadNotifications() {
     if (!data.length) {
 
         container.innerHTML =
-            `<div style="padding:30px;color:var(--muted)">
-                No notifications yet.
-            </div>`;
+            `
+                <div
+                    style="
+                        padding:30px;
+                        color:var(--muted)
+                    "
+                >
+                    No notifications yet.
+                </div>
+            `;
 
         return;
 
@@ -1464,6 +1669,7 @@ async function loadNotifications() {
                             )
                         }
 
+
                         <div
                             style="
                                 color:var(--muted);
@@ -1471,9 +1677,11 @@ async function loadNotifications() {
                                 margin-top:5px;
                             "
                         >
+
                             ${timeAgo(
                                 notification.created_at
                             )}
+
                         </div>
 
                     </div>
@@ -1502,7 +1710,11 @@ document
     .addEventListener(
         "focus",
         () => {
-            navigate("explore");
+
+            navigate(
+                "explore"
+            );
+
         }
     );
 
@@ -1526,7 +1738,8 @@ async function search() {
 
     if (!query) {
 
-        results.innerHTML = "";
+        results.innerHTML =
+            "";
 
         return;
 
@@ -1556,6 +1769,7 @@ async function search() {
                 content,
                 created_at,
                 profiles (
+                    id,
                     username,
                     display_name
                 ),
@@ -1573,7 +1787,13 @@ async function search() {
     let html = "";
 
 
-    if (users?.length) {
+    /*
+        PEOPLE
+    */
+
+    if (
+        users?.length
+    ) {
 
         html += `
             <h2 style="padding:20px">
@@ -1598,24 +1818,39 @@ async function search() {
 
                         </div>
 
+
                         <div>
 
                             <strong>
+
                                 ${escapeHTML(
                                     user.display_name
                                 )}
+
+                                ${verifiedBadge(
+                                    user
+                                )}
+
                             </strong>
 
-                            <div class="post-user">
+
+                            <div
+                                class="post-user"
+                            >
+
                                 @${escapeHTML(
                                     user.username
                                 )}
+
                             </div>
 
+
                             <div>
+
                                 ${escapeHTML(
                                     user.bio || ""
                                 )}
+
                             </div>
 
                         </div>
@@ -1629,7 +1864,13 @@ async function search() {
     }
 
 
-    if (posts?.length) {
+    /*
+        POSTS
+    */
+
+    if (
+        posts?.length
+    ) {
 
         html += `
             <h2 style="padding:20px">
@@ -1648,9 +1889,16 @@ async function search() {
     if (!html) {
 
         html =
-            `<div style="padding:30px;color:var(--muted)">
-                No results found.
-            </div>`;
+            `
+                <div
+                    style="
+                        padding:30px;
+                        color:var(--muted)
+                    "
+                >
+                    No results found.
+                </div>
+            `;
 
     }
 
@@ -1669,33 +1917,37 @@ document
     .querySelectorAll(
         "[data-page]"
     )
-    .forEach(button => {
+    .forEach(
+        button => {
 
-        button.addEventListener(
-            "click",
-            () => {
+            button.addEventListener(
+                "click",
+                () => {
 
-                navigate(
-                    button.dataset.page
-                );
+                    navigate(
+                        button.dataset.page
+                    );
 
-            }
-        );
+                }
+            );
 
-    });
+        }
+    );
 
 
 function navigate(page) {
 
     document
         .querySelectorAll(".page")
-        .forEach(element => {
+        .forEach(
+            element => {
 
-            element.classList.remove(
-                "active"
-            );
+                element.classList.remove(
+                    "active"
+                );
 
-        });
+            }
+        );
 
 
     const pageElement =
@@ -1704,39 +1956,47 @@ function navigate(page) {
         );
 
 
-    if (pageElement)
+    if (pageElement) {
+
         pageElement.classList.add(
             "active"
         );
 
+    }
+
 
     document
         .querySelectorAll(".nav")
-        .forEach(button => {
+        .forEach(
+            button => {
 
-            button.classList.remove(
-                "active"
-            );
-
-            if (
-                button.dataset.page ===
-                page
-            ) {
-
-                button.classList.add(
+                button.classList.remove(
                     "active"
                 );
 
-            }
 
-        });
+                if (
+                    button.dataset.page ===
+                    page
+                ) {
+
+                    button.classList.add(
+                        "active"
+                    );
+
+                }
+
+            }
+        );
 
 
     if (page === "home")
         loadFeed();
 
+
     if (page === "profile")
         loadProfile();
+
 
     if (page === "notifications")
         loadNotifications();
@@ -1756,7 +2016,10 @@ document
         "click",
         async () => {
 
-            await supabaseClient.auth.signOut();
+            await supabaseClient
+                .auth
+                .signOut();
+
 
             location.reload();
 
@@ -1779,7 +2042,9 @@ document
             document
                 .body
                 .classList
-                .toggle("dark");
+                .toggle(
+                    "dark"
+                );
 
         }
     );
@@ -1805,6 +2070,7 @@ async function checkSession() {
 
         currentUser =
             data.session.user;
+
 
         await loadApp();
 
@@ -1834,5 +2100,9 @@ supabaseClient
         }
     );
 
+
+/* ==========================================
+   START CONNECTX
+========================================== */
 
 checkSession();
