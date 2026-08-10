@@ -22,9 +22,13 @@
 body.dark {
     --background: #000000;
     --surface: #000000;
+
     --text: #f7f9f9;
+
     --muted: #8b98a5;
+
     --border: #2f3336;
+
     --hover: #16181c;
 }
 
@@ -43,7 +47,7 @@ body {
 
 
 /* =========================
-AUTH
+   AUTH
 ========================= */
 
 #authScreen {
@@ -134,31 +138,36 @@ AUTH
 
 
 /* =========================
-AUTH METHOD BUTTONS
+   EMAIL / PHONE SELECTOR
 ========================= */
 
 .auth-methods {
+    width: 100%;
+
     display: flex;
 
-    gap: 8px;
+    gap: 10px;
 
-    margin-bottom: 2px;
+    margin-bottom: 12px;
 }
 
 .auth-methods .method {
     flex: 1;
 
-    padding: 13px;
+    height: 48px;
 
     border: 0;
 
     border-radius: 25px;
 
-    background:
-        #f5f5f5;
+    background: #f5f8fa;
 
-    color:
-        #111;
+    color: #0f1419;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
 
     font-size: 15px;
 
@@ -167,57 +176,50 @@ AUTH METHOD BUTTONS
     cursor: pointer;
 
     transition:
-        0.2s ease;
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.15s ease;
 }
 
 .auth-methods .method:hover {
-    background:
-        #e9e9e9;
+    background: #e8eef2;
 }
 
 .auth-methods .method.active {
-    background:
-        var(--blue);
+    background: var(--blue);
 
-    color:
-        white;
+    color: white;
+}
+
+.auth-methods .method:active {
+    transform: scale(0.97);
 }
 
 
 /* =========================
-AUTH FORM
-========================= */
-
-.auth-card form {
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 12px;
-}
-
-
-/* =========================
-AUTH INPUTS
+   AUTH INPUTS
 ========================= */
 
 .auth-card input {
     width: 100%;
 
-    padding: 13px 15px;
+    height: 48px;
+
+    padding:
+        0 17px;
+
+    margin-bottom: 10px;
 
     border:
-        1px solid #ddd;
+        1px solid #d9dee3;
 
     border-radius: 25px;
 
     outline: none;
 
-    background:
-        #f5f8fa;
+    background: #f5f8fa;
 
-    color:
-        #111;
+    color: #0f1419;
 
     font-family:
         Arial,
@@ -227,110 +229,193 @@ AUTH INPUTS
     font-size: 15px;
 
     transition:
-        0.2s ease;
+        background 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
 .auth-card input:hover {
-    background:
-        #eef2f5;
+    background: #eef3f6;
 }
 
 .auth-card input:focus {
+    background: #ffffff;
+
     border-color:
         var(--blue);
 
-    background:
-        white;
-
     box-shadow:
-        0 0 0 2px #1877f222;
+        0 0 0 2px #1877f233;
 }
 
 .auth-card input::placeholder {
-    color:
-        #667085;
+    color: #667085;
 }
 
 
 /* =========================
-PHONE HELP TEXT
+   DISPLAY NAME
 ========================= */
+
+#authName {
+    display: block;
+}
+
+
+/* =========================
+   USERNAME
+========================= */
+
+#authUsername {
+    display: block;
+}
+
+
+/* =========================
+   EMAIL
+========================= */
+
+#emailInputContainer {
+    width: 100%;
+}
+
+#authEmail {
+    width: 100%;
+}
+
+
+/* =========================
+   PHONE
+========================= */
+
+#phoneInputContainer {
+    width: 100%;
+}
+
+#authPhone {
+    width: 100%;
+}
 
 #phoneInputContainer small {
     display: block;
 
-    margin-top: 6px;
-
-    margin-left: 5px;
+    margin:
+        -3px 0 10px 10px;
 
     color:
         #667085;
 
-    font-size:
-        12px;
+    font-size: 12px;
+
+    line-height: 1.4;
 }
 
 
 /* =========================
-AUTH BUTTON
+   SEND CODE
 ========================= */
 
-.auth-card form button {
-    border: 0;
-
-    padding: 13px;
-
-    border-radius: 25px;
-
-    color: white;
-
-    background:
-        var(--blue);
-
-    font-weight: 800;
-
-    cursor: pointer;
-}
-
-
-/* =========================
-SEND CODE
-========================= */
-
-#sendCodeButton,
-#verifyCodeButton {
+#sendCodeButton {
     width: 100%;
 
+    height: 48px;
+
+    padding:
+        0 18px;
+
+    margin-top: 2px;
+
     border: 0;
 
-    padding: 13px;
-
-    margin-top: 4px;
-
     border-radius: 25px;
-
-    color: white;
 
     background:
         var(--blue);
 
-    font-weight: 800;
+    color: white;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
 
     font-size: 15px;
+
+    font-weight: 900;
 
     cursor: pointer;
 
     transition:
-        0.2s ease;
+        background 0.2s ease,
+        transform 0.15s ease;
 }
 
-#sendCodeButton:hover,
+#sendCodeButton:hover {
+    background:
+        #166fe5;
+}
+
+#sendCodeButton:active {
+    transform:
+        scale(0.98);
+}
+
+
+/* =========================
+   OTP
+========================= */
+
+#otpContainer {
+    width: 100%;
+}
+
+#otpInput {
+    width: 100%;
+
+    height: 48px;
+
+    margin-top: 10px;
+
+    margin-bottom: 10px;
+}
+
+#verifyCodeButton {
+    width: 100%;
+
+    height: 48px;
+
+    padding: 0 18px;
+
+    border: 0;
+
+    border-radius: 25px;
+
+    background:
+        var(--blue);
+
+    color: white;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size: 15px;
+
+    font-weight: 900;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.15s ease;
+}
+
 #verifyCodeButton:hover {
-    filter:
-        brightness(0.92);
+    background:
+        #166fe5;
 }
 
-#sendCodeButton:active,
 #verifyCodeButton:active {
     transform:
         scale(0.98);
@@ -338,51 +423,49 @@ SEND CODE
 
 
 /* =========================
-OTP
+   RESEND
 ========================= */
 
-#otpContainer {
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 8px;
-}
-
-#otpContainer input {
-    margin-top: 10px;
-}
-
-
-/* =========================
-RESEND
-========================= */
-
-.switch {
+#resendCodeButton {
     width: 100%;
+
+    height: 42px;
+
+    margin-top: 10px;
 
     border: 0;
 
-    background: none;
+    border-radius: 25px;
+
+    background:
+        transparent;
 
     color:
         var(--blue);
 
-    margin-top: 10px;
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size: 14px;
+
+    font-weight: 800;
 
     cursor: pointer;
 
-    font-weight: 700;
+    transition:
+        background 0.2s ease;
 }
 
-.switch:hover {
-    text-decoration:
-        underline;
+#resendCodeButton:hover {
+    background:
+        #f5f8fa;
 }
 
 
 /* =========================
-AUTH MESSAGE
+   AUTH MESSAGE
 ========================= */
 
 .auth-message {
@@ -390,12 +473,13 @@ AUTH MESSAGE
 
     text-align: center;
 
-    color: #d00;
+    color:
+        #d00;
 }
 
 
 /* =========================
-LAYOUT
+   LAYOUT
 ========================= */
 
 #app {
@@ -419,7 +503,7 @@ LAYOUT
 
 
 /* =========================
-SIDEBAR
+   SIDEBAR
 ========================= */
 
 .sidebar {
@@ -484,7 +568,8 @@ SIDEBAR
 
     background: transparent;
 
-    color: var(--text);
+    color:
+        var(--text);
 
     padding: 14px;
 
@@ -539,12 +624,13 @@ SIDEBAR
 .account small {
     display: block;
 
-    color: var(--muted);
+    color:
+        var(--muted);
 }
 
 
 /* =========================
-AVATAR
+   AVATAR
 ========================= */
 
 .avatar {
@@ -576,7 +662,7 @@ AVATAR
 
 
 /* =========================
-MAIN
+   MAIN
 ========================= */
 
 main {
@@ -599,7 +685,8 @@ header {
 
     z-index: 5;
 
-    padding: 18px 20px;
+    padding:
+        18px 20px;
 
     font-size: 20px;
 
@@ -621,7 +708,7 @@ header {
 
 
 /* =========================
-COMPOSER
+   COMPOSER
 ========================= */
 
 .composer {
@@ -650,9 +737,11 @@ COMPOSER
 
     resize: none;
 
-    background: transparent;
+    background:
+        transparent;
 
-    color: var(--text);
+    color:
+        var(--text);
 
     font-size: 18px;
 }
@@ -666,7 +755,8 @@ COMPOSER
 }
 
 #characterCount {
-    color: var(--muted);
+    color:
+        var(--muted);
 
     font-size: 13px;
 }
@@ -676,7 +766,8 @@ COMPOSER
 
     border-radius: 25px;
 
-    padding: 9px 20px;
+    padding:
+        9px 20px;
 
     color: white;
 
@@ -690,7 +781,7 @@ COMPOSER
 
 
 /* =========================
-POSTS
+   POSTS
 ========================= */
 
 .post {
@@ -726,7 +817,8 @@ POSTS
 }
 
 .post-user {
-    color: var(--muted);
+    color:
+        var(--muted);
 }
 
 .post-content {
@@ -752,9 +844,11 @@ POSTS
 .action {
     border: 0;
 
-    background: transparent;
+    background:
+        transparent;
 
-    color: var(--muted);
+    color:
+        var(--muted);
 
     cursor: pointer;
 
@@ -762,16 +856,18 @@ POSTS
 }
 
 .action:hover {
-    color: var(--blue);
+    color:
+        var(--blue);
 }
 
 .action.liked {
-    color: #ef4444;
+    color:
+        #ef4444;
 }
 
 
 /* =========================
-RIGHT
+   RIGHT
 ========================= */
 
 .rightbar {
@@ -788,7 +884,8 @@ RIGHT
     background:
         var(--hover);
 
-    padding: 10px 15px;
+    padding:
+        10px 15px;
 
     border-radius: 25px;
 }
@@ -800,9 +897,11 @@ RIGHT
 
     outline: 0;
 
-    background: transparent;
+    background:
+        transparent;
 
-    color: var(--text);
+    color:
+        var(--text);
 }
 
 .card {
@@ -822,7 +921,7 @@ RIGHT
 
 
 /* =========================
-PROFILE
+   PROFILE
 ========================= */
 
 .profile-cover {
@@ -838,7 +937,8 @@ PROFILE
 }
 
 .profile {
-    padding: 0 20px 20px;
+    padding:
+        0 20px 20px;
 }
 
 .profile-avatar {
@@ -848,7 +948,8 @@ PROFILE
 
     margin-top: -45px;
 
-    border: 5px solid var(--background);
+    border:
+        5px solid var(--background);
 
     font-size: 28px;
 }
@@ -858,7 +959,8 @@ PROFILE
 }
 
 .muted {
-    color: var(--muted);
+    color:
+        var(--muted);
 }
 
 .stats {
@@ -868,16 +970,18 @@ PROFILE
 
     margin-top: 15px;
 
-    color: var(--muted);
+    color:
+        var(--muted);
 }
 
 .stats strong {
-    color: var(--text);
+    color:
+        var(--text);
 }
 
 
 /* =========================
-MOBILE
+   MOBILE
 ========================= */
 
 .mobile-nav {
@@ -946,9 +1050,11 @@ MOBILE
     .mobile-nav button {
         border: 0;
 
-        background: transparent;
+        background:
+            transparent;
 
-        color: var(--text);
+        color:
+            var(--text);
 
         font-size: 20px;
     }
