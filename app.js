@@ -1,77 +1,55 @@
-/* =====================================================
+/* =========================================================
    CONNECTX
-   SUPABASE + AUTH + SOCIAL FEATURES
-===================================================== */
+   Clean Supabase Starter
+========================================================= */
 
 
-/* =====================================================
-   SUPABASE
-===================================================== */
+/* =========================================================
+   SUPABASE CONFIG
+========================================================= */
 
 const SUPABASE_URL =
     "https://onvmeffhmruzshqlwakx.supabase.co";
 
+
 const SUPABASE_KEY =
-    "sb_publishable_9VzEW8DurRpM51GgQ282BQ_qQ3e1WkX";
-
-let supabaseClient;
+    "YOUR_SUPABASE_PUBLISHABLE_KEY";
 
 
-/* =====================================================
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+/* =========================================================
    GLOBAL STATE
-===================================================== */
+========================================================= */
 
 let currentUser = null;
+
 let currentProfile = null;
 
 
-/* =====================================================
-   STARTUP
-===================================================== */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    async () => {
-
-        if (!window.supabase) {
-
-            showFatalError(
-                "ConnectX could not load Supabase. Please refresh the page."
-            );
-
-            return;
-        }
-
-        supabaseClient =
-            window.supabase.createClient(
-                SUPABASE_URL,
-                SUPABASE_KEY
-            );
-
-        setupEvents();
-
-        await checkSession();
-
-    }
-);
-
-
-/* =====================================================
+/* =========================================================
    HELPERS
-===================================================== */
+========================================================= */
 
 function initials(name) {
 
-    if (!name)
+    if (!name) {
         return "U";
+    }
 
-    return String(name)
-        .trim()
-        .split(/\s+/)
-        .map(x => x[0])
+    return name
+        .split(" ")
+        .filter(Boolean)
+        .map(word => word[0])
         .join("")
         .slice(0, 2)
         .toUpperCase();
+
 }
 
 
@@ -83,6 +61,7 @@ function escapeHTML(text) {
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
+
 }
 
 
@@ -90,52 +69,59 @@ function timeAgo(date) {
 
     const seconds =
         Math.floor(
-            (Date.now() -
-                new Date(date).getTime()) /
-            1000
+            (Date.now() - new Date(date).getTime()) / 1000
         );
 
-    if (seconds < 60)
+
+    if (seconds < 60) {
         return `${Math.max(seconds, 0)}s`;
+    }
+
 
     const minutes =
         Math.floor(seconds / 60);
 
-    if (minutes < 60)
+
+    if (minutes < 60) {
         return `${minutes}m`;
+    }
+
 
     const hours =
         Math.floor(minutes / 60);
 
-    if (hours < 24)
+
+    if (hours < 24) {
         return `${hours}h`;
+    }
+
 
     const days =
         Math.floor(hours / 24);
 
-    return `${days}d`;
+
+    if (days < 30) {
+        return `${days}d`;
+    }
+
+
+    const months =
+        Math.floor(days / 30);
+
+
+    if (months < 12) {
+        return `${months}mo`;
+    }
+
+
+    return `${Math.floor(months / 12)}y`;
+
 }
 
 
-function showFatalError(message) {
-
-    const auth =
-        document.getElementById(
-            "authMessage"
-        );
-
-    if (auth)
-        auth.textContent = message;
-}
-
-
-/* =====================================================
-   AUTH MESSAGE
-===================================================== */
-
-function authMessage(
+function showAuthMessage(
     message,
-    error = true
+    success = false
 ) {
 
     const element =
@@ -143,1046 +129,383 @@ function authMessage(
             "authMessage"
         );
 
-    if (!element)
-        return;
 
     element.textContent =
         message;
 
+
     element.style.color =
-        error
-            ? "#dc2626"
-            : "#16803c";
+        success
+            ? "#16803c"
+            : "#d00";
+
 }
 
 
-/* =====================================================
-   LOADING BUTTON
-===================================================== */
+/* =========================================================
+   VERIFIED BADGE
+========================================================= */
 
-function setButtonLoading(
-    button,
-    loading,
-    loadingText
-) {
+function isVerified(profile) {
 
-    if (!button)
-        return;
+    if (!profile) {
+        return false;
+    }
 
-    if (loading) {
 
-        button.dataset.originalText =
-            button.textContent;
+    if (
+        profile.username?.toLowerCase() ===
+        "connectx"
+    ) {
 
-        button.textContent =
-            loadingText;
-
-        button.disabled = true;
-
-    } else {
-
-        button.textContent =
-            button.dataset.originalText ||
-            button.textContent;
-
-        button.disabled = false;
+        return true;
 
     }
-}
 
 
-/* =====================================================
-   PASSWORD TOGGLE
-===================================================== */
-
-function setupPasswordToggle(
-    inputId,
-    buttonId
-) {
-
-    const input =
-        document.getElementById(inputId);
-
-    const button =
-        document.getElementById(buttonId);
-
-    if (!input || !button)
-        return;
-
-    button.addEventListener(
-        "click",
-        () => {
-
-            const showing =
-                input.type === "text";
-
-            input.type =
-                showing
-                    ? "password"
-                    : "text";
-
-            button.textContent =
-                showing
-                    ? "Show"
-                    : "Hide";
-
-            button.setAttribute(
-                "aria-label",
-                showing
-                    ? "Show password"
-                    : "Hide password"
-            );
-
-        }
-    );
-}
-
-
-/* =====================================================
-   SETUP EVENTS
-===================================================== */
-
-function setupEvents() {
-
-    setupPasswordToggle(
-        "loginPassword",
-        "loginPasswordToggle"
-    );
-
-    setupPasswordToggle(
-        "registerPassword",
-        "registerPasswordToggle"
-    );
-
-
-    /* Login */
-
-    document
-        .getElementById("loginForm")
-        .addEventListener(
-            "submit",
-            login
-        );
-
-
-    /* Register */
-
-    document
-        .getElementById("registerForm")
-        .addEventListener(
-            "submit",
-            register
-        );
-
-
-    /* Switch */
-
-    document
-        .getElementById("switchAuth")
-        .addEventListener(
-            "click",
-            switchAuth
-        );
-
-
-    /* Forgot password */
-
-    document
-        .getElementById("forgotPassword")
-        .addEventListener(
-            "click",
-            openReset
-        );
-
-
-    document
-        .getElementById("closeReset")
-        .addEventListener(
-            "click",
-            closeReset
-        );
-
-
-    document
-        .getElementById("sendReset")
-        .addEventListener(
-            "click",
-            sendPasswordReset
-        );
-
-
-    /* Username */
-
-    document
-        .getElementById("registerUsername")
-        .addEventListener(
-            "input",
-            checkUsername
-        );
-
-
-    /* Password strength */
-
-    document
-        .getElementById("registerPassword")
-        .addEventListener(
-            "input",
-            updatePasswordStrength
-        );
-
-
-    /* Posting */
-
-    document
-        .getElementById("postInput")
-        .addEventListener(
-            "input",
-            updateCharacterCount
-        );
-
-
-    document
-        .getElementById("postButton")
-        .addEventListener(
-            "click",
-            createPost
-        );
-
-
-    document
-        .getElementById("sidebarPostButton")
-        .addEventListener(
-            "click",
-            focusComposer
-        );
-
-
-    document
-        .getElementById("mobilePost")
-        .addEventListener(
-            "click",
-            focusComposer
-        );
-
-
-    /* Logout */
-
-    document
-        .getElementById("logoutButton")
-        .addEventListener(
-            "click",
-            logout
-        );
-
-
-    /* Dark mode */
-
-    document
-        .getElementById("darkModeButton")
-        .addEventListener(
-            "click",
-            toggleDarkMode
-        );
-
-
-    /* Search */
-
-    document
-        .getElementById("searchInput")
-        .addEventListener(
-            "input",
-            search
-        );
-
-
-    document
-        .getElementById("rightSearch")
-        .addEventListener(
-            "focus",
-            () => navigate("explore")
-        );
-
-
-    /* Navigation */
-
-    document
-        .querySelectorAll("[data-page]")
-        .forEach(button => {
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    navigate(
-                        button.dataset.page
-                    );
-
-                }
-            );
-
-        });
+    return profile.verified === true;
 
 }
 
 
-/* =====================================================
-   LOGIN
-===================================================== */
+function verifiedBadge(profile) {
 
-async function login(event) {
-
-    event.preventDefault();
-
-    const button =
-        document.getElementById(
-            "loginButton"
-        );
-
-    const email =
-        document
-            .getElementById("loginEmail")
-            .value
-            .trim();
-
-    const password =
-        document.getElementById(
-            "loginPassword"
-        ).value;
-
-    authMessage("");
-
-    setButtonLoading(
-        button,
-        true,
-        "Logging in..."
-    );
-
-    try {
-
-        const {
-            data,
-            error
-        } =
-            await supabaseClient.auth
-                .signInWithPassword({
-                    email,
-                    password
-                });
+    if (!isVerified(profile)) {
+        return "";
+    }
 
 
-        if (error)
-            throw error;
+    return `
+        <img
+            class="inline-verified"
+            src="assets/Verified ConnectX.jpg"
+            alt="Verified"
+            title="Verified"
+        >
+    `;
+
+}
 
 
-        currentUser =
-            data.user;
+/* =========================================================
+   AUTH - LOGIN
+========================================================= */
+
+document
+    .getElementById("loginForm")
+    .addEventListener(
+        "submit",
+        async event => {
+
+            event.preventDefault();
 
 
-        await loadApp();
+            const email =
+                document
+                    .getElementById("loginEmail")
+                    .value
+                    .trim();
 
-    } catch (error) {
 
-        console.error(error);
+            const password =
+                document
+                    .getElementById("loginPassword")
+                    .value;
 
-        authMessage(
-            getFriendlyAuthError(
+
+            showAuthMessage("");
+
+
+            const {
+                data,
                 error
-            )
-        );
+            } =
+                await supabaseClient.auth
+                    .signInWithPassword({
 
-    } finally {
+                        email,
 
-        setButtonLoading(
-            button,
-            false
-        );
+                        password
 
-    }
-
-}
+                    });
 
 
-/* =====================================================
-   REGISTER
-===================================================== */
+            if (error) {
 
-async function register(event) {
+                showAuthMessage(
+                    error.message
+                );
 
-    event.preventDefault();
+                return;
 
-    const button =
-        document.getElementById(
-            "registerButton"
-        );
+            }
 
-    const name =
-        document
-            .getElementById("registerName")
-            .value
-            .trim();
-
-    const username =
-        document
-            .getElementById(
-                "registerUsername"
-            )
-            .value
-            .trim()
-            .toLowerCase();
-
-    const email =
-        document
-            .getElementById("registerEmail")
-            .value
-            .trim();
-
-    const password =
-        document
-            .getElementById("registerPassword")
-            .value;
-
-
-    authMessage("");
-
-
-    if (name.length < 1) {
-
-        authMessage(
-            "Please enter your display name."
-        );
-
-        return;
-    }
-
-
-    if (
-        !/^[a-z0-9_]+$/.test(
-            username
-        )
-    ) {
-
-        authMessage(
-            "Username can only contain letters, numbers, and underscores."
-        );
-
-        return;
-    }
-
-
-    if (
-        username.length < 3
-    ) {
-
-        authMessage(
-            "Username must be at least 3 characters."
-        );
-
-        return;
-    }
-
-
-    if (
-        password.length < 6
-    ) {
-
-        authMessage(
-            "Password must be at least 6 characters."
-        );
-
-        return;
-    }
-
-
-    setButtonLoading(
-        button,
-        true,
-        "Creating account..."
-    );
-
-
-    try {
-
-        /* Check username */
-
-        const {
-            data: existing,
-            error: usernameError
-        } =
-            await supabaseClient
-                .from("profiles")
-                .select("id")
-                .eq(
-                    "username",
-                    username
-                )
-                .maybeSingle();
-
-
-        if (usernameError)
-            throw usernameError;
-
-
-        if (existing) {
-
-            throw new Error(
-                "That username is already taken."
-            );
-
-        }
-
-
-        /* Create account */
-
-        const {
-            data,
-            error
-        } =
-            await supabaseClient.auth
-                .signUp({
-
-                    email,
-
-                    password,
-
-                    options: {
-
-                        emailRedirectTo:
-                            `${window.location.origin}/verify`,
-
-                        data: {
-
-                            username,
-
-                            display_name:
-                                name
-
-                        }
-
-                    }
-
-                });
-
-
-        if (error)
-            throw error;
-
-
-        if (data.session) {
 
             currentUser =
                 data.user;
 
+
             await loadApp();
 
-        } else {
-
-            authMessage(
-                "Account created! Check your email to verify your ConnectX account.",
-                false
-            );
-
         }
-
-    } catch (error) {
-
-        console.error(error);
-
-        authMessage(
-            getFriendlyAuthError(
-                error
-            )
-        );
-
-    } finally {
-
-        setButtonLoading(
-            button,
-            false
-        );
-
-    }
-
-}
-
-
-/* =====================================================
-   FRIENDLY AUTH ERRORS
-===================================================== */
-
-function getFriendlyAuthError(error) {
-
-    const message =
-        String(
-            error?.message ||
-            error ||
-            ""
-        );
-
-    const lower =
-        message.toLowerCase();
-
-
-    if (
-        lower.includes(
-            "invalid login credentials"
-        )
-    ) {
-
-        return "Incorrect email or password.";
-
-    }
-
-
-    if (
-        lower.includes(
-            "email not confirmed"
-        )
-    ) {
-
-        return "Please verify your email before logging in.";
-
-    }
-
-
-    if (
-        lower.includes(
-            "user already registered"
-        )
-    ) {
-
-        return "An account with this email already exists.";
-
-    }
-
-
-    if (
-        lower.includes(
-            "password should be at least"
-        )
-    ) {
-
-        return "Your password is too short.";
-
-    }
-
-
-    return message || "Something went wrong.";
-}
-
-
-/* =====================================================
-   SWITCH AUTH
-===================================================== */
-
-function switchAuth() {
-
-    const loginForm =
-        document.getElementById(
-            "loginForm"
-        );
-
-    const registerForm =
-        document.getElementById(
-            "registerForm"
-        );
-
-    const title =
-        document.getElementById(
-            "authTitle"
-        );
-
-    const subtitle =
-        document.getElementById(
-            "authSubtitle"
-        );
-
-    const button =
-        document.getElementById(
-            "switchAuth"
-        );
-
-
-    const showingLogin =
-        !loginForm.classList.contains(
-            "hidden"
-        );
-
-
-    authMessage("");
-
-
-    if (showingLogin) {
-
-        loginForm.classList.add(
-            "hidden"
-        );
-
-        registerForm.classList.remove(
-            "hidden"
-        );
-
-        title.textContent =
-            "Create your account";
-
-        subtitle.textContent =
-            "Join ConnectX today.";
-
-        button.textContent =
-            "Already have an account? Log in";
-
-    } else {
-
-        registerForm.classList.add(
-            "hidden"
-        );
-
-        loginForm.classList.remove(
-            "hidden"
-        );
-
-        title.textContent =
-            "Welcome to ConnectX";
-
-        subtitle.textContent =
-            "Connect with everyone.";
-
-        button.textContent =
-            "Create an account";
-
-    }
-
-}
-
-
-/* =====================================================
-   USERNAME CHECK
-===================================================== */
-
-let usernameTimer;
-
-async function checkUsername() {
-
-    clearTimeout(usernameTimer);
-
-    const input =
-        document.getElementById(
-            "registerUsername"
-        );
-
-    const status =
-        document.getElementById(
-            "usernameStatus"
-        );
-
-    const username =
-        input.value
-            .trim()
-            .toLowerCase();
-
-
-    if (!username) {
-
-        status.textContent = "";
-
-        return;
-    }
-
-
-    if (
-        !/^[a-z0-9_]+$/.test(
-            username
-        )
-    ) {
-
-        status.textContent =
-            "Letters, numbers and underscores only.";
-
-        status.style.color =
-            "#dc2626";
-
-        return;
-    }
-
-
-    if (username.length < 3) {
-
-        status.textContent =
-            "At least 3 characters.";
-
-        status.style.color =
-            "#667085";
-
-        return;
-    }
-
-
-    status.textContent =
-        "Checking...";
-
-    status.style.color =
-        "#667085";
-
-
-    usernameTimer =
-        setTimeout(
-            async () => {
-
-                try {
-
-                    const {
-                        data,
-                        error
-                    } =
-                        await supabaseClient
-                            .from("profiles")
-                            .select("id")
-                            .eq(
-                                "username",
-                                username
-                            )
-                            .maybeSingle();
-
-
-                    if (error)
-                        throw error;
-
-
-                    if (data) {
-
-                        status.textContent =
-                            "Username is already taken.";
-
-                        status.style.color =
-                            "#dc2626";
-
-                    } else {
-
-                        status.textContent =
-                            "Username is available.";
-
-                        status.style.color =
-                            "#16803c";
-
-                    }
-
-                } catch (error) {
-
-                    console.error(error);
-
-                    status.textContent = "";
-
-                }
-
-            },
-            400
-        );
-
-}
-
-
-/* =====================================================
-   PASSWORD STRENGTH
-===================================================== */
-
-function updatePasswordStrength() {
-
-    const password =
-        document.getElementById(
-            "registerPassword"
-        ).value;
-
-    const element =
-        document.getElementById(
-            "passwordStrength"
-        );
-
-
-    if (!password) {
-
-        element.textContent = "";
-
-        return;
-    }
-
-
-    let score = 0;
-
-
-    if (password.length >= 6)
-        score++;
-
-    if (password.length >= 10)
-        score++;
-
-    if (/[A-Z]/.test(password))
-        score++;
-
-    if (/[0-9]/.test(password))
-        score++;
-
-    if (/[^A-Za-z0-9]/.test(password))
-        score++;
-
-
-    if (score <= 1) {
-
-        element.textContent =
-            "Weak password";
-
-        element.style.color =
-            "#dc2626";
-
-    } else if (score <= 3) {
-
-        element.textContent =
-            "Medium password";
-
-        element.style.color =
-            "#ca8a04";
-
-    } else {
-
-        element.textContent =
-            "Strong password";
-
-        element.style.color =
-            "#16803c";
-
-    }
-
-}
-
-
-/* =====================================================
-   PASSWORD RESET
-===================================================== */
-
-function openReset() {
-
-    document
-        .getElementById("resetModal")
-        .classList.remove(
-            "hidden"
-        );
-
-    const email =
-        document
-            .getElementById("loginEmail")
-            .value
-            .trim();
-
-    document
-        .getElementById("resetEmail")
-        .value =
-        email;
-
-}
-
-
-function closeReset() {
-
-    document
-        .getElementById("resetModal")
-        .classList.add(
-            "hidden"
-        );
-
-}
-
-
-async function sendPasswordReset() {
-
-    const email =
-        document
-            .getElementById("resetEmail")
-            .value
-            .trim();
-
-    const message =
-        document.getElementById(
-            "resetMessage"
-        );
-
-    const button =
-        document.getElementById(
-            "sendReset"
-        );
-
-
-    if (!email) {
-
-        message.textContent =
-            "Enter your email.";
-
-        message.style.color =
-            "#dc2626";
-
-        return;
-    }
-
-
-    setButtonLoading(
-        button,
-        true,
-        "Sending..."
     );
 
 
-    try {
+/* =========================================================
+   AUTH - REGISTER
+========================================================= */
 
-        const {
-            error
-        } =
-            await supabaseClient.auth
-                .resetPasswordForEmail(
-                    email,
-                    {
-                        redirectTo:
-                            `${window.location.origin}/reset`
-                    }
+document
+    .getElementById("registerForm")
+    .addEventListener(
+        "submit",
+        async event => {
+
+            event.preventDefault();
+
+
+            const name =
+                document
+                    .getElementById("registerName")
+                    .value
+                    .trim();
+
+
+            const username =
+                document
+                    .getElementById("registerUsername")
+                    .value
+                    .trim()
+                    .toLowerCase();
+
+
+            const email =
+                document
+                    .getElementById("registerEmail")
+                    .value
+                    .trim();
+
+
+            const password =
+                document
+                    .getElementById("registerPassword")
+                    .value;
+
+
+            if (username.length < 3) {
+
+                showAuthMessage(
+                    "Username must be at least 3 characters."
+                );
+
+                return;
+
+            }
+
+
+            if (
+                !/^[a-z0-9_]+$/.test(
+                    username
+                )
+            ) {
+
+                showAuthMessage(
+                    "Username can only contain letters, numbers and underscores."
+                );
+
+                return;
+
+            }
+
+
+            if (username === "connectx") {
+
+                showAuthMessage(
+                    "That username is reserved."
+                );
+
+                return;
+
+            }
+
+
+            const {
+                data: existing,
+                error: usernameError
+            } =
+                await supabaseClient
+                    .from("profiles")
+                    .select("id")
+                    .eq(
+                        "username",
+                        username
+                    )
+                    .maybeSingle();
+
+
+            if (usernameError) {
+
+                showAuthMessage(
+                    usernameError.message
+                );
+
+                return;
+
+            }
+
+
+            if (existing) {
+
+                showAuthMessage(
+                    "That username is already taken."
+                );
+
+                return;
+
+            }
+
+
+            const {
+                data,
+                error
+            } =
+                await supabaseClient.auth
+                    .signUp({
+
+                        email,
+
+                        password,
+
+                        options: {
+
+                            emailRedirectTo:
+                                `${window.location.origin}/verify.html`,
+
+                            data: {
+
+                                username,
+
+                                display_name:
+                                    name
+
+                            }
+
+                        }
+
+                    });
+
+
+            if (error) {
+
+                showAuthMessage(
+                    error.message
+                );
+
+                return;
+
+            }
+
+
+            if (!data.session) {
+
+                showAuthMessage(
+                    "Account created! Check your email to verify your account.",
+                    true
+                );
+
+                return;
+
+            }
+
+
+            currentUser =
+                data.user;
+
+
+            await loadApp();
+
+        }
+    );
+
+
+/* =========================================================
+   SWITCH LOGIN / REGISTER
+========================================================= */
+
+document
+    .getElementById("switchAuth")
+    .addEventListener(
+        "click",
+        () => {
+
+            const loginForm =
+                document.getElementById(
+                    "loginForm"
                 );
 
 
-        if (error)
-            throw error;
+            const registerForm =
+                document.getElementById(
+                    "registerForm"
+                );
 
 
-        message.textContent =
-            "Password reset email sent.";
-
-        message.style.color =
-            "#16803c";
-
-    } catch (error) {
-
-        message.textContent =
-            getFriendlyAuthError(
-                error
-            );
-
-        message.style.color =
-            "#dc2626";
-
-    } finally {
-
-        setButtonLoading(
-            button,
-            false
-        );
-
-    }
-
-}
+            const switchButton =
+                document.getElementById(
+                    "switchAuth"
+                );
 
 
-/* =====================================================
-   LOAD APP
-===================================================== */
+            const showingLogin =
+                !loginForm.classList.contains(
+                    "hidden"
+                );
+
+
+            if (showingLogin) {
+
+                loginForm.classList.add(
+                    "hidden"
+                );
+
+                registerForm.classList.remove(
+                    "hidden"
+                );
+
+                switchButton.textContent =
+                    "Already have an account? Log in";
+
+            } else {
+
+                registerForm.classList.add(
+                    "hidden"
+                );
+
+                loginForm.classList.remove(
+                    "hidden"
+                );
+
+                switchButton.textContent =
+                    "Create an account";
+
+            }
+
+
+            showAuthMessage("");
+
+        }
+    );
+
+
+/* =========================================================
+   LOAD APPLICATION
+========================================================= */
 
 async function loadApp() {
 
-    if (!currentUser)
+    if (!currentUser) {
         return;
+    }
 
 
     const {
@@ -1196,100 +519,41 @@ async function loadApp() {
                 "id",
                 currentUser.id
             )
-            .maybeSingle();
+            .single();
 
 
     if (error) {
 
-        console.error(error);
+        console.error(
+            "Profile error:",
+            error
+        );
 
-        authMessage(
-            "Your account loaded, but your profile could not be loaded."
+        showAuthMessage(
+            "Your account exists, but your profile could not be loaded."
         );
 
         return;
-    }
-
-
-    /*
-        Create missing profile if needed.
-    */
-
-    if (!profile) {
-
-        const metadata =
-            currentUser.user_metadata ||
-            {};
-
-        const username =
-            metadata.username ||
-            `user_${currentUser.id.slice(0, 8)}`;
-
-        const displayName =
-            metadata.display_name ||
-            "ConnectX User";
-
-
-        const {
-            data: created,
-            error: createError
-        } =
-            await supabaseClient
-                .from("profiles")
-                .insert({
-
-                    id:
-                        currentUser.id,
-
-                    username,
-
-                    display_name:
-                        displayName
-
-                })
-                .select()
-                .single();
-
-
-        if (createError) {
-
-            console.error(
-                createError
-            );
-
-            authMessage(
-                "Could not create your ConnectX profile."
-            );
-
-            return;
-        }
-
-
-        currentProfile =
-            created;
-
-    } else {
-
-        currentProfile =
-            profile;
 
     }
+
+
+    currentProfile =
+        profile;
 
 
     document
         .getElementById("authScreen")
-        .style.display =
-        "none";
+        .classList.add("hidden");
 
 
     document
         .getElementById("app")
-        .classList.remove(
-            "app-hidden"
-        );
+        .classList.remove("hidden");
 
 
     updateUserUI();
+
 
     await loadFeed();
 
@@ -1299,17 +563,20 @@ async function loadApp() {
 
     await loadNotifications();
 
+    await loadBookmarks();
+
 }
 
 
-/* =====================================================
-   USER UI
-===================================================== */
+/* =========================================================
+   UPDATE USER UI
+========================================================= */
 
 function updateUserUI() {
 
-    if (!currentProfile)
+    if (!currentProfile) {
         return;
+    }
 
 
     const name =
@@ -1318,68 +585,74 @@ function updateUserUI() {
 
 
     document
-        .getElementById(
-            "sidebarName"
-        )
+        .getElementById("sidebarName")
         .textContent =
         name;
 
 
     document
-        .getElementById(
-            "sidebarUsername"
-        )
+        .getElementById("sidebarUsername")
         .textContent =
-        "@" +
-        currentProfile.username;
+        `@${currentProfile.username}`;
 
 
     document
-        .getElementById(
-            "sidebarAvatar"
-        )
+        .getElementById("sidebarAvatar")
         .textContent =
         initials(name);
 
 
     document
-        .getElementById(
-            "composerAvatar"
-        )
+        .getElementById("composerAvatar")
         .textContent =
         initials(name);
 
 
     document
-        .getElementById(
-            "profileAvatar"
-        )
+        .getElementById("profileAvatar")
         .textContent =
         initials(name);
+
+
+    document
+        .getElementById("profileName")
+        .textContent =
+        name;
+
+
+    document
+        .getElementById("profileUsername")
+        .textContent =
+        `@${currentProfile.username}`;
+
+
+    document
+        .getElementById("profileBio")
+        .textContent =
+        currentProfile.bio ||
+        "Welcome to ConnectX!";
 
 
     const verified =
-        currentProfile.is_verified === true ||
-        currentProfile.username ===
-            "connectx";
-
-
-    const badge =
         document.getElementById(
-            "profileVerifiedBadge"
+            "profileVerified"
         );
 
 
-    if (verified) {
+    if (
+        isVerified(
+            currentProfile
+        )
+    ) {
 
-        badge.classList.remove(
-            "hidden"
+        verified.classList.add(
+            "visible"
         );
 
     } else {
 
-        badge.classList.add(
-            "hidden"
+        verified.classList.remove(
+            "visible"
         );
 
     }
@@ -1387,9 +660,9 @@ function updateUserUI() {
 }
 
 
-/* =====================================================
-   FEED
-===================================================== */
+/* =========================================================
+   LOAD FEED
+========================================================= */
 
 async function loadFeed() {
 
@@ -1397,12 +670,6 @@ async function loadFeed() {
         document.getElementById(
             "feed"
         );
-
-
-    feed.innerHTML =
-        `<div class="empty">
-            Loading posts...
-        </div>`;
 
 
     const {
@@ -1416,16 +683,18 @@ async function loadFeed() {
                 user_id,
                 content,
                 image_url,
-                repost_of,
                 created_at,
                 profiles (
                     id,
                     username,
                     display_name,
                     avatar_url,
-                    is_verified
+                    verified
                 ),
                 likes (
+                    user_id
+                ),
+                bookmarks (
                     user_id
                 )
             `)
@@ -1445,27 +714,34 @@ async function loadFeed() {
             error
         );
 
-        feed.innerHTML =
-            `<div class="empty">
+
+        feed.innerHTML = `
+            <div class="error">
                 Failed to load posts.
                 <br>
                 <small>
                     ${escapeHTML(error.message)}
                 </small>
-            </div>`;
+            </div>
+        `;
 
         return;
+
     }
 
 
     if (!posts?.length) {
 
-        feed.innerHTML =
-            `<div class="empty">
-                No posts yet. Be the first to post!
-            </div>`;
+        feed.innerHTML = `
+            <div class="empty">
+                No posts yet.
+                <br>
+                Be the first person to post!
+            </div>
+        `;
 
         return;
+
     }
 
 
@@ -1477,17 +753,22 @@ async function loadFeed() {
 }
 
 
-/* =====================================================
+/* =========================================================
    RENDER POST
-===================================================== */
+========================================================= */
 
 function renderPost(post) {
 
     const profile =
         post.profiles || {};
 
+
     const likes =
         post.likes || [];
+
+
+    const bookmarks =
+        post.bookmarks || [];
 
 
     const liked =
@@ -1498,60 +779,32 @@ function renderPost(post) {
         );
 
 
+    const bookmarked =
+        bookmarks.some(
+            bookmark =>
+                bookmark.user_id ===
+                currentUser.id
+        );
+
+
     const own =
         post.user_id ===
         currentUser.id;
 
 
-    const verified =
-        profile.is_verified === true ||
-        profile.username ===
-            "connectx";
-
-
-    const verifiedBadge =
-        verified
-            ?
-            `
-                <img
-                    class="post-verified"
-                    src="Verified ConnectX.jpg"
-                    alt="Verified"
-                    title="Verified"
-                >
-            `
-            :
-            "";
-
-
-    const image =
-        post.image_url
-            ?
-            `
-                <img
-                    src="${escapeHTML(post.image_url)}"
-                    alt="Post image"
-                    style="
-                        width:100%;
-                        max-height:500px;
-                        object-fit:cover;
-                        border-radius:14px;
-                        margin-top:10px;
-                    "
-                >
-            `
-            :
-            "";
-
-
     return `
 
-        <article class="post">
+        <article
+            class="post"
+            id="post-${escapeHTML(post.id)}"
+        >
 
             <div class="avatar">
 
-                ${initials(
-                    profile.display_name
+                ${escapeHTML(
+                    initials(
+                        profile.display_name
+                    )
                 )}
 
             </div>
@@ -1568,9 +821,10 @@ function renderPost(post) {
                             "User"
                         )}
 
+                        ${verifiedBadge(profile)}
+
                     </strong>
 
-                    ${verifiedBadge}
 
                     <span class="post-user">
 
@@ -1581,9 +835,12 @@ function renderPost(post) {
 
                     </span>
 
+
                     <span class="post-user">
 
-                        · ${timeAgo(
+                        ·
+
+                        ${timeAgo(
                             post.created_at
                         )}
 
@@ -1601,14 +858,26 @@ function renderPost(post) {
                 </div>
 
 
-                ${image}
+                ${
+                    post.image_url
+                    ?
+                    `
+                        <img
+                            class="post-image"
+                            src="${escapeHTML(post.image_url)}"
+                            alt="Post image"
+                        >
+                    `
+                    :
+                    ""
+                }
 
 
                 <div class="actions">
 
                     <button
                         class="action"
-                        onclick="commentPost('${post.id}')"
+                        onclick="replyToPost('${post.id}')"
                     >
                         💬
                     </button>
@@ -1622,6 +891,7 @@ function renderPost(post) {
                         }"
                         onclick="toggleLike('${post.id}')"
                     >
+
                         ${
                             liked
                                 ? "♥"
@@ -1634,6 +904,26 @@ function renderPost(post) {
 
 
                     <button
+                        class="action ${
+                            bookmarked
+                                ? "bookmarked"
+                                : ""
+                        }"
+                        onclick="toggleBookmark('${post.id}')"
+                    >
+                        🔖
+                    </button>
+
+
+                    <button
+                        class="action"
+                        onclick="repost('${post.id}')"
+                    >
+                        🔁
+                    </button>
+
+
+                    <button
                         class="action"
                         onclick="sharePost('${post.id}')"
                     >
@@ -1641,23 +931,17 @@ function renderPost(post) {
                     </button>
 
 
-                    <button
-                        class="action"
-                        onclick="bookmarkPost('${post.id}')"
-                    >
-                        🔖
-                    </button>
-
-
                     ${
                         own
                             ?
-                            `<button
-                                class="action"
-                                onclick="deletePost('${post.id}')"
-                            >
-                                🗑
-                            </button>`
+                            `
+                                <button
+                                    class="action"
+                                    onclick="deletePost('${post.id}')"
+                                >
+                                    🗑
+                                </button>
+                            `
                             :
                             ""
                     }
@@ -1669,65 +953,85 @@ function renderPost(post) {
         </article>
 
     `;
-}
-
-
-/* =====================================================
-   CHARACTER COUNT
-===================================================== */
-
-function updateCharacterCount() {
-
-    const input =
-        document.getElementById(
-            "postInput"
-        );
-
-    document
-        .getElementById(
-            "characterCount"
-        )
-        .textContent =
-        `${input.value.length}/280`;
 
 }
 
 
-/* =====================================================
-   FOCUS COMPOSER
-===================================================== */
-
-function focusComposer() {
-
-    navigate("home");
-
-    document
-        .getElementById(
-            "postInput"
-        )
-        .focus();
-
-}
-
-
-/* =====================================================
+/* =========================================================
    CREATE POST
-===================================================== */
+========================================================= */
+
+document
+    .getElementById("postInput")
+    .addEventListener(
+        "input",
+        () => {
+
+            const input =
+                document.getElementById(
+                    "postInput"
+                );
+
+
+            document
+                .getElementById(
+                    "characterCount"
+                )
+                .textContent =
+                `${input.value.length}/280`;
+
+        }
+    );
+
+
+document
+    .getElementById("postButton")
+    .addEventListener(
+        "click",
+        createPost
+    );
+
+
+document
+    .getElementById("sidebarPostButton")
+    .addEventListener(
+        "click",
+        () => {
+
+            document
+                .getElementById(
+                    "postInput"
+                )
+                .focus();
+
+        }
+    );
+
+
+document
+    .getElementById("mobilePost")
+    .addEventListener(
+        "click",
+        () => {
+
+            navigate("home");
+
+
+            document
+                .getElementById(
+                    "postInput"
+                )
+                .focus();
+
+        }
+    );
+
 
 async function createPost() {
 
-    if (!currentUser)
-        return;
-
-
     const input =
         document.getElementById(
             "postInput"
-        );
-
-    const button =
-        document.getElementById(
-            "postButton"
         );
 
 
@@ -1735,81 +1039,74 @@ async function createPost() {
         input.value.trim();
 
 
-    if (!content)
+    if (!content) {
+        return;
+    }
+
+
+    if (content.length > 280) {
+
+        alert(
+            "Posts can only be 280 characters."
+        );
+
         return;
 
-
-    setButtonLoading(
-        button,
-        true,
-        "Posting..."
-    );
+    }
 
 
-    try {
+    const {
+        error
+    } =
+        await supabaseClient
+            .from("posts")
+            .insert({
 
-        const {
-            error
-        } =
-            await supabaseClient
-                .from("posts")
-                .insert({
+                user_id:
+                    currentUser.id,
 
-                    user_id:
-                        currentUser.id,
+                content
 
-                    content
-
-                });
+            });
 
 
-        if (error)
-            throw error;
-
-
-        input.value = "";
-
-        updateCharacterCount();
-
-        await loadFeed();
-
-        await loadProfile();
-
-    } catch (error) {
-
-        console.error(error);
+    if (error) {
 
         alert(
             error.message
         );
 
-    } finally {
-
-        setButtonLoading(
-            button,
-            false
-        );
+        return;
 
     }
+
+
+    input.value = "";
+
+
+    document
+        .getElementById(
+            "characterCount"
+        )
+        .textContent =
+        "0/280";
+
+
+    await loadFeed();
+
+    await loadProfile();
 
 }
 
 
-/* =====================================================
+/* =========================================================
    LIKE
-===================================================== */
+========================================================= */
 
-async function toggleLike(
-    postId
-) {
-
-    if (!currentUser)
-        return;
-
+async function toggleLike(postId) {
 
     const {
-        data: existing,
-        error: checkError
+        data: existing
     } =
         await supabaseClient
             .from("likes")
@@ -1825,88 +1122,13 @@ async function toggleLike(
             .maybeSingle();
 
 
-    if (checkError) {
-
-        alert(
-            checkError.message
-        );
-
-        return;
-    }
-
-
     if (existing) {
 
-        const {
-            error
-        } =
-            await supabaseClient
-                .from("likes")
-                .delete()
-                .eq(
-                    "post_id",
-                    postId
-                )
-                .eq(
-                    "user_id",
-                    currentUser.id
-                );
-
-        if (error)
-            alert(error.message);
-
-    } else {
-
-        const {
-            error
-        } =
-            await supabaseClient
-                .from("likes")
-                .insert({
-
-                    post_id:
-                        postId,
-
-                    user_id:
-                        currentUser.id
-
-                });
-
-        if (error)
-            alert(error.message);
-
-    }
-
-
-    await loadFeed();
-
-}
-
-
-/* =====================================================
-   DELETE
-===================================================== */
-
-async function deletePost(
-    postId
-) {
-
-    if (
-        !confirm(
-            "Delete this post?"
-        )
-    )
-        return;
-
-
-    const {
-        error
-    } =
         await supabaseClient
-            .from("posts")
+            .from("likes")
             .delete()
             .eq(
-                "id",
+                "post_id",
                 postId
             )
             .eq(
@@ -1914,31 +1136,190 @@ async function deletePost(
                 currentUser.id
             );
 
+    } else {
 
-    if (error) {
+        await supabaseClient
+            .from("likes")
+            .insert({
 
-        alert(
-            error.message
-        );
+                post_id:
+                    postId,
 
-        return;
+                user_id:
+                    currentUser.id
+
+            });
+
     }
 
 
     await loadFeed();
 
-    await loadProfile();
+}
+
+
+/* =========================================================
+   BOOKMARK
+========================================================= */
+
+async function toggleBookmark(postId) {
+
+    const {
+        data: existing
+    } =
+        await supabaseClient
+            .from("bookmarks")
+            .select("post_id")
+            .eq(
+                "post_id",
+                postId
+            )
+            .eq(
+                "user_id",
+                currentUser.id
+            )
+            .maybeSingle();
+
+
+    if (existing) {
+
+        await supabaseClient
+            .from("bookmarks")
+            .delete()
+            .eq(
+                "post_id",
+                postId
+            )
+            .eq(
+                "user_id",
+                currentUser.id
+            );
+
+    } else {
+
+        await supabaseClient
+            .from("bookmarks")
+            .insert({
+
+                post_id:
+                    postId,
+
+                user_id:
+                    currentUser.id
+
+            });
+
+    }
+
+
+    await loadFeed();
 
 }
 
 
-/* =====================================================
-   COMMENT
-===================================================== */
+/* =========================================================
+   BOOKMARK PAGE
+========================================================= */
 
-async function commentPost(
-    postId
-) {
+async function loadBookmarks() {
+
+    const container =
+        document.getElementById(
+            "bookmarks"
+        );
+
+
+    const {
+        data: bookmarks,
+        error
+    } =
+        await supabaseClient
+            .from("bookmarks")
+            .select(`
+                post_id,
+                posts (
+                    id,
+                    user_id,
+                    content,
+                    image_url,
+                    created_at,
+                    profiles (
+                        id,
+                        username,
+                        display_name,
+                        avatar_url,
+                        verified
+                    ),
+                    likes (
+                        user_id
+                    ),
+                    bookmarks (
+                        user_id
+                    )
+                )
+            `)
+            .eq(
+                "user_id",
+                currentUser.id
+            )
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            );
+
+
+    if (error) {
+
+        console.error(error);
+
+        container.innerHTML = `
+            <div class="error">
+                ${escapeHTML(error.message)}
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    const posts =
+        (bookmarks || [])
+            .map(
+                item =>
+                    item.posts
+            )
+            .filter(Boolean);
+
+
+    if (!posts.length) {
+
+        container.innerHTML = `
+            <div class="empty">
+                You haven't bookmarked anything yet.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    container.innerHTML =
+        posts
+            .map(renderPost)
+            .join("");
+
+}
+
+
+/* =========================================================
+   REPLY
+========================================================= */
+
+async function replyToPost(postId) {
 
     const content =
         prompt(
@@ -1946,18 +1327,16 @@ async function commentPost(
         );
 
 
-    if (
-        !content ||
-        !content.trim()
-    )
+    if (!content?.trim()) {
         return;
+    }
 
 
     const {
         error
     } =
         await supabaseClient
-            .from("comments")
+            .from("replies")
             .insert({
 
                 post_id:
@@ -1979,6 +1358,7 @@ async function commentPost(
         );
 
         return;
+
     }
 
 
@@ -1989,16 +1369,129 @@ async function commentPost(
 }
 
 
-/* =====================================================
-   SHARE
-===================================================== */
+/* =========================================================
+   REPOST
+========================================================= */
 
-async function sharePost(
-    postId
-) {
+async function repost(postId) {
+
+    const {
+        data: original,
+        error
+    } =
+        await supabaseClient
+            .from("posts")
+            .select("content")
+            .eq(
+                "id",
+                postId
+            )
+            .single();
+
+
+    if (error) {
+
+        alert(
+            error.message
+        );
+
+        return;
+
+    }
+
+
+    const {
+        error: repostError
+    } =
+        await supabaseClient
+            .from("posts")
+            .insert({
+
+                user_id:
+                    currentUser.id,
+
+                content:
+                    `🔁 Repost: ${original.content}`,
+
+                repost_of:
+                    postId
+
+            });
+
+
+    if (repostError) {
+
+        alert(
+            repostError.message
+        );
+
+        return;
+
+    }
+
+
+    await loadFeed();
+
+}
+
+
+/* =========================================================
+   DELETE
+========================================================= */
+
+async function deletePost(postId) {
+
+    if (
+        !confirm(
+            "Delete this post?"
+        )
+    ) {
+        return;
+    }
+
+
+    const {
+        error
+    } =
+        await supabaseClient
+            .from("posts")
+            .delete()
+            .eq(
+                "id",
+                postId
+            )
+            .eq(
+                "user_id",
+                currentUser.id
+            );
+
+
+    if (error) {
+
+        alert(
+            error.message
+        );
+
+        return;
+
+    }
+
+
+    await loadFeed();
+
+    await loadProfile();
+
+}
+
+
+/* =========================================================
+   SHARE
+========================================================= */
+
+async function sharePost(postId) {
 
     const url =
-        `${location.origin}${location.pathname}#post-${postId}`;
+        `${window.location.origin}${window.location.pathname}#post-${postId}`;
 
 
     try {
@@ -2014,7 +1507,7 @@ async function sharePost(
     } catch {
 
         prompt(
-            "Copy this post link:",
+            "Copy this link:",
             url
         );
 
@@ -2023,86 +1516,9 @@ async function sharePost(
 }
 
 
-/* =====================================================
-   BOOKMARK
-===================================================== */
-
-async function bookmarkPost(
-    postId
-) {
-
-    const {
-        data: existing,
-        error: checkError
-    } =
-        await supabaseClient
-            .from("bookmarks")
-            .select("post_id")
-            .eq(
-                "post_id",
-                postId
-            )
-            .eq(
-                "user_id",
-                currentUser.id
-            )
-            .maybeSingle();
-
-
-    if (checkError) {
-
-        alert(
-            checkError.message
-        );
-
-        return;
-    }
-
-
-    if (existing) {
-
-        await supabaseClient
-            .from("bookmarks")
-            .delete()
-            .eq(
-                "post_id",
-                postId
-            )
-            .eq(
-                "user_id",
-                currentUser.id
-            );
-
-        alert(
-            "Removed from bookmarks."
-        );
-
-    } else {
-
-        await supabaseClient
-            .from("bookmarks")
-            .insert({
-
-                post_id:
-                    postId,
-
-                user_id:
-                    currentUser.id
-
-            });
-
-        alert(
-            "Post bookmarked!"
-        );
-
-    }
-
-}
-
-
-/* =====================================================
+/* =========================================================
    SUGGESTIONS
-===================================================== */
+========================================================= */
 
 async function loadSuggestions() {
 
@@ -2131,17 +1547,7 @@ async function loadSuggestions() {
         console.error(error);
 
         return;
-    }
 
-
-    if (!profiles?.length) {
-
-        container.innerHTML =
-            `<span class="muted">
-                No suggestions yet.
-            </span>`;
-
-        return;
     }
 
 
@@ -2150,9 +1556,7 @@ async function loadSuggestions() {
     } =
         await supabaseClient
             .from("follows")
-            .select(
-                "following_id"
-            )
+            .select("following_id")
             .eq(
                 "follower_id",
                 currentUser.id
@@ -2163,36 +1567,31 @@ async function loadSuggestions() {
         new Set(
             (following || [])
                 .map(
-                    x =>
-                        x.following_id
+                    item =>
+                        item.following_id
                 )
         );
 
 
     container.innerHTML =
-        profiles
+        (profiles || [])
             .map(
                 profile => `
 
-                    <div
-                        style="
-                            display:flex;
-                            align-items:center;
-                            gap:10px;
-                            margin-bottom:15px;
-                        "
-                    >
+                    <div class="suggestion">
 
                         <div class="avatar">
 
-                            ${initials(
-                                profile.display_name
+                            ${escapeHTML(
+                                initials(
+                                    profile.display_name
+                                )
                             )}
 
                         </div>
 
 
-                        <div style="flex:1">
+                        <div class="suggestion-info">
 
                             <strong>
 
@@ -2200,35 +1599,26 @@ async function loadSuggestions() {
                                     profile.display_name
                                 )}
 
+                                ${verifiedBadge(profile)}
+
                             </strong>
 
-                            <small
-                                style="
-                                    display:block;
-                                    color:var(--muted);
-                                "
-                            >
 
+                            <span>
                                 @${escapeHTML(
                                     profile.username
                                 )}
-
-                            </small>
+                            </span>
 
                         </div>
 
 
                         <button
+                            class="follow-button"
                             onclick="
                                 toggleFollow(
                                     '${profile.id}'
                                 )
-                            "
-                            style="
-                                border:0;
-                                border-radius:20px;
-                                padding:7px 12px;
-                                cursor:pointer;
                             "
                         >
 
@@ -2253,22 +1643,18 @@ async function loadSuggestions() {
 }
 
 
-/* =====================================================
+/* =========================================================
    FOLLOW
-===================================================== */
+========================================================= */
 
-async function toggleFollow(
-    userId
-) {
+async function toggleFollow(userId) {
 
     const {
         data: existing
     } =
         await supabaseClient
             .from("follows")
-            .select(
-                "follower_id"
-            )
+            .select("follower_id")
             .eq(
                 "follower_id",
                 currentUser.id
@@ -2318,40 +1704,15 @@ async function toggleFollow(
 }
 
 
-/* =====================================================
+/* =========================================================
    PROFILE
-===================================================== */
+========================================================= */
 
 async function loadProfile() {
 
-    if (!currentProfile)
+    if (!currentProfile) {
         return;
-
-
-    document
-        .getElementById(
-            "profileName"
-        )
-        .textContent =
-        currentProfile.display_name;
-
-
-    document
-        .getElementById(
-            "profileUsername"
-        )
-        .textContent =
-        "@" +
-        currentProfile.username;
-
-
-    document
-        .getElementById(
-            "profileBio"
-        )
-        .textContent =
-        currentProfile.bio ||
-        "Welcome to ConnectX!";
+    }
 
 
     const {
@@ -2362,8 +1723,7 @@ async function loadProfile() {
             .select(
                 "*",
                 {
-                    count:
-                        "exact",
+                    count: "exact",
                     head: true
                 }
             )
@@ -2381,8 +1741,7 @@ async function loadProfile() {
             .select(
                 "*",
                 {
-                    count:
-                        "exact",
+                    count: "exact",
                     head: true
                 }
             )
@@ -2400,8 +1759,7 @@ async function loadProfile() {
             .select(
                 "*",
                 {
-                    count:
-                        "exact",
+                    count: "exact",
                     head: true
                 }
             )
@@ -2436,7 +1794,8 @@ async function loadProfile() {
 
 
     const {
-        data
+        data,
+        error
     } =
         await supabaseClient
             .from("posts")
@@ -2450,9 +1809,13 @@ async function loadProfile() {
                     id,
                     username,
                     display_name,
-                    is_verified
+                    avatar_url,
+                    verified
                 ),
                 likes (
+                    user_id
+                ),
+                bookmarks (
                     user_id
                 )
             `)
@@ -2468,6 +1831,15 @@ async function loadProfile() {
             );
 
 
+    if (error) {
+
+        console.error(error);
+
+        return;
+
+    }
+
+
     document
         .getElementById(
             "profilePosts"
@@ -2480,9 +1852,9 @@ async function loadProfile() {
 }
 
 
-/* =====================================================
+/* =========================================================
    NOTIFICATIONS
-===================================================== */
+========================================================= */
 
 async function loadNotifications() {
 
@@ -2500,9 +1872,10 @@ async function loadNotifications() {
             .from("notifications")
             .select(`
                 *,
-                profiles:actor_id (
+                actor:actor_id (
                     username,
-                    display_name
+                    display_name,
+                    verified
                 )
             `)
             .eq(
@@ -2522,23 +1895,21 @@ async function loadNotifications() {
 
         console.error(error);
 
-        container.innerHTML =
-            `<div style="padding:30px;color:var(--muted)">
-                Notifications are unavailable right now.
-            </div>`;
-
         return;
+
     }
 
 
     if (!data?.length) {
 
-        container.innerHTML =
-            `<div style="padding:30px;color:var(--muted)">
+        container.innerHTML = `
+            <div class="empty">
                 No notifications yet.
-            </div>`;
+            </div>
+        `;
 
         return;
+
     }
 
 
@@ -2547,32 +1918,43 @@ async function loadNotifications() {
             .map(
                 notification => `
 
-                    <div
-                        style="
-                            padding:20px;
-                            border-bottom:
-                                1px solid
-                                var(--border);
-                        "
-                    >
+                    <div class="post">
 
-                        🔔
+                        <div class="avatar">
+                            🔔
+                        </div>
 
-                        ${escapeHTML(
-                            notification.type
-                        )}
+                        <div class="post-body">
 
-                        <div
-                            style="
-                                color:var(--muted);
-                                font-size:13px;
-                                margin-top:5px;
-                            "
-                        >
+                            <strong>
 
-                            ${timeAgo(
-                                notification.created_at
-                            )}
+                                ${escapeHTML(
+                                    notification.actor?.display_name ||
+                                    "Someone"
+                                )}
+
+                                ${verifiedBadge(
+                                    notification.actor
+                                )}
+
+                            </strong>
+
+                            <div class="post-content">
+
+                                ${escapeHTML(
+                                    notification.message ||
+                                    notification.type
+                                )}
+
+                            </div>
+
+                            <span class="post-user">
+
+                                ${timeAgo(
+                                    notification.created_at
+                                )}
+
+                            </span>
 
                         </div>
 
@@ -2585,29 +1967,37 @@ async function loadNotifications() {
 }
 
 
-/* =====================================================
+/* =========================================================
    SEARCH
-===================================================== */
+========================================================= */
 
-let searchTimer;
-
-async function search() {
-
-    clearTimeout(
-        searchTimer
+document
+    .getElementById("searchInput")
+    .addEventListener(
+        "input",
+        search
     );
 
 
-    searchTimer =
-        setTimeout(
-            performSearch,
-            250
-        );
+document
+    .getElementById("rightSearch")
+    .addEventListener(
+        "focus",
+        () => {
 
-}
+            navigate("explore");
+
+            document
+                .getElementById(
+                    "searchInput"
+                )
+                .focus();
+
+        }
+    );
 
 
-async function performSearch() {
+async function search() {
 
     const query =
         document
@@ -2629,11 +2019,13 @@ async function performSearch() {
         results.innerHTML = "";
 
         return;
+
     }
 
 
     const {
-        data: users
+        data: users,
+        error: userError
     } =
         await supabaseClient
             .from("profiles")
@@ -2642,6 +2034,15 @@ async function performSearch() {
                 `username.ilike.%${query}%,display_name.ilike.%${query}%`
             )
             .limit(20);
+
+
+    if (userError) {
+
+        console.error(userError);
+
+        return;
+
+    }
 
 
     const {
@@ -2653,13 +2054,17 @@ async function performSearch() {
                 id,
                 user_id,
                 content,
+                image_url,
                 created_at,
                 profiles (
                     username,
                     display_name,
-                    is_verified
+                    verified
                 ),
                 likes (
+                    user_id
+                ),
+                bookmarks (
                     user_id
                 )
             `)
@@ -2676,9 +2081,9 @@ async function performSearch() {
     if (users?.length) {
 
         html += `
-            <h2 style="padding:20px">
+            <h3 style="padding:20px 20px 10px">
                 People
-            </h2>
+            </h3>
         `;
 
 
@@ -2690,13 +2095,16 @@ async function performSearch() {
 
                         <div class="avatar">
 
-                            ${initials(
-                                user.display_name
+                            ${escapeHTML(
+                                initials(
+                                    user.display_name
+                                )
                             )}
 
                         </div>
 
-                        <div>
+
+                        <div class="post-body">
 
                             <strong>
 
@@ -2704,21 +2112,12 @@ async function performSearch() {
                                     user.display_name
                                 )}
 
+                                ${verifiedBadge(
+                                    user
+                                )}
+
                             </strong>
 
-                            ${
-                                user.is_verified
-                                    ?
-                                    `
-                                        <img
-                                            class="post-verified"
-                                            src="Verified ConnectX.jpg"
-                                            alt="Verified"
-                                        >
-                                    `
-                                    :
-                                    ""
-                            }
 
                             <div class="post-user">
 
@@ -2728,13 +2127,18 @@ async function performSearch() {
 
                             </div>
 
-                            <div>
 
-                                ${escapeHTML(
-                                    user.bio || ""
-                                )}
-
-                            </div>
+                            ${
+                                user.bio
+                                    ?
+                                    `
+                                        <div class="post-content">
+                                            ${escapeHTML(user.bio)}
+                                        </div>
+                                    `
+                                    :
+                                    ""
+                            }
 
                         </div>
 
@@ -2750,9 +2154,9 @@ async function performSearch() {
     if (posts?.length) {
 
         html += `
-            <h2 style="padding:20px">
+            <h3 style="padding:20px 20px 10px">
                 Posts
-            </h2>
+            </h3>
         `;
 
 
@@ -2765,10 +2169,11 @@ async function performSearch() {
 
     if (!html) {
 
-        html =
-            `<div style="padding:30px;color:var(--muted)">
+        html = `
+            <div class="empty">
                 No results found.
-            </div>`;
+            </div>
+        `;
 
     }
 
@@ -2779,9 +2184,27 @@ async function performSearch() {
 }
 
 
-/* =====================================================
+/* =========================================================
    NAVIGATION
-===================================================== */
+========================================================= */
+
+document
+    .querySelectorAll("[data-page]")
+    .forEach(button => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                navigate(
+                    button.dataset.page
+                );
+
+            }
+        );
+
+    });
+
 
 function navigate(page) {
 
@@ -2798,7 +2221,7 @@ function navigate(page) {
 
     const pageElement =
         document.getElementById(
-            page + "Page"
+            `${page}Page`
         );
 
 
@@ -2812,7 +2235,9 @@ function navigate(page) {
 
 
     document
-        .querySelectorAll(".nav")
+        .querySelectorAll(
+            ".nav-button"
+        )
         .forEach(button => {
 
             button.classList.remove(
@@ -2834,89 +2259,81 @@ function navigate(page) {
         });
 
 
-    if (page === "home")
+    if (page === "home") {
+
         loadFeed();
 
+    }
 
-    if (page === "profile")
+
+    if (page === "profile") {
+
         loadProfile();
 
+    }
 
-    if (page === "notifications")
+
+    if (page === "notifications") {
+
         loadNotifications();
 
-}
+    }
 
 
-/* =====================================================
-   LOGOUT
-===================================================== */
+    if (page === "bookmarks") {
 
-async function logout() {
-
-    await supabaseClient
-        .auth
-        .signOut();
-
-    currentUser = null;
-
-    currentProfile = null;
-
-    location.reload();
-
-}
-
-
-/* =====================================================
-   DARK MODE
-===================================================== */
-
-function toggleDarkMode() {
-
-    document
-        .body
-        .classList
-        .toggle("dark");
-
-
-    localStorage.setItem(
-        "connectx-dark-mode",
-        document.body.classList.contains(
-            "dark"
-        )
-            ? "1"
-            : "0"
-    );
-
-}
-
-
-function loadDarkMode() {
-
-    if (
-        localStorage.getItem(
-            "connectx-dark-mode"
-        ) === "1"
-    ) {
-
-        document
-            .body
-            .classList
-            .add("dark");
+        loadBookmarks();
 
     }
 
 }
 
 
-/* =====================================================
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+document
+    .getElementById("logoutButton")
+    .addEventListener(
+        "click",
+        async () => {
+
+            await supabaseClient
+                .auth
+                .signOut();
+
+
+            location.reload();
+
+        }
+    );
+
+
+/* =========================================================
+   DARK MODE
+========================================================= */
+
+document
+    .getElementById("darkModeButton")
+    .addEventListener(
+        "click",
+        () => {
+
+            document
+                .body
+                .classList
+                .toggle("dark");
+
+        }
+    );
+
+
+/* =========================================================
    SESSION
-===================================================== */
+========================================================= */
 
 async function checkSession() {
-
-    loadDarkMode();
-
 
     const {
         data,
@@ -2932,6 +2349,7 @@ async function checkSession() {
         console.error(error);
 
         return;
+
     }
 
 
@@ -2947,85 +2365,39 @@ async function checkSession() {
 }
 
 
-/* =====================================================
-   AUTH STATE
-===================================================== */
+supabaseClient
+    .auth
+    .onAuthStateChange(
+        async (
+            event,
+            session
+        ) => {
 
-function setupAuthListener() {
-
-    supabaseClient
-        .auth
-        .onAuthStateChange(
-            async (
-                event,
+            if (
+                event ===
+                "SIGNED_IN" &&
                 session
-            ) => {
+            ) {
 
-                if (
-                    event ===
-                    "SIGNED_IN"
-                ) {
-
-                    currentUser =
-                        session?.user ||
-                        null;
-
-                }
-
-
-                if (
-                    event ===
-                    "SIGNED_OUT"
-                ) {
-
-                    currentUser =
-                        null;
-
-                    currentProfile =
-                        null;
-
-                }
+                currentUser =
+                    session.user;
 
             }
-        );
-
-}
 
 
-/* =====================================================
-   START AUTH LISTENER AFTER SUPABASE EXISTS
-===================================================== */
+            if (
+                event ===
+                "SIGNED_OUT"
+            ) {
 
-const originalSetupEvents =
-    setupEvents;
+                currentUser = null;
 
+                currentProfile = null;
 
-/*
-    We need the auth listener after the
-    Supabase client has been created.
-*/
+            }
 
-const originalDOMContentLoaded =
-    document.addEventListener;
+        }
+    );
 
 
-/* =====================================================
-   OVERRIDE STARTUP SAFELY
-===================================================== */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
-
-        setTimeout(
-            () => {
-
-                if (supabaseClient)
-                    setupAuthListener();
-
-            },
-            100
-        );
-
-    }
-);
+checkSession();
