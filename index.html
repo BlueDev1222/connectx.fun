@@ -18,227 +18,237 @@
     <link
         rel="icon"
         type="image/png"
-        href="Connectx App Logo.png"
+        href="assets/Connectx%20App%20Logo.png"
     >
 
-    <link rel="stylesheet" href="style.css">
+    <link
+        rel="apple-touch-icon"
+        href="assets/Connectx%20App%20Logo.png"
+    >
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
 
     <script
         src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
         defer
     ></script>
 
-    <script src="app.js" defer></script>
+    <script
+        src="app.js"
+        defer
+    ></script>
 </head>
 
 <body>
 
-<!-- =====================================================
+<!-- =========================================
      AUTH SCREEN
-===================================================== -->
+========================================= -->
 
 <div id="authScreen">
 
-    <div class="auth-background-logo">
-        <img
-            src="Connectx App Logo.png"
-            alt=""
-        >
-    </div>
+    <div class="auth-shell">
 
-    <div class="auth-card">
+        <div class="auth-brand">
 
-        <div class="auth-logo">
             <img
-                src="Connectx App Logo.png"
+                src="assets/Connectx%20App%20Logo.png"
                 alt="ConnectX"
+                class="auth-logo"
             >
+
+            <h1>ConnectX</h1>
+
+            <p>
+                Connect with everyone.
+            </p>
+
         </div>
-
-        <h1 id="authTitle">
-            Welcome to ConnectX
-        </h1>
-
-        <p
-            id="authSubtitle"
-            class="auth-subtitle"
-        >
-            Connect with everyone.
-        </p>
 
 
         <!-- LOGIN -->
 
-        <form id="loginForm">
+        <div
+            id="loginPanel"
+            class="auth-panel"
+        >
 
-            <label for="loginEmail">
-                Email
-            </label>
+            <h2>Log in</h2>
 
-            <input
-                id="loginEmail"
-                type="email"
-                autocomplete="email"
-                placeholder="you@example.com"
-                required
-            >
+            <p class="auth-description">
+                Welcome back to ConnectX.
+            </p>
 
+            <form id="loginForm">
 
-            <label for="loginPassword">
-                Password
-            </label>
+                <label for="loginEmail">
+                    Email
+                </label>
 
-            <div class="password-wrapper">
+                <input
+                    id="loginEmail"
+                    type="email"
+                    autocomplete="email"
+                    placeholder="you@example.com"
+                    required
+                >
+
+                <label for="loginPassword">
+                    Password
+                </label>
 
                 <input
                     id="loginPassword"
                     type="password"
                     autocomplete="current-password"
-                    placeholder="Enter your password"
+                    placeholder="Your password"
                     required
                 >
 
                 <button
-                    type="button"
-                    class="password-toggle"
-                    id="loginPasswordToggle"
-                    aria-label="Show password"
+                    type="submit"
+                    class="primary-button"
                 >
-                    Show
+                    Log in
                 </button>
 
-            </div>
+            </form>
 
 
-            <div class="forgot-row">
+            <button
+                id="forgotPassword"
+                class="text-button"
+                type="button"
+            >
+                Forgot password?
+            </button>
 
-                <button
-                    type="button"
-                    id="forgotPassword"
-                    class="text-button"
-                >
-                    Forgot password?
-                </button>
 
+            <div class="auth-divider">
+                <span>or</span>
             </div>
 
 
             <button
-                type="submit"
-                class="auth-submit"
-                id="loginButton"
+                id="showRegister"
+                class="secondary-button"
+                type="button"
             >
-                Log in
+                Create an account
             </button>
 
-        </form>
+        </div>
 
 
         <!-- REGISTER -->
 
-        <form
-            id="registerForm"
-            class="hidden"
+        <div
+            id="registerPanel"
+            class="auth-panel hidden"
         >
 
-            <label for="registerName">
-                Display name
-            </label>
+            <h2>Create your account</h2>
 
-            <input
-                id="registerName"
-                type="text"
-                autocomplete="name"
-                maxlength="30"
-                placeholder="Your display name"
-                required
-            >
+            <p class="auth-description">
+                Join ConnectX today.
+            </p>
 
+            <form id="registerForm">
 
-            <label for="registerUsername">
-                Username
-            </label>
-
-            <div class="username-input">
-
-                <span>@</span>
+                <label for="registerName">
+                    Display name
+                </label>
 
                 <input
-                    id="registerUsername"
+                    id="registerName"
                     type="text"
-                    autocomplete="username"
-                    maxlength="20"
-                    placeholder="username"
+                    maxlength="30"
+                    autocomplete="name"
+                    placeholder="Your name"
                     required
                 >
 
-            </div>
+
+                <label for="registerUsername">
+                    Username
+                </label>
+
+                <div class="username-input">
+
+                    <span>@</span>
+
+                    <input
+                        id="registerUsername"
+                        type="text"
+                        maxlength="20"
+                        autocomplete="username"
+                        placeholder="username"
+                        required
+                    >
+
+                </div>
 
 
-            <div
-                id="usernameStatus"
-                class="input-status"
-            ></div>
+                <small class="input-help">
+                    Letters, numbers and underscores only.
+                </small>
 
 
-            <label for="registerEmail">
-                Email
-            </label>
+                <label for="registerEmail">
+                    Email
+                </label>
 
-            <input
-                id="registerEmail"
-                type="email"
-                autocomplete="email"
-                placeholder="you@example.com"
-                required
-            >
+                <input
+                    id="registerEmail"
+                    type="email"
+                    autocomplete="email"
+                    placeholder="you@example.com"
+                    required
+                >
 
 
-            <label for="registerPassword">
-                Password
-            </label>
-
-            <div class="password-wrapper">
+                <label for="registerPassword">
+                    Password
+                </label>
 
                 <input
                     id="registerPassword"
                     type="password"
+                    minlength="8"
                     autocomplete="new-password"
-                    placeholder="At least 6 characters"
-                    minlength="6"
+                    placeholder="At least 8 characters"
                     required
                 >
 
+
                 <button
-                    type="button"
-                    class="password-toggle"
-                    id="registerPasswordToggle"
-                    aria-label="Show password"
+                    type="submit"
+                    class="primary-button"
                 >
-                    Show
+                    Create account
                 </button>
 
+            </form>
+
+
+            <div class="auth-divider">
+                <span>or</span>
             </div>
 
 
-            <div
-                id="passwordStrength"
-                class="password-strength"
-            ></div>
-
-
             <button
-                type="submit"
-                class="auth-submit"
-                id="registerButton"
+                id="showLogin"
+                class="secondary-button"
+                type="button"
             >
-                Create account
+                Already have an account? Log in
             </button>
 
-        </form>
+        </div>
 
-
-        <!-- MESSAGE -->
 
         <div
             id="authMessage"
@@ -246,124 +256,112 @@
             role="alert"
         ></div>
 
-
-        <!-- SWITCH -->
-
-        <div class="auth-divider">
-            <span>OR</span>
-        </div>
-
-        <button
-            type="button"
-            id="switchAuth"
-            class="switch-button"
-        >
-            Create an account
-        </button>
-
-        <p class="auth-footer">
-            By using ConnectX, you agree to use the platform responsibly.
-        </p>
-
     </div>
 
 </div>
 
 
-<!-- =====================================================
-     APP
-===================================================== -->
+<!-- =========================================
+     APPLICATION
+========================================= -->
 
 <div
     id="app"
-    class="app-hidden"
+    class="hidden"
 >
 
-    <div class="layout">
+    <div class="app-layout">
 
 
-        <!-- SIDEBAR -->
+        <!-- =================================
+             LEFT SIDEBAR
+        ================================== -->
 
         <aside class="sidebar">
 
-            <div class="brand">
+            <a
+                href="#home"
+                class="brand"
+            >
 
                 <img
-                    src="Connectx App Logo.png"
+                    src="assets/Connectx%20App%20Logo.png"
                     alt="ConnectX"
-                    class="brand-logo"
                 >
 
                 <span>
                     ConnectX
                 </span>
 
-            </div>
+            </a>
+
+
+            <nav class="main-nav">
+
+                <button
+                    class="nav-item active"
+                    data-page="home"
+                >
+                    <span>⌂</span>
+                    <strong>Home</strong>
+                </button>
+
+
+                <button
+                    class="nav-item"
+                    data-page="explore"
+                >
+                    <span>⌕</span>
+                    <strong>Explore</strong>
+                </button>
+
+
+                <button
+                    class="nav-item"
+                    data-page="notifications"
+                >
+                    <span>♧</span>
+                    <strong>Notifications</strong>
+
+                    <span
+                        id="notificationCount"
+                        class="notification-count hidden"
+                    >
+                        0
+                    </span>
+
+                </button>
+
+
+                <button
+                    class="nav-item"
+                    data-page="bookmarks"
+                >
+                    <span>🔖</span>
+                    <strong>Bookmarks</strong>
+                </button>
+
+
+                <button
+                    class="nav-item"
+                    data-page="profile"
+                >
+                    <span>◉</span>
+                    <strong>Profile</strong>
+                </button>
+
+            </nav>
 
 
             <button
-                class="nav active"
-                data-page="home"
-            >
-                <span>🏠</span>
-                <span>Home</span>
-            </button>
-
-
-            <button
-                class="nav"
-                data-page="explore"
-            >
-                <span>🔎</span>
-                <span>Explore</span>
-            </button>
-
-
-            <button
-                class="nav"
-                data-page="notifications"
-            >
-                <span>🔔</span>
-                <span>Notifications</span>
-            </button>
-
-
-            <button
-                class="nav"
-                data-page="profile"
-            >
-                <span>👤</span>
-                <span>Profile</span>
-            </button>
-
-
-            <button
-                id="logoutButton"
-                class="nav"
-            >
-                <span>🚪</span>
-                <span>Log out</span>
-            </button>
-
-
-            <button
-                id="darkModeButton"
-                class="nav"
-            >
-                <span>🌙</span>
-                <span>Dark mode</span>
-            </button>
-
-
-            <button
-                id="sidebarPostButton"
+                id="openPostButton"
                 class="post-button"
             >
                 Post
             </button>
 
 
-            <div class="account">
+            <div class="sidebar-account">
 
                 <div
                     id="sidebarAvatar"
@@ -378,20 +376,30 @@
                         User
                     </strong>
 
-                    <small id="sidebarUsername">
+                    <span id="sidebarUsername">
                         @user
-                    </small>
+                    </span>
 
                 </div>
+
+                <button
+                    id="logoutButton"
+                    class="account-menu-button"
+                    title="Log out"
+                >
+                    ⋯
+                </button>
 
             </div>
 
         </aside>
 
 
-        <!-- MAIN -->
+        <!-- =================================
+             MAIN
+        ================================== -->
 
-        <main>
+        <main class="main-content">
 
 
             <!-- HOME -->
@@ -401,8 +409,8 @@
                 class="page active"
             >
 
-                <header>
-                    Home
+                <header class="page-header">
+                    <h2>Home</h2>
                 </header>
 
 
@@ -415,22 +423,53 @@
                         U
                     </div>
 
-                    <div class="composer-body">
+
+                    <div class="composer-content">
 
                         <textarea
-                            id="postInput"
+                            id="postContent"
                             maxlength="280"
                             placeholder="What's happening?"
                         ></textarea>
 
+
+                        <div
+                            id="imagePreview"
+                            class="image-preview hidden"
+                        ></div>
+
+
                         <div class="composer-bottom">
 
-                            <span id="characterCount">
-                                0/280
-                            </span>
+                            <div class="composer-tools">
+
+                                <label
+                                    class="image-button"
+                                    title="Add image"
+                                >
+                                    🖼️
+
+                                    <input
+                                        id="postImage"
+                                        type="file"
+                                        accept="image/png,image/jpeg,image/webp,image/gif"
+                                        hidden
+                                    >
+                                </label>
+
+                                <span
+                                    id="characterCount"
+                                    class="character-count"
+                                >
+                                    0/280
+                                </span>
+
+                            </div>
+
 
                             <button
-                                id="postButton"
+                                id="createPostButton"
+                                class="small-post-button"
                             >
                                 Post
                             </button>
@@ -442,7 +481,10 @@
                 </div>
 
 
-                <div id="feed"></div>
+                <div
+                    id="feed"
+                    class="feed"
+                ></div>
 
             </section>
 
@@ -454,22 +496,30 @@
                 class="page"
             >
 
-                <header>
-                    Explore
+                <header class="page-header">
+
+                    <h2>Explore</h2>
+
                 </header>
 
-                <div class="search">
 
-                    <span>🔎</span>
+                <div class="explore-search">
+
+                    <span>⌕</span>
 
                     <input
                         id="searchInput"
+                        type="search"
                         placeholder="Search ConnectX"
                     >
 
                 </div>
 
-                <div id="searchResults"></div>
+
+                <div
+                    id="exploreResults"
+                    class="explore-results"
+                ></div>
 
             </section>
 
@@ -481,11 +531,39 @@
                 class="page"
             >
 
-                <header>
-                    Notifications
+                <header class="page-header">
+
+                    <h2>Notifications</h2>
+
                 </header>
 
-                <div id="notifications"></div>
+
+                <div
+                    id="notifications"
+                    class="notifications"
+                ></div>
+
+            </section>
+
+
+            <!-- BOOKMARKS -->
+
+            <section
+                id="bookmarksPage"
+                class="page"
+            >
+
+                <header class="page-header">
+
+                    <h2>Bookmarks</h2>
+
+                </header>
+
+
+                <div
+                    id="bookmarks"
+                    class="feed"
+                ></div>
 
             </section>
 
@@ -497,59 +575,60 @@
                 class="page"
             >
 
-                <header>
-                    Profile
+                <header class="page-header">
+
+                    <h2>Profile</h2>
+
                 </header>
 
 
                 <div class="profile-cover"></div>
 
 
-                <div class="profile">
+                <div class="profile-info">
 
-                    <div class="profile-avatar-wrapper">
+                    <div
+                        id="profileAvatar"
+                        class="avatar profile-avatar"
+                    >
+                        U
+                    </div>
 
-                        <div
-                            id="profileAvatar"
-                            class="avatar profile-avatar"
+
+                    <div class="profile-actions">
+
+                        <button
+                            id="editProfileButton"
+                            class="outline-button"
                         >
-                            U
-                        </div>
+                            Edit profile
+                        </button>
 
                     </div>
 
 
-                    <div class="profile-name-row">
+                    <h1 id="profileName">
+                        User
+                    </h1>
 
-                        <h2 id="profileName">
-                            User
-                        </h2>
 
-                        <img
-                            id="profileVerifiedBadge"
-                            class="verified-badge hidden"
-                            src="Verified ConnectX.jpg"
-                            alt="Verified"
-                            title="Verified ConnectX account"
-                        >
-
+                    <div
+                        id="profileUsername"
+                        class="profile-username"
+                    >
+                        @user
                     </div>
 
 
                     <p
-                        id="profileUsername"
-                        class="muted"
+                        id="profileBio"
+                        class="profile-bio"
                     >
-                        @user
-                    </p>
-
-
-                    <p id="profileBio">
                         Welcome to ConnectX!
                     </p>
 
 
-                    <div class="stats">
+                    <div class="profile-stats">
 
                         <span>
                             <strong id="followingCount">
@@ -577,30 +656,36 @@
                 </div>
 
 
-                <div id="profilePosts"></div>
+                <div
+                    id="profilePosts"
+                    class="feed"
+                ></div>
 
             </section>
 
         </main>
 
 
-        <!-- RIGHT SIDEBAR -->
+        <!-- =================================
+             RIGHT SIDEBAR
+        ================================== -->
 
-        <aside class="rightbar">
+        <aside class="right-sidebar">
 
-            <div class="search">
+            <div class="right-search">
 
-                <span>🔎</span>
+                <span>⌕</span>
 
                 <input
-                    placeholder="Search"
                     id="rightSearch"
+                    type="search"
+                    placeholder="Search"
                 >
 
             </div>
 
 
-            <div class="card">
+            <div class="side-card">
 
                 <h2>
                     Who to follow
@@ -610,33 +695,77 @@
 
             </div>
 
+
+            <div class="side-card">
+
+                <h2>
+                    What's happening
+                </h2>
+
+                <div id="trending"></div>
+
+            </div>
+
+
+            <footer class="site-footer">
+
+                © 2026 ConnectX
+
+                <span>·</span>
+
+                <a href="#">
+                    Privacy
+                </a>
+
+                <span>·</span>
+
+                <a href="#">
+                    Terms
+                </a>
+
+            </footer>
+
         </aside>
 
     </div>
 
 
-    <!-- MOBILE NAV -->
+    <!-- =================================
+         MOBILE NAV
+    ================================== -->
 
     <nav class="mobile-nav">
 
-        <button data-page="home">
-            🏠
+        <button
+            data-page="home"
+            class="active"
+        >
+            ⌂
         </button>
 
-        <button data-page="explore">
-            🔎
+        <button
+            data-page="explore"
+        >
+            ⌕
         </button>
 
-        <button id="mobilePost">
-            ＋
+        <button
+            id="mobilePostButton"
+            class="mobile-post"
+        >
+            +
         </button>
 
-        <button data-page="notifications">
-            🔔
+        <button
+            data-page="notifications"
+        >
+            ♧
         </button>
 
-        <button data-page="profile">
-            👤
+        <button
+            data-page="profile"
+        >
+            ◉
         </button>
 
     </nav>
@@ -644,49 +773,131 @@
 </div>
 
 
-<!-- =====================================================
-     PASSWORD RESET
-===================================================== -->
+<!-- =========================================
+     POST MODAL
+========================================= -->
 
 <div
-    id="resetModal"
+    id="postModal"
     class="modal hidden"
 >
 
+    <div class="modal-backdrop"></div>
+
     <div class="modal-card">
 
-        <button
-            id="closeReset"
-            class="modal-close"
-        >
-            ×
-        </button>
+        <div class="modal-header">
 
-        <h2>
-            Reset your password
-        </h2>
+            <h2>Create post</h2>
 
-        <p>
-            Enter your email and we'll send you a password reset link.
-        </p>
+            <button
+                id="closePostModal"
+                class="close-button"
+            >
+                ×
+            </button>
 
-        <input
-            id="resetEmail"
-            type="email"
-            placeholder="you@example.com"
-        >
+        </div>
 
-        <button
-            id="sendReset"
-            class="auth-submit"
-        >
-            Send reset email
-        </button>
+
+        <textarea
+            id="modalPostContent"
+            maxlength="280"
+            placeholder="What's happening?"
+        ></textarea>
+
 
         <div
-            id="resetMessage"
-            class="auth-message"
+            id="modalImagePreview"
+            class="image-preview hidden"
         ></div>
+
+
+        <div class="modal-bottom">
+
+            <label class="image-button">
+
+                🖼️
+
+                <input
+                    id="modalPostImage"
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp,image/gif"
+                    hidden
+                >
+
+            </label>
+
+
+            <button
+                id="modalCreatePost"
+                class="small-post-button"
+            >
+                Post
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     EDIT PROFILE MODAL
+========================================= -->
+
+<div
+    id="profileModal"
+    class="modal hidden"
+>
+
+    <div class="modal-backdrop"></div>
+
+    <div class="modal-card">
+
+        <div class="modal-header">
+
+            <h2>Edit profile</h2>
+
+            <button
+                id="closeProfileModal"
+                class="close-button"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <label>
+            Display name
+        </label>
+
+        <input
+            id="editDisplayName"
+            type="text"
+            maxlength="30"
+        >
+
+
+        <label>
+            Bio
+        </label>
+
+        <textarea
+            id="editBio"
+            maxlength="160"
+            placeholder="Tell people about yourself"
+        ></textarea>
+
+
+        <button
+            id="saveProfileButton"
+            class="primary-button"
+        >
+            Save changes
+        </button>
 
     </div>
 
