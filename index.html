@@ -15,98 +15,67 @@
         content="ConnectX - Connect with everyone."
     >
 
+    <!-- ConnectX browser icon -->
     <link
         rel="icon"
         type="image/png"
-        href="assets/Connectx%20App%20Logo.png"
+        href="assets/Connectx App Logo.png"
     >
 
-    <link
-        rel="apple-touch-icon"
-        href="assets/Connectx%20App%20Logo.png"
-    >
+    <link rel="stylesheet" href="style.css">
 
-    <link
-        rel="stylesheet"
-        href="style.css"
-    >
-
-    <script
-        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
-        defer
-    ></script>
-
-    <script
-        src="app.js"
-        defer
-    ></script>
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
 
-<!-- =========================================
-     AUTH SCREEN
-========================================= -->
+    <!-- =========================================
+         AUTH SCREEN
+    ========================================== -->
 
-<div id="authScreen">
+    <div id="authScreen">
 
-    <div class="auth-shell">
-
-        <div class="auth-brand">
+        <div class="auth-card">
 
             <img
-                src="assets/Connectx%20App%20Logo.png"
-                alt="ConnectX"
                 class="auth-logo"
+                src="assets/Connectx App Logo.png"
+                alt="ConnectX"
             >
 
             <h1>ConnectX</h1>
 
-            <p>
+            <p class="auth-subtitle">
                 Connect with everyone.
             </p>
 
-        </div>
 
-
-        <!-- LOGIN -->
-
-        <div
-            id="loginPanel"
-            class="auth-panel"
-        >
-
-            <h2>Log in</h2>
-
-            <p class="auth-description">
-                Welcome back to ConnectX.
-            </p>
+            <!-- LOGIN -->
 
             <form id="loginForm">
 
-                <label for="loginEmail">
-                    Email
-                </label>
+                <label>Email</label>
 
                 <input
                     id="loginEmail"
                     type="email"
-                    autocomplete="email"
                     placeholder="you@example.com"
+                    autocomplete="email"
                     required
                 >
 
-                <label for="loginPassword">
-                    Password
-                </label>
+
+                <label>Password</label>
 
                 <input
                     id="loginPassword"
                     type="password"
-                    autocomplete="current-password"
                     placeholder="Your password"
+                    autocomplete="current-password"
                     required
                 >
+
 
                 <button
                     type="submit"
@@ -118,63 +87,25 @@
             </form>
 
 
-            <button
-                id="forgotPassword"
-                class="text-button"
-                type="button"
+            <!-- REGISTER -->
+
+            <form
+                id="registerForm"
+                class="hidden"
             >
-                Forgot password?
-            </button>
 
-
-            <div class="auth-divider">
-                <span>or</span>
-            </div>
-
-
-            <button
-                id="showRegister"
-                class="secondary-button"
-                type="button"
-            >
-                Create an account
-            </button>
-
-        </div>
-
-
-        <!-- REGISTER -->
-
-        <div
-            id="registerPanel"
-            class="auth-panel hidden"
-        >
-
-            <h2>Create your account</h2>
-
-            <p class="auth-description">
-                Join ConnectX today.
-            </p>
-
-            <form id="registerForm">
-
-                <label for="registerName">
-                    Display name
-                </label>
+                <label>Display name</label>
 
                 <input
                     id="registerName"
                     type="text"
-                    maxlength="30"
-                    autocomplete="name"
                     placeholder="Your name"
+                    maxlength="30"
                     required
                 >
 
 
-                <label for="registerUsername">
-                    Username
-                </label>
+                <label>Username</label>
 
                 <div class="username-input">
 
@@ -183,43 +114,34 @@
                     <input
                         id="registerUsername"
                         type="text"
+                        placeholder="username"
                         maxlength="20"
                         autocomplete="username"
-                        placeholder="username"
                         required
                     >
 
                 </div>
 
 
-                <small class="input-help">
-                    Letters, numbers and underscores only.
-                </small>
-
-
-                <label for="registerEmail">
-                    Email
-                </label>
+                <label>Email</label>
 
                 <input
                     id="registerEmail"
                     type="email"
-                    autocomplete="email"
                     placeholder="you@example.com"
+                    autocomplete="email"
                     required
                 >
 
 
-                <label for="registerPassword">
-                    Password
-                </label>
+                <label>Password</label>
 
                 <input
                     id="registerPassword"
                     type="password"
-                    minlength="8"
+                    placeholder="At least 6 characters"
+                    minlength="6"
                     autocomplete="new-password"
-                    placeholder="At least 8 characters"
                     required
                 >
 
@@ -234,674 +156,481 @@
             </form>
 
 
-            <div class="auth-divider">
-                <span>or</span>
-            </div>
+            <div
+                id="authMessage"
+                class="auth-message"
+            ></div>
 
 
             <button
-                id="showLogin"
-                class="secondary-button"
+                id="switchAuth"
+                class="switch-button"
                 type="button"
             >
-                Already have an account? Log in
+                Create an account
             </button>
 
         </div>
 
-
-        <div
-            id="authMessage"
-            class="auth-message"
-            role="alert"
-        ></div>
-
     </div>
 
-</div>
+
+    <!-- =========================================
+         APPLICATION
+    ========================================== -->
+
+    <div
+        id="app"
+        class="hidden"
+    >
+
+        <div class="app-layout">
 
 
-<!-- =========================================
-     APPLICATION
-========================================= -->
+            <!-- =================================
+                 LEFT SIDEBAR
+            ================================== -->
 
-<div
-    id="app"
-    class="hidden"
->
+            <aside class="sidebar">
 
-    <div class="app-layout">
+                <div class="sidebar-inner">
 
-
-        <!-- =================================
-             LEFT SIDEBAR
-        ================================== -->
-
-        <aside class="sidebar">
-
-            <a
-                href="#home"
-                class="brand"
-            >
-
-                <img
-                    src="assets/Connectx%20App%20Logo.png"
-                    alt="ConnectX"
-                >
-
-                <span>
-                    ConnectX
-                </span>
-
-            </a>
-
-
-            <nav class="main-nav">
-
-                <button
-                    class="nav-item active"
-                    data-page="home"
-                >
-                    <span>⌂</span>
-                    <strong>Home</strong>
-                </button>
-
-
-                <button
-                    class="nav-item"
-                    data-page="explore"
-                >
-                    <span>⌕</span>
-                    <strong>Explore</strong>
-                </button>
-
-
-                <button
-                    class="nav-item"
-                    data-page="notifications"
-                >
-                    <span>♧</span>
-                    <strong>Notifications</strong>
-
-                    <span
-                        id="notificationCount"
-                        class="notification-count hidden"
+                    <a
+                        href="#"
+                        class="brand"
+                        onclick="navigate('home'); return false;"
                     >
-                        0
-                    </span>
 
-                </button>
+                        <img
+                            src="assets/Connectx App Logo.png"
+                            alt="ConnectX"
+                        >
 
+                        <span>ConnectX</span>
 
-                <button
-                    class="nav-item"
-                    data-page="bookmarks"
-                >
-                    <span>🔖</span>
-                    <strong>Bookmarks</strong>
-                </button>
+                    </a>
 
 
-                <button
-                    class="nav-item"
-                    data-page="profile"
-                >
-                    <span>◉</span>
-                    <strong>Profile</strong>
-                </button>
+                    <nav class="main-nav">
 
-            </nav>
-
-
-            <button
-                id="openPostButton"
-                class="post-button"
-            >
-                Post
-            </button>
+                        <button
+                            class="nav-button active"
+                            data-page="home"
+                        >
+                            <span>⌂</span>
+                            <strong>Home</strong>
+                        </button>
 
 
-            <div class="sidebar-account">
-
-                <div
-                    id="sidebarAvatar"
-                    class="avatar"
-                >
-                    U
-                </div>
-
-                <div class="account-info">
-
-                    <strong id="sidebarName">
-                        User
-                    </strong>
-
-                    <span id="sidebarUsername">
-                        @user
-                    </span>
-
-                </div>
-
-                <button
-                    id="logoutButton"
-                    class="account-menu-button"
-                    title="Log out"
-                >
-                    ⋯
-                </button>
-
-            </div>
-
-        </aside>
+                        <button
+                            class="nav-button"
+                            data-page="explore"
+                        >
+                            <span>⌕</span>
+                            <strong>Explore</strong>
+                        </button>
 
 
-        <!-- =================================
-             MAIN
-        ================================== -->
-
-        <main class="main-content">
-
-
-            <!-- HOME -->
-
-            <section
-                id="homePage"
-                class="page active"
-            >
-
-                <header class="page-header">
-                    <h2>Home</h2>
-                </header>
+                        <button
+                            class="nav-button"
+                            data-page="notifications"
+                        >
+                            <span>♡</span>
+                            <strong>Notifications</strong>
+                        </button>
 
 
-                <div class="composer">
+                        <button
+                            class="nav-button"
+                            data-page="bookmarks"
+                        >
+                            <span>🔖</span>
+                            <strong>Bookmarks</strong>
+                        </button>
 
-                    <div
-                        id="composerAvatar"
-                        class="avatar"
+
+                        <button
+                            class="nav-button"
+                            data-page="profile"
+                        >
+                            <span>◯</span>
+                            <strong>Profile</strong>
+                        </button>
+
+                    </nav>
+
+
+                    <button
+                        id="sidebarPostButton"
+                        class="post-button"
                     >
-                        U
-                    </div>
+                        Post
+                    </button>
 
 
-                    <div class="composer-content">
+                    <div class="sidebar-bottom">
 
-                        <textarea
-                            id="postContent"
-                            maxlength="280"
-                            placeholder="What's happening?"
-                        ></textarea>
+                        <div class="sidebar-account">
 
+                            <div
+                                id="sidebarAvatar"
+                                class="avatar"
+                            >
+                                U
+                            </div>
 
-                        <div
-                            id="imagePreview"
-                            class="image-preview hidden"
-                        ></div>
+                            <div class="account-text">
 
+                                <strong id="sidebarName">
+                                    User
+                                </strong>
 
-                        <div class="composer-bottom">
-
-                            <div class="composer-tools">
-
-                                <label
-                                    class="image-button"
-                                    title="Add image"
-                                >
-                                    🖼️
-
-                                    <input
-                                        id="postImage"
-                                        type="file"
-                                        accept="image/png,image/jpeg,image/webp,image/gif"
-                                        hidden
-                                    >
-                                </label>
-
-                                <span
-                                    id="characterCount"
-                                    class="character-count"
-                                >
-                                    0/280
+                                <span id="sidebarUsername">
+                                    @user
                                 </span>
 
                             </div>
 
+                        </div>
 
-                            <button
-                                id="createPostButton"
-                                class="small-post-button"
-                            >
-                                Post
-                            </button>
+
+                        <button
+                            id="darkModeButton"
+                            class="small-sidebar-button"
+                        >
+                            Dark mode
+                        </button>
+
+
+                        <button
+                            id="logoutButton"
+                            class="small-sidebar-button danger"
+                        >
+                            Log out
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </aside>
+
+
+            <!-- =================================
+                 MAIN
+            ================================== -->
+
+            <main class="main-content">
+
+
+                <!-- HOME -->
+
+                <section
+                    id="homePage"
+                    class="page active"
+                >
+
+                    <header class="page-header">
+                        <h2>Home</h2>
+                    </header>
+
+
+                    <div class="composer">
+
+                        <div
+                            id="composerAvatar"
+                            class="avatar"
+                        >
+                            U
+                        </div>
+
+
+                        <div class="composer-content">
+
+                            <textarea
+                                id="postInput"
+                                maxlength="280"
+                                placeholder="What's happening?"
+                            ></textarea>
+
+
+                            <div class="composer-bottom">
+
+                                <span id="characterCount">
+                                    0/280
+                                </span>
+
+                                <button
+                                    id="postButton"
+                                    class="primary-small-button"
+                                >
+                                    Post
+                                </button>
+
+                            </div>
 
                         </div>
 
                     </div>
 
-                </div>
+
+                    <div id="feed"></div>
+
+                </section>
 
 
-                <div
-                    id="feed"
-                    class="feed"
-                ></div>
+                <!-- EXPLORE -->
 
-            </section>
+                <section
+                    id="explorePage"
+                    class="page"
+                >
 
+                    <header class="page-header">
 
-            <!-- EXPLORE -->
+                        <h2>Explore</h2>
 
-            <section
-                id="explorePage"
-                class="page"
-            >
-
-                <header class="page-header">
-
-                    <h2>Explore</h2>
-
-                </header>
+                    </header>
 
 
-                <div class="explore-search">
+                    <div class="explore-search">
+
+                        <span>⌕</span>
+
+                        <input
+                            id="searchInput"
+                            type="search"
+                            placeholder="Search ConnectX"
+                        >
+
+                    </div>
+
+
+                    <div id="searchResults"></div>
+
+                </section>
+
+
+                <!-- NOTIFICATIONS -->
+
+                <section
+                    id="notificationsPage"
+                    class="page"
+                >
+
+                    <header class="page-header">
+
+                        <h2>Notifications</h2>
+
+                    </header>
+
+
+                    <div id="notifications"></div>
+
+                </section>
+
+
+                <!-- BOOKMARKS -->
+
+                <section
+                    id="bookmarksPage"
+                    class="page"
+                >
+
+                    <header class="page-header">
+
+                        <h2>Bookmarks</h2>
+
+                    </header>
+
+
+                    <div id="bookmarks"></div>
+
+                </section>
+
+
+                <!-- PROFILE -->
+
+                <section
+                    id="profilePage"
+                    class="page"
+                >
+
+                    <header class="page-header">
+
+                        <h2>Profile</h2>
+
+                    </header>
+
+
+                    <div class="profile-cover"></div>
+
+
+                    <div class="profile-info">
+
+                        <div
+                            id="profileAvatar"
+                            class="avatar profile-avatar"
+                        >
+                            U
+                        </div>
+
+
+                        <div class="profile-name-row">
+
+                            <h1 id="profileName">
+                                User
+                            </h1>
+
+                            <img
+                                id="profileVerified"
+                                class="verified-badge"
+                                src="assets/Verified ConnectX.jpg"
+                                alt="Verified"
+                                title="Verified"
+                            >
+
+                        </div>
+
+
+                        <div
+                            id="profileUsername"
+                            class="profile-username"
+                        >
+                            @user
+                        </div>
+
+
+                        <p id="profileBio">
+                            Welcome to ConnectX!
+                        </p>
+
+
+                        <div class="profile-stats">
+
+                            <span>
+                                <strong id="followingCount">0</strong>
+                                Following
+                            </span>
+
+                            <span>
+                                <strong id="followersCount">0</strong>
+                                Followers
+                            </span>
+
+                            <span>
+                                <strong id="postCount">0</strong>
+                                Posts
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div id="profilePosts"></div>
+
+                </section>
+
+            </main>
+
+
+            <!-- =================================
+                 RIGHT SIDEBAR
+            ================================== -->
+
+            <aside class="right-sidebar">
+
+                <div class="right-search">
 
                     <span>⌕</span>
 
                     <input
-                        id="searchInput"
+                        id="rightSearch"
                         type="search"
-                        placeholder="Search ConnectX"
+                        placeholder="Search"
                     >
 
                 </div>
 
 
-                <div
-                    id="exploreResults"
-                    class="explore-results"
-                ></div>
+                <div class="side-card">
 
-            </section>
+                    <h2>
+                        Who to follow
+                    </h2>
 
+                    <div id="suggestions"></div>
 
-            <!-- NOTIFICATIONS -->
-
-            <section
-                id="notificationsPage"
-                class="page"
-            >
-
-                <header class="page-header">
-
-                    <h2>Notifications</h2>
-
-                </header>
+                </div>
 
 
-                <div
-                    id="notifications"
-                    class="notifications"
-                ></div>
+                <div class="side-card">
 
-            </section>
+                    <h2>
+                        What's happening
+                    </h2>
 
+                    <div class="trend">
 
-            <!-- BOOKMARKS -->
+                        <span>Trending on ConnectX</span>
 
-            <section
-                id="bookmarksPage"
-                class="page"
-            >
-
-                <header class="page-header">
-
-                    <h2>Bookmarks</h2>
-
-                </header>
-
-
-                <div
-                    id="bookmarks"
-                    class="feed"
-                ></div>
-
-            </section>
-
-
-            <!-- PROFILE -->
-
-            <section
-                id="profilePage"
-                class="page"
-            >
-
-                <header class="page-header">
-
-                    <h2>Profile</h2>
-
-                </header>
-
-
-                <div class="profile-cover"></div>
-
-
-                <div class="profile-info">
-
-                    <div
-                        id="profileAvatar"
-                        class="avatar profile-avatar"
-                    >
-                        U
-                    </div>
-
-
-                    <div class="profile-actions">
-
-                        <button
-                            id="editProfileButton"
-                            class="outline-button"
-                        >
-                            Edit profile
-                        </button>
+                        <strong>#ConnectX</strong>
 
                     </div>
 
+                    <div class="trend">
 
-                    <h1 id="profileName">
-                        User
-                    </h1>
+                        <span>Join the conversation</span>
 
-
-                    <div
-                        id="profileUsername"
-                        class="profile-username"
-                    >
-                        @user
-                    </div>
-
-
-                    <p
-                        id="profileBio"
-                        class="profile-bio"
-                    >
-                        Welcome to ConnectX!
-                    </p>
-
-
-                    <div class="profile-stats">
-
-                        <span>
-                            <strong id="followingCount">
-                                0
-                            </strong>
-                            Following
-                        </span>
-
-                        <span>
-                            <strong id="followersCount">
-                                0
-                            </strong>
-                            Followers
-                        </span>
-
-                        <span>
-                            <strong id="postCount">
-                                0
-                            </strong>
-                            Posts
-                        </span>
+                        <strong>#Welcome</strong>
 
                     </div>
 
                 </div>
 
 
-                <div
-                    id="profilePosts"
-                    class="feed"
-                ></div>
+                <div class="footer">
 
-            </section>
+                    © 2026 ConnectX
 
-        </main>
+                </div>
 
-
-        <!-- =================================
-             RIGHT SIDEBAR
-        ================================== -->
-
-        <aside class="right-sidebar">
-
-            <div class="right-search">
-
-                <span>⌕</span>
-
-                <input
-                    id="rightSearch"
-                    type="search"
-                    placeholder="Search"
-                >
-
-            </div>
-
-
-            <div class="side-card">
-
-                <h2>
-                    Who to follow
-                </h2>
-
-                <div id="suggestions"></div>
-
-            </div>
-
-
-            <div class="side-card">
-
-                <h2>
-                    What's happening
-                </h2>
-
-                <div id="trending"></div>
-
-            </div>
-
-
-            <footer class="site-footer">
-
-                © 2026 ConnectX
-
-                <span>·</span>
-
-                <a href="#">
-                    Privacy
-                </a>
-
-                <span>·</span>
-
-                <a href="#">
-                    Terms
-                </a>
-
-            </footer>
-
-        </aside>
-
-    </div>
-
-
-    <!-- =================================
-         MOBILE NAV
-    ================================== -->
-
-    <nav class="mobile-nav">
-
-        <button
-            data-page="home"
-            class="active"
-        >
-            ⌂
-        </button>
-
-        <button
-            data-page="explore"
-        >
-            ⌕
-        </button>
-
-        <button
-            id="mobilePostButton"
-            class="mobile-post"
-        >
-            +
-        </button>
-
-        <button
-            data-page="notifications"
-        >
-            ♧
-        </button>
-
-        <button
-            data-page="profile"
-        >
-            ◉
-        </button>
-
-    </nav>
-
-</div>
-
-
-<!-- =========================================
-     POST MODAL
-========================================= -->
-
-<div
-    id="postModal"
-    class="modal hidden"
->
-
-    <div class="modal-backdrop"></div>
-
-    <div class="modal-card">
-
-        <div class="modal-header">
-
-            <h2>Create post</h2>
-
-            <button
-                id="closePostModal"
-                class="close-button"
-            >
-                ×
-            </button>
+            </aside>
 
         </div>
 
 
-        <textarea
-            id="modalPostContent"
-            maxlength="280"
-            placeholder="What's happening?"
-        ></textarea>
+        <!-- MOBILE NAV -->
 
+        <nav class="mobile-nav">
 
-        <div
-            id="modalImagePreview"
-            class="image-preview hidden"
-        ></div>
-
-
-        <div class="modal-bottom">
-
-            <label class="image-button">
-
-                🖼️
-
-                <input
-                    id="modalPostImage"
-                    type="file"
-                    accept="image/png,image/jpeg,image/webp,image/gif"
-                    hidden
-                >
-
-            </label>
-
-
-            <button
-                id="modalCreatePost"
-                class="small-post-button"
-            >
-                Post
+            <button data-page="home">
+                ⌂
             </button>
 
-        </div>
+            <button data-page="explore">
+                ⌕
+            </button>
+
+            <button id="mobilePost">
+                +
+            </button>
+
+            <button data-page="notifications">
+                ♡
+            </button>
+
+            <button data-page="profile">
+                ◯
+            </button>
+
+        </nav>
 
     </div>
 
-</div>
 
-
-<!-- =========================================
-     EDIT PROFILE MODAL
-========================================= -->
-
-<div
-    id="profileModal"
-    class="modal hidden"
->
-
-    <div class="modal-backdrop"></div>
-
-    <div class="modal-card">
-
-        <div class="modal-header">
-
-            <h2>Edit profile</h2>
-
-            <button
-                id="closeProfileModal"
-                class="close-button"
-            >
-                ×
-            </button>
-
-        </div>
-
-
-        <label>
-            Display name
-        </label>
-
-        <input
-            id="editDisplayName"
-            type="text"
-            maxlength="30"
-        >
-
-
-        <label>
-            Bio
-        </label>
-
-        <textarea
-            id="editBio"
-            maxlength="160"
-            placeholder="Tell people about yourself"
-        ></textarea>
-
-
-        <button
-            id="saveProfileButton"
-            class="primary-button"
-        >
-            Save changes
-        </button>
-
-    </div>
-
-</div>
+    <script src="app.js"></script>
 
 </body>
 </html>
