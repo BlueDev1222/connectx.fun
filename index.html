@@ -17,18 +17,27 @@
         content="ConnectX - Connect with everyone."
     >
 
-    <!-- ConnectX Browser Tab Icon -->
+    <!-- =====================================================
+         BROWSER TAB ICON
+    ====================================================== -->
+
     <link
         rel="icon"
         type="image/png"
+        sizes="100x100"
         href="Connectx App Logo.png"
     >
 
-    <!-- Optional Apple/Safari icon -->
     <link
         rel="apple-touch-icon"
+        sizes="100x100"
         href="Connectx App Logo.png"
     >
+
+
+    <!-- =====================================================
+         CONNECTX STYLES
+    ====================================================== -->
 
     <link
         rel="stylesheet"
@@ -45,18 +54,19 @@
          AUTHENTICATION SCREEN
     ====================================================== -->
 
-    <div
-        id="authScreen"
-    >
+    <div id="authScreen">
 
         <div class="auth-card">
 
-            <!-- ConnectX Logo -->
+
+            <!-- CONNECTX LOGO -->
 
             <img
                 src="Connectx App Logo.png"
-                alt="ConnectX"
+                alt="ConnectX Logo"
                 class="logo-image"
+                width="100"
+                height="100"
             >
 
 
@@ -70,11 +80,12 @@
             </p>
 
 
-            <!-- ================= LOGIN ================= -->
+            <!-- =================================================
+                 LOGIN
+            ================================================== -->
 
-            <form
-                id="loginForm"
-            >
+            <form id="loginForm">
+
 
                 <input
                     id="loginEmail"
@@ -94,21 +105,23 @@
                 >
 
 
-                <button
-                    type="submit"
-                >
+                <button type="submit">
                     Log in
                 </button>
+
 
             </form>
 
 
-            <!-- ================= REGISTER ================= -->
+            <!-- =================================================
+                 REGISTER
+            ================================================== -->
 
             <form
                 id="registerForm"
                 style="display:none;"
             >
+
 
                 <input
                     id="registerName"
@@ -149,16 +162,17 @@
                 >
 
 
-                <button
-                    type="submit"
-                >
+                <button type="submit">
                     Create account
                 </button>
+
 
             </form>
 
 
-            <!-- AUTH MESSAGE -->
+            <!-- =================================================
+                 AUTH MESSAGE
+            ================================================== -->
 
             <div
                 id="authMessage"
@@ -166,7 +180,9 @@
             ></div>
 
 
-            <!-- SWITCH LOGIN / REGISTER -->
+            <!-- =================================================
+                 SWITCH LOGIN / REGISTER
+            ================================================== -->
 
             <button
                 id="switchAuth"
@@ -175,6 +191,7 @@
             >
                 Create an account
             </button>
+
 
         </div>
 
@@ -191,6 +208,7 @@
         style="display:none;"
     >
 
+
         <div class="layout">
 
 
@@ -201,21 +219,27 @@
             <aside class="sidebar">
 
 
-                <!-- BRAND -->
+                <!-- CONNECTX BRAND -->
 
                 <div class="brand">
+
 
                     <img
                         src="Connectx App Logo.png"
                         alt="ConnectX"
                         class="brand-logo"
+                        width="42"
+                        height="42"
                     >
+
 
                     <span>
                         ConnectX
                     </span>
 
+
                 </div>
+
 
 
                 <!-- HOME -->
@@ -230,6 +254,7 @@
                 </button>
 
 
+
                 <!-- EXPLORE -->
 
                 <button
@@ -240,6 +265,7 @@
                     🔎
                     Explore
                 </button>
+
 
 
                 <!-- NOTIFICATIONS -->
@@ -254,6 +280,7 @@
                 </button>
 
 
+
                 <!-- PROFILE -->
 
                 <button
@@ -266,7 +293,8 @@
                 </button>
 
 
-                <!-- LOGOUT -->
+
+                <!-- LOG OUT -->
 
                 <button
                     id="logoutButton"
@@ -276,6 +304,7 @@
                     🚪
                     Log out
                 </button>
+
 
 
                 <!-- DARK MODE -->
@@ -290,6 +319,7 @@
                 </button>
 
 
+
                 <!-- POST -->
 
                 <button
@@ -301,9 +331,11 @@
                 </button>
 
 
+
                 <!-- ACCOUNT -->
 
                 <div class="account">
+
 
                     <div
                         id="sidebarAvatar"
@@ -315,20 +347,18 @@
 
                     <div>
 
-                        <strong
-                            id="sidebarName"
-                        >
+                        <strong id="sidebarName">
                             User
                         </strong>
 
 
-                        <small
-                            id="sidebarUsername"
-                        >
+                        <small id="sidebarUsername">
                             @user
                         </small>
 
+
                     </div>
+
 
                 </div>
 
@@ -359,6 +389,7 @@
                     </header>
 
 
+
                     <!-- POST COMPOSER -->
 
                     <div class="composer">
@@ -385,9 +416,7 @@
                             <div class="composer-bottom">
 
 
-                                <span
-                                    id="characterCount"
-                                >
+                                <span id="characterCount">
                                     0/280
                                 </span>
 
@@ -409,11 +438,10 @@
                     </div>
 
 
+
                     <!-- FEED -->
 
-                    <div
-                        id="feed"
-                    ></div>
+                    <div id="feed"></div>
 
 
                 </section>
@@ -438,6 +466,11 @@
                     <div class="search">
 
 
+                        <span>
+                            🔎
+                        </span>
+
+
                         <input
                             id="searchInput"
                             type="text"
@@ -449,9 +482,7 @@
                     </div>
 
 
-                    <div
-                        id="searchResults"
-                    ></div>
+                    <div id="searchResults"></div>
 
 
                 </section>
@@ -473,9 +504,7 @@
                     </header>
 
 
-                    <div
-                        id="notifications"
-                    ></div>
+                    <div id="notifications"></div>
 
 
                 </section>
@@ -497,16 +526,14 @@
                     </header>
 
 
-                    <!-- PROFILE COVER -->
 
-                    <div
-                        class="profile-cover"
-                    ></div>
+                    <!-- COVER -->
+
+                    <div class="profile-cover"></div>
 
 
-                    <div
-                        class="profile"
-                    >
+
+                    <div class="profile">
 
 
                         <!-- PROFILE AVATAR -->
@@ -519,13 +546,13 @@
                         </div>
 
 
+
                         <!-- NAME -->
 
-                        <h2
-                            id="profileName"
-                        >
+                        <h2 id="profileName">
                             User
                         </h2>
+
 
 
                         <!-- USERNAME -->
@@ -538,13 +565,13 @@
                         </p>
 
 
+
                         <!-- BIO -->
 
-                        <p
-                            id="profileBio"
-                        >
+                        <p id="profileBio">
                             Welcome to ConnectX!
                         </p>
+
 
 
                         <!-- STATS -->
@@ -554,9 +581,7 @@
 
                             <span>
 
-                                <strong
-                                    id="followingCount"
-                                >
+                                <strong id="followingCount">
                                     0
                                 </strong>
 
@@ -567,9 +592,7 @@
 
                             <span>
 
-                                <strong
-                                    id="followersCount"
-                                >
+                                <strong id="followersCount">
                                     0
                                 </strong>
 
@@ -580,9 +603,7 @@
 
                             <span>
 
-                                <strong
-                                    id="postCount"
-                                >
+                                <strong id="postCount">
                                     0
                                 </strong>
 
@@ -597,11 +618,10 @@
                     </div>
 
 
+
                     <!-- PROFILE POSTS -->
 
-                    <div
-                        id="profilePosts"
-                    ></div>
+                    <div id="profilePosts"></div>
 
 
                 </section>
@@ -622,7 +642,11 @@
 
                 <div class="search">
 
-                    🔎
+
+                    <span>
+                        🔎
+                    </span>
+
 
                     <input
                         placeholder="Search"
@@ -631,7 +655,9 @@
                         autocomplete="off"
                     >
 
+
                 </div>
+
 
 
                 <!-- WHO TO FOLLOW -->
@@ -644,9 +670,7 @@
                     </h2>
 
 
-                    <div
-                        id="suggestions"
-                    ></div>
+                    <div id="suggestions"></div>
 
 
                 </div>
@@ -663,9 +687,7 @@
              MOBILE NAVIGATION
         ====================================================== -->
 
-        <nav
-            class="mobile-nav"
-        >
+        <nav class="mobile-nav">
 
 
             <button
