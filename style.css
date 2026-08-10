@@ -1,1194 +1,1328 @@
-/* =========================================================
-   CONNECTX - GLOBAL RESET
-========================================================= */
-
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-
-/* =========================================================
-   VARIABLES
-========================================================= */
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  }
 
 :root {
 
-    --blue: #1877f2;
+```
+--blue: #1877f2;
 
-    --background: #ffffff;
+--background: #ffffff;
+--surface: #ffffff;
 
-    --surface: #ffffff;
+--text: #0f1419;
 
-    --text: #0f1419;
+--muted: #667085;
 
-    --muted: #667085;
+--border: #e5e7eb;
 
-    --border: #e5e7eb;
-
-    --hover: #f5f8fa;
+--hover: #f5f8fa;
+```
 
 }
-
-
-/* =========================================================
-   DARK MODE
-========================================================= */
 
 body.dark {
 
-    --background: #000000;
+```
+--background: #000000;
+--surface: #000000;
 
-    --surface: #000000;
+--text: #f7f9f9;
 
-    --text: #f7f9f9;
+--muted: #8b98a5;
 
-    --muted: #8b98a5;
+--border: #2f3336;
 
-    --border: #2f3336;
-
-    --hover: #16181c;
+--hover: #16181c;
+```
 
 }
-
-
-/* =========================================================
-   BODY
-========================================================= */
 
 body {
 
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
+```
+font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
 
-    background:
-        var(--background);
+background:
+    var(--background);
 
-    color:
-        var(--text);
-
-    min-height: 100vh;
+color:
+    var(--text);
+```
 
 }
 
-
-/* =========================================================
-   AUTH SCREEN
-========================================================= */
+/* =====================================================
+AUTH
+===================================================== */
 
 #authScreen {
 
-    min-height: 100vh;
+```
+min-height: 100vh;
 
-    display: flex;
+display: flex;
 
-    align-items: center;
+align-items: center;
 
-    justify-content: center;
+justify-content: center;
 
-    padding: 20px;
+padding: 20px;
 
-    background:
-        radial-gradient(
-            circle at 20% 20%,
-            #00c6ff55,
-            transparent 35%
-        ),
-        radial-gradient(
-            circle at 80% 80%,
-            #6f00ff55,
-            transparent 35%
-        ),
-        #050b18;
+background:
+    radial-gradient(
+        circle at 20% 20%,
+        #00c6ff55,
+        transparent 35%
+    ),
+    radial-gradient(
+        circle at 80% 80%,
+        #6f00ff55,
+        transparent 35%
+    ),
+    #050b18;
+```
 
 }
-
-
-/* =========================================================
-   AUTH CARD
-========================================================= */
 
 .auth-card {
 
-    width: 100%;
+```
+width: 100%;
 
-    max-width: 420px;
+max-width: 420px;
 
-    background: #ffffff;
+background: white;
 
-    color: #111111;
+color: #111;
 
-    padding: 35px;
+padding: 35px;
 
-    border-radius: 24px;
+border-radius: 24px;
 
-    box-shadow:
-        0 25px 70px #0008;
-
-}
-
-
-/* =========================================================
-   LOGIN LOGO
-   100 x 100
-========================================================= */
-
-.logo-image {
-
-    width: 100px !important;
-
-    height: 100px !important;
-
-    min-width: 100px;
-
-    min-height: 100px;
-
-    max-width: 100px !important;
-
-    max-height: 100px !important;
-
-    margin:
-        0 auto 15px auto;
-
-    display: block;
-
-    object-fit: contain;
-
-    object-position: center;
-
-    border-radius: 20px;
+box-shadow:
+    0 25px 70px #0008;
+```
 
 }
-
-
-/* =========================================================
-   OLD LOGO SUPPORT
-========================================================= */
 
 .logo {
 
-    width: 100px;
+```
+width: 65px;
 
-    height: 100px;
+height: 65px;
 
-    margin:
-        0 auto 15px auto;
+margin: auto;
 
-    border-radius: 20px;
+border-radius: 18px;
 
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-
-    color: white;
-
-    font-size: 25px;
-
-    font-weight: 900;
-
-    background:
-        linear-gradient(
-            135deg,
-            #00c6ff,
-            #1877f2,
-            #6f00ff
-        );
+overflow: hidden;
+```
 
 }
 
+.logo img {
 
-/* =========================================================
-   AUTH TITLE
-========================================================= */
+```
+width: 100%;
+
+height: 100%;
+
+object-fit: cover;
+```
+
+}
 
 .auth-card h1 {
 
-    text-align: center;
+```
+text-align: center;
 
-    margin-top: 15px;
+margin-top: 15px;
+```
 
 }
-
-
-/* =========================================================
-   SUBTITLE
-========================================================= */
 
 .subtitle {
 
-    text-align: center;
+```
+text-align: center;
 
-    color: #666666;
+color: #666;
 
-    margin:
-        5px 0 25px;
+margin: 5px 0 25px;
+```
 
 }
-
-
-/* =========================================================
-   AUTH FORMS
-========================================================= */
 
 .auth-card form {
 
-    display: flex;
+```
+display: flex;
 
-    flex-direction: column;
+flex-direction: column;
 
-    gap: 12px;
+gap: 12px;
+```
 
 }
-
-
-/* =========================================================
-   AUTH INPUTS
-========================================================= */
 
 .auth-card input {
 
-    width: 100%;
+```
+padding: 13px;
 
-    padding: 13px;
+border:
+    1px solid #ddd;
 
-    border:
-        1px solid #dddddd;
+border-radius: 10px;
 
-    border-radius: 10px;
-
-    outline: none;
-
-    font-size: 15px;
+outline: none;
+```
 
 }
-
 
 .auth-card input:focus {
 
-    border-color:
-        var(--blue);
-
-    box-shadow:
-        0 0 0 3px #1877f220;
+```
+border-color:
+    var(--blue);
+```
 
 }
-
-
-/* =========================================================
-   AUTH BUTTON
-========================================================= */
 
 .auth-card form button {
 
-    border: 0;
+```
+border: 0;
 
-    padding: 13px;
+padding: 13px;
 
-    border-radius: 10px;
+border-radius: 10px;
 
-    color: white;
+color: white;
 
-    background:
-        var(--blue);
+background:
+    var(--blue);
 
-    font-weight: 800;
+font-weight: 800;
 
-    cursor: pointer;
-
-    transition:
-        0.2s ease;
-
-}
-
-
-.auth-card form button:hover {
-
-    transform:
-        translateY(-1px);
-
-    filter:
-        brightness(1.05);
+cursor: pointer;
+```
 
 }
-
-
-/* =========================================================
-   SWITCH AUTH
-========================================================= */
 
 .switch {
 
-    width: 100%;
+```
+width: 100%;
 
-    border: 0;
+border: 0;
 
-    background: none;
+background: none;
 
-    color:
-        var(--blue);
+color: var(--blue);
 
-    margin-top: 20px;
+margin-top: 20px;
 
-    cursor: pointer;
+cursor: pointer;
+```
 
 }
-
-
-/* =========================================================
-   AUTH MESSAGE
-========================================================= */
 
 .auth-message {
 
-    margin-top: 15px;
+```
+margin-top: 15px;
 
-    text-align: center;
+text-align: center;
 
-    color: #d00000;
-
-    font-size: 14px;
+color: #d00;
+```
 
 }
 
-
-/* =========================================================
-   APP
-========================================================= */
+/* =====================================================
+LAYOUT
+===================================================== */
 
 #app {
 
-    min-height: 100vh;
+```
+min-height: 100vh;
+```
 
 }
-
-
-/* =========================================================
-   MAIN LAYOUT
-========================================================= */
 
 .layout {
 
-    max-width: 1250px;
+```
+max-width: 1250px;
 
-    margin: auto;
+margin: auto;
 
-    min-height: 100vh;
+min-height: 100vh;
 
-    display: grid;
+display: grid;
 
-    grid-template-columns:
-        250px
-        minmax(400px, 650px)
-        320px;
+grid-template-columns:
+    250px
+    minmax(400px, 650px)
+    320px;
+```
 
 }
 
-
-/* =========================================================
-   SIDEBAR
-========================================================= */
+/* =====================================================
+SIDEBAR
+===================================================== */
 
 .sidebar {
 
-    border-right:
-        1px solid var(--border);
+```
+border-right:
+    1px solid var(--border);
 
-    padding: 15px;
+padding: 15px;
 
-    position: sticky;
+position: sticky;
 
-    top: 0;
+top: 0;
 
-    height: 100vh;
+height: 100vh;
+```
 
 }
-
-
-/* =========================================================
-   BRAND
-========================================================= */
 
 .brand {
 
-    display: flex;
+```
+display: flex;
 
-    align-items: center;
+align-items: center;
 
-    gap: 10px;
+gap: 10px;
 
-    font-size: 23px;
+font-size: 23px;
 
-    font-weight: 900;
+font-weight: 900;
 
-    padding: 10px;
+padding: 10px;
 
-    margin-bottom: 15px;
-
-}
-
-
-/* =========================================================
-   SIDEBAR CONNECTX LOGO
-   42 x 42
-========================================================= */
-
-.brand-logo {
-
-    width: 42px !important;
-
-    height: 42px !important;
-
-    min-width: 42px !important;
-
-    min-height: 42px !important;
-
-    max-width: 42px !important;
-
-    max-height: 42px !important;
-
-    display: block !important;
-
-    object-fit: contain !important;
-
-    object-position: center;
-
-    border-radius: 12px;
-
-    flex-shrink: 0;
+margin-bottom: 15px;
+```
 
 }
-
-
-/* =========================================================
-   OLD BRAND ICON
-========================================================= */
 
 .brand-icon {
 
-    width: 42px;
+```
+width: 42px;
 
-    height: 42px;
+height: 42px;
 
-    border-radius: 12px;
+border-radius: 12px;
 
-    display: flex;
+overflow: hidden;
 
-    align-items: center;
-
-    justify-content: center;
-
-    color: white;
-
-    font-weight: 900;
-
-    background:
-        linear-gradient(
-            135deg,
-            #00c6ff,
-            #1877f2,
-            #6f00ff
-        );
+flex-shrink: 0;
+```
 
 }
 
+.brand-icon img {
 
-/* =========================================================
-   NAVIGATION
-========================================================= */
+```
+width: 100%;
+
+height: 100%;
+
+object-fit: cover;
+```
+
+}
 
 .nav {
 
-    width: 100%;
+```
+width: 100%;
 
-    border: 0;
+border: 0;
 
-    background: transparent;
+background: transparent;
 
-    color:
-        var(--text);
+color: var(--text);
 
-    padding: 14px;
+padding: 14px;
 
-    border-radius: 25px;
+border-radius: 25px;
 
-    text-align: left;
+text-align: left;
 
-    font-size: 16px;
+font-size: 16px;
 
-    cursor: pointer;
-
-    transition:
-        0.15s ease;
+cursor: pointer;
+```
 
 }
-
 
 .nav:hover,
 .nav.active {
 
-    background:
-        var(--hover);
+```
+background:
+    var(--hover);
+```
 
 }
-
-
-/* =========================================================
-   POST BUTTON
-========================================================= */
 
 .post-button {
 
-    width: 100%;
+```
+width: 100%;
 
-    margin-top: 15px;
+margin-top: 15px;
 
-    padding: 13px;
+padding: 13px;
 
-    border: 0;
+border: 0;
 
-    border-radius: 25px;
+border-radius: 25px;
 
-    background:
-        var(--blue);
+background:
+    var(--blue);
 
-    color: white;
+color: white;
 
-    font-weight: 900;
+font-weight: 900;
 
-    cursor: pointer;
-
-}
-
-
-.post-button:hover {
-
-    filter:
-        brightness(1.05);
+cursor: pointer;
+```
 
 }
-
-
-/* =========================================================
-   ACCOUNT
-========================================================= */
 
 .account {
 
-    position: absolute;
+```
+position: absolute;
 
-    bottom: 20px;
+bottom: 20px;
 
-    display: flex;
+display: flex;
 
-    align-items: center;
+align-items: center;
 
-    gap: 10px;
+gap: 10px;
+```
 
 }
-
 
 .account small {
 
-    display: block;
+```
+display: block;
 
-    color:
-        var(--muted);
+color: var(--muted);
+```
 
 }
 
-
-/* =========================================================
-   AVATAR
-========================================================= */
+/* =====================================================
+AVATAR
+===================================================== */
 
 .avatar {
 
-    width: 42px;
+```
+width: 42px;
 
-    height: 42px;
+height: 42px;
 
-    min-width: 42px;
+border-radius: 50%;
 
-    min-height: 42px;
+flex-shrink: 0;
 
-    max-width: 42px;
+display: flex;
 
-    max-height: 42px;
+align-items: center;
 
-    border-radius: 50%;
+justify-content: center;
 
-    flex-shrink: 0;
+overflow: hidden;
 
-    display: flex;
+color: white;
 
-    align-items: center;
+font-weight: 900;
 
-    justify-content: center;
-
-    color: white;
-
-    font-weight: 900;
-
-    background:
-        linear-gradient(
-            135deg,
-            #1877f2,
-            #6f00ff
-        );
+background:
+    linear-gradient(
+        135deg,
+        #1877f2,
+        #6f00ff
+    );
+```
 
 }
 
+.avatar img {
 
-/* =========================================================
-   MAIN
-========================================================= */
+```
+width: 100%;
+
+height: 100%;
+
+object-fit: cover;
+```
+
+}
+
+/* =====================================================
+MAIN
+===================================================== */
 
 main {
 
-    border-right:
-        1px solid var(--border);
+```
+border-right:
+    1px solid var(--border);
+```
 
 }
 
-
-/* =========================================================
-   PAGES
-========================================================= */
-
 .page {
+
+```
+display: none;
+```
+
+}
+
+.page.active {
+
+```
+display: block;
+```
+
+}
+
+header {
+
+```
+position: sticky;
+
+top: 0;
+
+z-index: 5;
+
+padding: 18px 20px;
+
+font-size: 20px;
+
+font-weight: 900;
+
+border-bottom:
+    1px solid var(--border);
+
+background:
+    var(--background);
+
+backdrop-filter:
+    blur(10px);
+```
+
+}
+
+/* =====================================================
+COMPOSER
+===================================================== */
+
+.composer {
+
+```
+display: flex;
+
+gap: 12px;
+
+padding: 18px;
+
+border-bottom:
+    1px solid var(--border);
+```
+
+}
+
+.composer-body {
+
+```
+flex: 1;
+```
+
+}
+
+.composer textarea {
+
+```
+width: 100%;
+
+min-height: 80px;
+
+border: 0;
+
+outline: 0;
+
+resize: none;
+
+background: transparent;
+
+color: var(--text);
+
+font-size: 18px;
+```
+
+}
+
+.composer-bottom {
+
+```
+display: flex;
+
+align-items: center;
+
+gap: 12px;
+```
+
+}
+
+.composer-bottom > #characterCount {
+
+```
+margin-left: auto;
+```
+
+}
+
+.composer-tools {
+
+```
+display: flex;
+
+align-items: center;
+```
+
+}
+
+.image-button {
+
+```
+font-size: 21px;
+
+cursor: pointer;
+
+padding: 6px;
+
+border-radius: 50%;
+```
+
+}
+
+.image-button:hover {
+
+```
+background:
+    var(--hover);
+```
+
+}
+
+#characterCount {
+
+```
+color: var(--muted);
+
+font-size: 13px;
+```
+
+}
+
+#postButton {
+
+```
+border: 0;
+
+border-radius: 25px;
+
+padding: 9px 20px;
+
+color: white;
+
+background: var(--blue);
+
+font-weight: 900;
+
+cursor: pointer;
+```
+
+}
+
+#postButton:disabled {
+
+```
+opacity: .6;
+
+cursor: not-allowed;
+```
+
+}
+
+.image-preview {
+
+```
+display: none;
+
+margin: 10px 0;
+
+position: relative;
+```
+
+}
+
+.image-preview.active {
+
+```
+display: block;
+```
+
+}
+
+.image-preview img {
+
+```
+width: 100%;
+
+max-height: 300px;
+
+object-fit: cover;
+
+border-radius: 14px;
+```
+
+}
+
+.remove-image {
+
+```
+position: absolute;
+
+top: 8px;
+
+right: 8px;
+
+width: 30px;
+
+height: 30px;
+
+border: 0;
+
+border-radius: 50%;
+
+background: #000b;
+
+color: white;
+
+cursor: pointer;
+```
+
+}
+
+/* =====================================================
+POSTS
+===================================================== */
+
+.post {
+
+```
+display: flex;
+
+gap: 12px;
+
+padding: 18px;
+
+border-bottom:
+    1px solid var(--border);
+```
+
+}
+
+.post:hover {
+
+```
+background:
+    rgba(128,128,128,.03);
+```
+
+}
+
+.post-body {
+
+```
+flex: 1;
+
+min-width: 0;
+```
+
+}
+
+.post-header {
+
+```
+display: flex;
+
+gap: 5px;
+
+align-items: center;
+
+flex-wrap: wrap;
+```
+
+}
+
+.post-name {
+
+```
+font-weight: 900;
+```
+
+}
+
+.post-user {
+
+```
+color: var(--muted);
+```
+
+}
+
+.post-content {
+
+```
+margin-top: 7px;
+
+white-space: pre-wrap;
+
+word-break: break-word;
+
+line-height: 1.5;
+```
+
+}
+
+.post-image {
+
+```
+display: block;
+
+width: 100%;
+
+max-height: 500px;
+
+object-fit: cover;
+
+margin-top: 12px;
+
+border-radius: 16px;
+
+border:
+    1px solid var(--border);
+```
+
+}
+
+.actions {
+
+```
+display: flex;
+
+justify-content: space-between;
+
+margin-top: 12px;
+
+max-width: 500px;
+```
+
+}
+
+.action {
+
+```
+border: 0;
+
+background: transparent;
+
+color: var(--muted);
+
+cursor: pointer;
+
+padding: 7px 10px;
+
+border-radius: 20px;
+```
+
+}
+
+.action:hover {
+
+```
+color: var(--blue);
+
+background:
+    var(--hover);
+```
+
+}
+
+.action.liked {
+
+```
+color: #ef4444;
+```
+
+}
+
+.action.bookmarked {
+
+```
+color: var(--blue);
+```
+
+}
+
+.action.reposted {
+
+```
+color: #16a34a;
+```
+
+}
+
+.quote-post {
+
+```
+margin-top: 12px;
+
+padding: 12px;
+
+border:
+    1px solid var(--border);
+
+border-radius: 14px;
+```
+
+}
+
+.repost-label {
+
+```
+color: var(--muted);
+
+font-size: 13px;
+
+margin-bottom: 7px;
+```
+
+}
+
+.empty {
+
+```
+padding: 40px;
+
+text-align: center;
+
+color: var(--muted);
+```
+
+}
+
+.error {
+
+```
+padding: 30px;
+
+color: #dc2626;
+```
+
+}
+
+/* =====================================================
+REPLIES
+===================================================== */
+
+.reply-box {
+
+```
+margin-top: 12px;
+
+display: flex;
+
+gap: 8px;
+```
+
+}
+
+.reply-box input {
+
+```
+flex: 1;
+
+padding: 9px 12px;
+
+border:
+    1px solid var(--border);
+
+border-radius: 20px;
+
+outline: none;
+
+background:
+    var(--background);
+
+color: var(--text);
+```
+
+}
+
+.reply-box button {
+
+```
+border: 0;
+
+border-radius: 20px;
+
+padding: 8px 14px;
+
+background:
+    var(--blue);
+
+color: white;
+
+cursor: pointer;
+```
+
+}
+
+.replies {
+
+```
+margin-top: 12px;
+```
+
+}
+
+.reply {
+
+```
+padding: 10px;
+
+border-left:
+    2px solid var(--border);
+
+margin-bottom: 8px;
+```
+
+}
+
+.reply-name {
+
+```
+font-weight: 800;
+```
+
+}
+
+.reply-text {
+
+```
+margin-top: 3px;
+
+color: var(--text);
+```
+
+}
+
+/* =====================================================
+RIGHT
+===================================================== */
+
+.rightbar {
+
+```
+padding: 15px;
+```
+
+}
+
+.search {
+
+```
+display: flex;
+
+align-items: center;
+
+gap: 8px;
+
+background:
+    var(--hover);
+
+padding: 10px 15px;
+
+border-radius: 25px;
+```
+
+}
+
+.search input {
+
+```
+width: 100%;
+
+border: 0;
+
+outline: 0;
+
+background: transparent;
+
+color: var(--text);
+```
+
+}
+
+.card {
+
+```
+margin-top: 20px;
+
+padding: 18px;
+
+background:
+    var(--hover);
+
+border-radius: 18px;
+```
+
+}
+
+.card h2 {
+
+```
+margin-bottom: 15px;
+```
+
+}
+
+/* =====================================================
+PROFILE
+===================================================== */
+
+.profile-cover {
+
+```
+height: 160px;
+
+background:
+    linear-gradient(
+        135deg,
+        #00c6ff,
+        #1877f2,
+        #6f00ff
+    );
+```
+
+}
+
+.profile {
+
+```
+padding:
+    0 20px 20px;
+```
+
+}
+
+.profile-avatar {
+
+```
+width: 90px;
+
+height: 90px;
+
+margin-top: -45px;
+
+border:
+    5px solid var(--background);
+
+font-size: 28px;
+```
+
+}
+
+.profile-name-row {
+
+```
+display: flex;
+
+align-items: center;
+
+gap: 8px;
+```
+
+}
+
+.verified-badge {
+
+```
+width: 22px;
+
+height: 22px;
+
+object-fit: cover;
+
+border-radius: 50%;
+```
+
+}
+
+.profile h2 {
+
+```
+margin-top: 10px;
+```
+
+}
+
+.muted {
+
+```
+color: var(--muted);
+```
+
+}
+
+.stats {
+
+```
+display: flex;
+
+gap: 25px;
+
+margin-top: 15px;
+
+color: var(--muted);
+```
+
+}
+
+.stats strong {
+
+```
+color: var(--text);
+```
+
+}
+
+/* =====================================================
+MOBILE
+===================================================== */
+
+.mobile-nav {
+
+```
+display: none;
+```
+
+}
+
+@media(max-width: 1000px) {
+
+```
+.layout {
+
+    grid-template-columns:
+        75px
+        minmax(400px, 650px);
+
+}
+
+.sidebar span,
+.account div:not(.avatar),
+.post-button {
 
     display: none;
 
 }
 
+.rightbar {
 
-.page.active {
+    display: none;
+
+}
+```
+
+}
+
+@media(max-width: 700px) {
+
+```
+.layout {
 
     display: block;
 
 }
 
-
-/* =========================================================
-   HEADER
-========================================================= */
-
-header {
-
-    position: sticky;
-
-    top: 0;
-
-    z-index: 5;
-
-    padding:
-        18px 20px;
-
-    font-size: 20px;
-
-    font-weight: 900;
-
-    border-bottom:
-        1px solid var(--border);
-
-    background:
-        color-mix(
-            in srgb,
-            var(--background) 90%,
-            transparent
-        );
-
-    backdrop-filter:
-        blur(10px);
-
-}
-
-
-/* =========================================================
-   COMPOSER
-========================================================= */
-
-.composer {
-
-    display: flex;
-
-    gap: 12px;
-
-    padding: 18px;
-
-    border-bottom:
-        1px solid var(--border);
-
-}
-
-
-.composer-body {
-
-    flex: 1;
-
-}
-
-
-.composer textarea {
-
-    width: 100%;
-
-    min-height: 80px;
-
-    border: 0;
-
-    outline: 0;
-
-    resize: none;
-
-    background: transparent;
-
-    color:
-        var(--text);
-
-    font-size: 18px;
-
-    font-family:
-        inherit;
-
-}
-
-
-.composer-bottom {
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-}
-
-
-#characterCount {
-
-    color:
-        var(--muted);
-
-    font-size: 13px;
-
-}
-
-
-#postButton {
-
-    border: 0;
-
-    border-radius: 25px;
-
-    padding:
-        9px 20px;
-
-    color: white;
-
-    background:
-        var(--blue);
-
-    font-weight: 900;
-
-    cursor: pointer;
-
-}
-
-
-/* =========================================================
-   POSTS
-========================================================= */
-
-.post {
-
-    display: flex;
-
-    gap: 12px;
-
-    padding: 18px;
-
-    border-bottom:
-        1px solid var(--border);
-
-}
-
-
-.post:hover {
-
-    background:
-        rgba(128, 128, 128, 0.03);
-
-}
-
-
-.post-body {
-
-    flex: 1;
-
-    min-width: 0;
-
-}
-
-
-.post-header {
-
-    display: flex;
-
-    gap: 5px;
-
-    align-items: center;
-
-    flex-wrap: wrap;
-
-}
-
-
-.post-name {
-
-    font-weight: 900;
-
-}
-
-
-.post-user {
-
-    color:
-        var(--muted);
-
-}
-
-
-.post-content {
-
-    margin-top: 7px;
-
-    white-space: pre-wrap;
-
-    word-break: break-word;
-
-    line-height: 1.5;
-
-}
-
-
-/* =========================================================
-   POST ACTIONS
-========================================================= */
-
-.actions {
-
-    display: flex;
-
-    justify-content: space-between;
-
-    margin-top: 12px;
-
-    max-width: 450px;
-
-}
-
-
-.action {
-
-    border: 0;
-
-    background: transparent;
-
-    color:
-        var(--muted);
-
-    cursor: pointer;
-
-    padding: 5px;
-
-    font-size: 15px;
-
-}
-
-
-.action:hover {
-
-    color:
-        var(--blue);
-
-}
-
-
-.action.liked {
-
-    color:
-        #ef4444;
-
-}
-
-
-/* =========================================================
-   VERIFIED BADGE
-========================================================= */
-
-.verified-badge {
-
-    width: 18px;
-
-    height: 18px;
-
-    min-width: 18px;
-
-    min-height: 18px;
-
-    max-width: 18px;
-
-    max-height: 18px;
-
-    object-fit: contain;
-
-    object-position: center;
-
-    border-radius: 50%;
-
-    display: inline-block;
-
-    vertical-align: middle;
-
-    margin-left: 2px;
-
-}
-
-
-/* =========================================================
-   VERIFIED CONNECTX ACCOUNT
-========================================================= */
-
-.connectx-official {
-
-    display: inline-flex;
-
-    align-items: center;
-
-    gap: 4px;
-
-}
-
-
-/* =========================================================
-   RIGHT SIDEBAR
-========================================================= */
-
-.rightbar {
-
-    padding: 15px;
-
-}
-
-
-/* =========================================================
-   SEARCH
-========================================================= */
-
-.search {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 8px;
-
-    background:
-        var(--hover);
-
-    padding:
-        10px 15px;
-
-    border-radius: 25px;
-
-}
-
-
-.search input {
-
-    width: 100%;
-
-    border: 0;
-
-    outline: 0;
-
-    background: transparent;
-
-    color:
-        var(--text);
-
-    font-size: 15px;
-
-}
-
-
-/* =========================================================
-   CARD
-========================================================= */
-
-.card {
-
-    margin-top: 20px;
-
-    padding: 18px;
-
-    background:
-        var(--hover);
-
-    border-radius: 18px;
-
-}
-
-
-.card h2 {
-
-    margin-bottom: 15px;
-
-}
-
-
-/* =========================================================
-   PROFILE COVER
-========================================================= */
-
-.profile-cover {
-
-    height: 160px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #00c6ff,
-            #1877f2,
-            #6f00ff
-        );
-
-}
-
-
-/* =========================================================
-   PROFILE
-========================================================= */
-
-.profile {
-
-    padding:
-        0 20px 20px;
-
-}
-
-
-.profile-avatar {
-
-    width: 90px;
-
-    height: 90px;
-
-    min-width: 90px;
-
-    min-height: 90px;
-
-    max-width: 90px;
-
-    max-height: 90px;
-
-    margin-top: -45px;
-
-    border:
-        5px solid var(--background);
-
-    font-size: 28px;
-
-}
-
-
-.profile h2 {
-
-    margin-top: 10px;
-
-}
-
-
-.muted {
-
-    color:
-        var(--muted);
-
-}
-
-
-/* =========================================================
-   PROFILE STATS
-========================================================= */
-
-.stats {
-
-    display: flex;
-
-    gap: 25px;
-
-    margin-top: 15px;
-
-    color:
-        var(--muted);
-
-    flex-wrap: wrap;
-
-}
-
-
-.stats strong {
-
-    color:
-        var(--text);
-
-}
-
-
-/* =========================================================
-   EMPTY / ERROR
-========================================================= */
-
-.empty {
-
-    padding: 40px;
-
-    text-align: center;
-
-    color:
-        var(--muted);
-
-}
-
-
-.error {
-
-    padding: 30px;
-
-    text-align: center;
-
-    color:
-        #d00000;
-
-}
-
-
-/* =========================================================
-   MOBILE NAVIGATION
-========================================================= */
-
-.mobile-nav {
+.sidebar {
 
     display: none;
 
 }
 
+main {
+
+    border: 0;
+
+}
+
+.mobile-nav {
+
+    position: fixed;
+
+    bottom: 0;
+
+    left: 0;
+
+    right: 0;
+
+    height: 60px;
+
+    display: flex;
+
+    justify-content: space-around;
+
+    align-items: center;
+
+    background:
+        var(--background);
+
+    border-top:
+        1px solid var(--border);
+
+    z-index: 100;
+
+}
 
 .mobile-nav button {
 
@@ -1196,8 +1330,7 @@ header {
 
     background: transparent;
 
-    color:
-        var(--text);
+    color: var(--text);
 
     font-size: 20px;
 
@@ -1205,195 +1338,29 @@ header {
 
 }
 
+main {
 
-/* =========================================================
-   TABLET
-========================================================= */
-
-@media (max-width: 1000px) {
-
-    .layout {
-
-        grid-template-columns:
-            75px
-            minmax(400px, 650px);
-
-    }
-
-
-    .sidebar span,
-    .account div:not(.avatar),
-    .post-button {
-
-        display: none;
-
-    }
-
-
-    .rightbar {
-
-        display: none;
-
-    }
-
-
-    .brand {
-
-        justify-content: center;
-
-    }
-
-
-    .nav {
-
-        text-align: center;
-
-    }
+    padding-bottom: 60px;
 
 }
 
+.composer {
 
-/* =========================================================
-   MOBILE
-========================================================= */
-
-@media (max-width: 700px) {
-
-    .layout {
-
-        display: block;
-
-    }
-
-
-    .sidebar {
-
-        display: none;
-
-    }
-
-
-    main {
-
-        border: 0;
-
-    }
-
-
-    .mobile-nav {
-
-        position: fixed;
-
-        bottom: 0;
-
-        left: 0;
-
-        right: 0;
-
-        height: 60px;
-
-        display: flex;
-
-        justify-content: space-around;
-
-        align-items: center;
-
-        background:
-            var(--background);
-
-        border-top:
-            1px solid var(--border);
-
-        z-index: 100;
-
-    }
-
-
-    .mobile-nav button {
-
-        width: 20%;
-
-        height: 60px;
-
-        display: flex;
-
-        justify-content: center;
-
-        align-items: center;
-
-    }
-
-
-    main {
-
-        padding-bottom: 60px;
-
-    }
-
-
-    .auth-card {
-
-        padding: 28px 20px;
-
-    }
-
-
-    .post {
-
-        padding:
-            15px 12px;
-
-    }
-
-
-    .composer {
-
-        padding:
-            15px 12px;
-
-    }
-
-
-    header {
-
-        padding:
-            16px;
-
-    }
+    padding: 12px;
 
 }
 
+.post {
 
-/* =========================================================
-   SMALL PHONES
-========================================================= */
+    padding: 14px;
 
-@media (max-width: 400px) {
+}
 
-    .auth-card {
+.actions {
 
-        border-radius: 18px;
+    max-width: 100%;
 
-        padding: 25px 16px;
-
-    }
-
-
-    .logo-image {
-
-        width: 100px !important;
-
-        height: 100px !important;
-
-    }
-
-
-    .stats {
-
-        gap: 12px;
-
-        font-size: 13px;
-
-    }
+}
+```
 
 }
