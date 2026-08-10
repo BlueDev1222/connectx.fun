@@ -4,11 +4,17 @@
     padding: 0;
 }
 
+
+/* =========================
+ROOT VARIABLES
+========================= */
+
 :root {
 
     --blue: #1877f2;
 
     --background: #ffffff;
+
     --surface: #ffffff;
 
     --text: #0f1419;
@@ -20,6 +26,11 @@
     --hover: #f5f8fa;
 
 }
+
+
+/* =========================
+DARK MODE
+========================= */
 
 body.dark {
 
@@ -36,6 +47,11 @@ body.dark {
     --hover: #16181c;
 
 }
+
+
+/* =========================
+BODY
+========================= */
 
 body {
 
@@ -54,7 +70,7 @@ body {
 
 
 /* =========================
-   AUTH
+AUTH
 ========================= */
 
 #authScreen {
@@ -84,6 +100,7 @@ body {
 
 }
 
+
 .auth-card {
 
     width: 100%;
@@ -103,6 +120,11 @@ body {
 
 }
 
+
+/* =========================
+CONNECTX LOGIN LOGO
+========================= */
+
 .logo {
 
     width: 65px;
@@ -111,29 +133,18 @@ body {
 
     margin: auto;
 
+    display: block;
+
+    object-fit: contain;
+
     border-radius: 18px;
 
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-
-    color: white;
-
-    font-size: 25px;
-
-    font-weight: 900;
-
-    background:
-        linear-gradient(
-            135deg,
-            #00c6ff,
-            #1877f2,
-            #6f00ff
-        );
-
 }
+
+
+/* =========================
+AUTH TITLE
+========================= */
 
 .auth-card h1 {
 
@@ -142,6 +153,7 @@ body {
     margin-top: 15px;
 
 }
+
 
 .subtitle {
 
@@ -153,6 +165,11 @@ body {
 
 }
 
+
+/* =========================
+AUTH FORMS
+========================= */
+
 .auth-card form {
 
     display: flex;
@@ -162,6 +179,7 @@ body {
     gap: 12px;
 
 }
+
 
 .auth-card input {
 
@@ -176,12 +194,14 @@ body {
 
 }
 
+
 .auth-card input:focus {
 
     border-color:
         var(--blue);
 
 }
+
 
 .auth-card form button {
 
@@ -202,6 +222,14 @@ body {
 
 }
 
+
+.auth-card form button:hover {
+
+    filter: brightness(0.95);
+
+}
+
+
 .switch {
 
     width: 100%;
@@ -218,6 +246,7 @@ body {
 
 }
 
+
 .auth-message {
 
     margin-top: 15px;
@@ -230,7 +259,7 @@ body {
 
 
 /* =========================
-   LAYOUT
+LAYOUT
 ========================= */
 
 #app {
@@ -238,6 +267,7 @@ body {
     min-height: 100vh;
 
 }
+
 
 .layout {
 
@@ -258,7 +288,7 @@ body {
 
 
 /* =========================
-   SIDEBAR
+SIDEBAR
 ========================= */
 
 .sidebar {
@@ -275,6 +305,7 @@ body {
     height: 100vh;
 
 }
+
 
 .brand {
 
@@ -294,6 +325,11 @@ body {
 
 }
 
+
+/* =========================
+SIDEBAR LOGO
+========================= */
+
 .brand-icon {
 
     width: 42px;
@@ -302,25 +338,16 @@ body {
 
     border-radius: 12px;
 
-    display: flex;
+    display: block;
 
-    align-items: center;
-
-    justify-content: center;
-
-    color: white;
-
-    font-weight: 900;
-
-    background:
-        linear-gradient(
-            135deg,
-            #00c6ff,
-            #1877f2,
-            #6f00ff
-        );
+    object-fit: contain;
 
 }
+
+
+/* =========================
+NAVIGATION
+========================= */
 
 .nav {
 
@@ -344,6 +371,7 @@ body {
 
 }
 
+
 .nav:hover,
 .nav.active {
 
@@ -351,6 +379,7 @@ body {
         var(--hover);
 
 }
+
 
 .post-button {
 
@@ -375,6 +404,18 @@ body {
 
 }
 
+
+.post-button:hover {
+
+    filter: brightness(0.95);
+
+}
+
+
+/* =========================
+ACCOUNT SIDEBAR
+========================= */
+
 .account {
 
     position: absolute;
@@ -389,6 +430,7 @@ body {
 
 }
 
+
 .account small {
 
     display: block;
@@ -399,7 +441,7 @@ body {
 
 
 /* =========================
-   AVATAR
+AVATAR
 ========================= */
 
 .avatar {
@@ -433,7 +475,7 @@ body {
 
 
 /* =========================
-   MAIN
+MAIN
 ========================= */
 
 main {
@@ -443,17 +485,24 @@ main {
 
 }
 
+
 .page {
 
     display: none;
 
 }
 
+
 .page.active {
 
     display: block;
 
 }
+
+
+/* =========================
+HEADER
+========================= */
 
 header {
 
@@ -486,7 +535,7 @@ header {
 
 
 /* =========================
-   COMPOSER
+COMPOSER
 ========================= */
 
 .composer {
@@ -502,11 +551,13 @@ header {
 
 }
 
+
 .composer-body {
 
     flex: 1;
 
 }
+
 
 .composer textarea {
 
@@ -528,6 +579,7 @@ header {
 
 }
 
+
 .composer-bottom {
 
     display: flex;
@@ -538,6 +590,7 @@ header {
 
 }
 
+
 #characterCount {
 
     color: var(--muted);
@@ -545,6 +598,7 @@ header {
     font-size: 13px;
 
 }
+
 
 #postButton {
 
@@ -556,7 +610,8 @@ header {
 
     color: white;
 
-    background: var(--blue);
+    background:
+        var(--blue);
 
     font-weight: 900;
 
@@ -566,7 +621,7 @@ header {
 
 
 /* =========================
-   POSTS
+POSTS
 ========================= */
 
 .post {
@@ -582,6 +637,7 @@ header {
 
 }
 
+
 .post:hover {
 
     background:
@@ -589,11 +645,13 @@ header {
 
 }
 
+
 .post-body {
 
     flex: 1;
 
 }
+
 
 .post-header {
 
@@ -603,7 +661,10 @@ header {
 
     align-items: center;
 
+    flex-wrap: wrap;
+
 }
+
 
 .post-name {
 
@@ -611,11 +672,13 @@ header {
 
 }
 
+
 .post-user {
 
     color: var(--muted);
 
 }
+
 
 .post-content {
 
@@ -629,6 +692,78 @@ header {
 
 }
 
+
+/* =========================
+VERIFIED BADGE
+========================= */
+
+.verified-badge {
+
+    width: 18px;
+
+    height: 18px;
+
+    object-fit: cover;
+
+    border-radius: 50%;
+
+    display: inline-block;
+
+    vertical-align: middle;
+
+    margin-left: 3px;
+
+    flex-shrink: 0;
+
+}
+
+
+/* Verified badge beside profile names */
+
+.profile-verified {
+
+    width: 20px;
+
+    height: 20px;
+
+    object-fit: cover;
+
+    border-radius: 50%;
+
+    display: inline-block;
+
+    vertical-align: middle;
+
+    margin-left: 5px;
+
+}
+
+
+/* Verified badge in suggestions */
+
+.suggestion-verified {
+
+    width: 17px;
+
+    height: 17px;
+
+    object-fit: cover;
+
+    border-radius: 50%;
+
+    display: inline-block;
+
+    vertical-align: middle;
+
+    margin-left: 3px;
+
+}
+
+
+/* =========================
+POST ACTIONS
+========================= */
+
 .actions {
 
     display: flex;
@@ -640,6 +775,7 @@ header {
     max-width: 450px;
 
 }
+
 
 .action {
 
@@ -655,11 +791,13 @@ header {
 
 }
 
+
 .action:hover {
 
     color: var(--blue);
 
 }
+
 
 .action.liked {
 
@@ -669,7 +807,7 @@ header {
 
 
 /* =========================
-   RIGHT
+RIGHT SIDEBAR
 ========================= */
 
 .rightbar {
@@ -677,6 +815,7 @@ header {
     padding: 15px;
 
 }
+
 
 .search {
 
@@ -695,6 +834,7 @@ header {
 
 }
 
+
 .search input {
 
     width: 100%;
@@ -709,6 +849,7 @@ header {
 
 }
 
+
 .card {
 
     margin-top: 20px;
@@ -722,6 +863,7 @@ header {
 
 }
 
+
 .card h2 {
 
     margin-bottom: 15px;
@@ -730,7 +872,7 @@ header {
 
 
 /* =========================
-   PROFILE
+PROFILE
 ========================= */
 
 .profile-cover {
@@ -747,11 +889,13 @@ header {
 
 }
 
+
 .profile {
 
     padding: 0 20px 20px;
 
 }
+
 
 .profile-avatar {
 
@@ -761,11 +905,13 @@ header {
 
     margin-top: -45px;
 
-    border: 5px solid var(--background);
+    border:
+        5px solid var(--background);
 
     font-size: 28px;
 
 }
+
 
 .profile h2 {
 
@@ -773,11 +919,13 @@ header {
 
 }
 
+
 .muted {
 
     color: var(--muted);
 
 }
+
 
 .stats {
 
@@ -791,6 +939,7 @@ header {
 
 }
 
+
 .stats strong {
 
     color: var(--text);
@@ -799,7 +948,7 @@ header {
 
 
 /* =========================
-   MOBILE
+MOBILE
 ========================= */
 
 .mobile-nav {
@@ -807,6 +956,7 @@ header {
     display: none;
 
 }
+
 
 @media(max-width: 1000px) {
 
@@ -818,6 +968,7 @@ header {
 
     }
 
+
     .sidebar span,
     .account div:not(.avatar),
     .post-button {
@@ -825,6 +976,7 @@ header {
         display: none;
 
     }
+
 
     .rightbar {
 
@@ -834,6 +986,7 @@ header {
 
 }
 
+
 @media(max-width: 700px) {
 
     .layout {
@@ -842,17 +995,20 @@ header {
 
     }
 
+
     .sidebar {
 
         display: none;
 
     }
 
+
     main {
 
         border: 0;
 
     }
+
 
     .mobile-nav {
 
@@ -882,6 +1038,7 @@ header {
 
     }
 
+
     .mobile-nav button {
 
         border: 0;
@@ -892,11 +1049,68 @@ header {
 
         font-size: 20px;
 
+        cursor: pointer;
+
     }
+
 
     main {
 
         padding-bottom: 60px;
+
+    }
+
+}
+
+
+/* =========================
+SMALL MOBILE DEVICES
+========================= */
+
+@media(max-width: 450px) {
+
+    .auth-card {
+
+        padding: 25px 20px;
+
+    }
+
+
+    .composer {
+
+        padding: 14px;
+
+    }
+
+
+    .post {
+
+        padding: 14px;
+
+    }
+
+
+    header {
+
+        padding: 15px;
+
+    }
+
+
+    .profile {
+
+        padding-left: 15px;
+
+        padding-right: 15px;
+
+    }
+
+
+    .stats {
+
+        gap: 15px;
+
+        flex-wrap: wrap;
 
     }
 
