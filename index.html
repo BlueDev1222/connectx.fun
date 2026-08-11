@@ -1,323 +1,1004 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>ConnectX</title>
 
-    <meta
-        name="description"
-        content="ConnectX - Connect with everyone."
-    >
+    <meta name="description" content="ConnectX - Connect with everyone.">
+    <meta name="theme-color" content="#1877f2">
 
-    <!-- ConnectX tab icon -->
-    <link
-        rel="icon"
-        type="image/png"
-        href="Connectx%20App%20Logo.png"
-    >
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    <link rel="stylesheet" href="style.css">
+        :root {
+            --blue: #1877f2;
+            --blue-dark: #0d5dcc;
+            --bg: #ffffff;
+            --card: #ffffff;
+            --text: #0f1419;
+            --muted: #667085;
+            --border: #e5e7eb;
+            --hover: #f5f8fa;
+            --danger: #ef4444;
+        }
 
-    <!-- Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        body.dark {
+            --bg: #000000;
+            --card: #000000;
+            --text: #f7f9f9;
+            --muted: #8b98a5;
+            --border: #2f3336;
+            --hover: #16181c;
+        }
+
+        body {
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Arial,
+                sans-serif;
+
+            background: var(--bg);
+            color: var(--text);
+            transition: background 0.2s, color 0.2s;
+        }
+
+        button,
+        input,
+        textarea {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        /* =========================
+           AUTH SCREEN
+        ========================= */
+
+        #authScreen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+
+            background:
+                radial-gradient(circle at 20% 20%, rgba(0, 183, 255, .25), transparent 35%),
+                radial-gradient(circle at 80% 80%, rgba(98, 0, 255, .25), transparent 35%),
+                #050b18;
+        }
+
+        .auth-box {
+            width: 100%;
+            max-width: 430px;
+            background: white;
+            color: #111827;
+            padding: 35px;
+            border-radius: 24px;
+            box-shadow: 0 25px 70px rgba(0,0,0,.35);
+        }
+
+        .auth-logo {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .logo-mark {
+            width: 65px;
+            height: 65px;
+            margin: auto;
+            border-radius: 18px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 32px;
+            font-weight: 900;
+            color: white;
+
+            background:
+                linear-gradient(135deg, #00c6ff, #1877f2, #6f00ff);
+
+            box-shadow:
+                0 10px 30px rgba(24,119,242,.35);
+        }
+
+        .auth-logo h1 {
+            margin-top: 15px;
+            font-size: 32px;
+            letter-spacing: -1px;
+        }
+
+        .auth-logo p {
+            color: #6b7280;
+            margin-top: 5px;
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 7px;
+        }
+
+        .form-input {
+            width: 100%;
+            border: 1px solid #d1d5db;
+            padding: 13px 14px;
+            border-radius: 10px;
+            outline: none;
+            transition: .2s;
+        }
+
+        .form-input:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(24,119,242,.12);
+        }
+
+        .auth-button {
+            width: 100%;
+            border: 0;
+            border-radius: 10px;
+            padding: 13px;
+            background: var(--blue);
+            color: white;
+            font-weight: 700;
+            margin-top: 5px;
+        }
+
+        .auth-button:hover {
+            background: var(--blue-dark);
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .auth-switch button {
+            border: 0;
+            background: none;
+            color: var(--blue);
+            font-weight: 700;
+        }
+
+        .auth-error {
+            display: none;
+            padding: 10px;
+            margin-bottom: 15px;
+            background: #fee2e2;
+            color: #991b1b;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        /* =========================
+           APP
+        ========================= */
+
+        #app {
+            display: none;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 260px minmax(400px, 650px) 330px;
+            max-width: 1250px;
+            margin: auto;
+            min-height: 100vh;
+        }
+
+        /* =========================
+           SIDEBAR
+        ========================= */
+
+        .sidebar {
+            padding: 15px;
+            border-right: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            margin-bottom: 15px;
+            font-weight: 900;
+            font-size: 24px;
+        }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            color: white;
+            font-weight: 900;
+
+            background: linear-gradient(
+                135deg,
+                #00c6ff,
+                #1877f2,
+                #6f00ff
+            );
+        }
+
+        .nav-button {
+            width: 100%;
+            border: 0;
+            background: transparent;
+            color: var(--text);
+
+            display: flex;
+            align-items: center;
+            gap: 18px;
+
+            padding: 14px;
+            border-radius: 30px;
+
+            font-size: 17px;
+            margin-bottom: 4px;
+            text-align: left;
+        }
+
+        .nav-button:hover {
+            background: var(--hover);
+        }
+
+        .nav-button.active {
+            font-weight: 800;
+        }
+
+        .nav-icon {
+            width: 24px;
+            text-align: center;
+            font-size: 21px;
+        }
+
+        .post-button {
+            width: 100%;
+            border: 0;
+            border-radius: 30px;
+            padding: 14px;
+            background: var(--blue);
+            color: white;
+            font-weight: 800;
+            margin-top: 10px;
+        }
+
+        .post-button:hover {
+            background: var(--blue-dark);
+        }
+
+        .account-box {
+            position: absolute;
+            bottom: 20px;
+            left: 15px;
+            right: 15px;
+
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            padding: 10px;
+            border-radius: 15px;
+            cursor: pointer;
+        }
+
+        .account-box:hover {
+            background: var(--hover);
+        }
+
+        /* =========================
+           AVATAR
+        ========================= */
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            color: white;
+            font-weight: 800;
+            flex-shrink: 0;
+
+            background: linear-gradient(
+                135deg,
+                #1877f2,
+                #6f00ff
+            );
+        }
+
+        .avatar.small {
+            width: 36px;
+            height: 36px;
+            font-size: 13px;
+        }
+
+        .avatar.large {
+            width: 90px;
+            height: 90px;
+            font-size: 30px;
+        }
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        .main {
+            border-right: 1px solid var(--border);
+            min-height: 100vh;
+        }
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 5;
+
+            background: rgba(255,255,255,.9);
+
+            backdrop-filter: blur(12px);
+
+            border-bottom: 1px solid var(--border);
+
+            padding: 15px 20px;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        body.dark .topbar {
+            background: rgba(0,0,0,.88);
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* =========================
+           COMPOSER
+        ========================= */
+
+        .composer {
+            display: flex;
+            gap: 12px;
+            padding: 18px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .composer-content {
+            flex: 1;
+        }
+
+        .composer textarea {
+            width: 100%;
+            min-height: 70px;
+            resize: none;
+
+            border: 0;
+            outline: none;
+
+            background: transparent;
+            color: var(--text);
+
+            font-size: 19px;
+            padding: 8px 0;
+        }
+
+        .composer-bottom {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .send-post {
+            border: 0;
+            border-radius: 25px;
+            background: var(--blue);
+            color: white;
+
+            padding: 9px 20px;
+            font-weight: 800;
+        }
+
+        .send-post:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+        }
+
+        /* =========================
+           POSTS
+        ========================= */
+
+        .post {
+            display: flex;
+            gap: 12px;
+
+            padding: 18px;
+
+            border-bottom: 1px solid var(--border);
+        }
+
+        .post:hover {
+            background: rgba(128,128,128,.03);
+        }
+
+        .post-body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .post-name {
+            font-weight: 800;
+        }
+
+        .verified {
+            color: var(--blue);
+            font-size: 14px;
+        }
+
+        .post-username,
+        .post-time {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .post-text {
+            margin-top: 5px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            line-height: 1.45;
+            font-size: 16px;
+        }
+
+        .post-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 13px;
+            max-width: 500px;
+        }
+
+        .action {
+            border: 0;
+            background: transparent;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px;
+            border-radius: 15px;
+        }
+
+        .action:hover {
+            background: var(--hover);
+            color: var(--blue);
+        }
+
+        .action.liked {
+            color: #ef4444;
+        }
+
+        .delete-post {
+            margin-left: auto;
+            border: 0;
+            background: transparent;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .delete-post:hover {
+            color: var(--danger);
+        }
+
+        /* =========================
+           RIGHT SIDEBAR
+        ========================= */
+
+        .rightbar {
+            padding: 15px;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            background: var(--hover);
+            border-radius: 25px;
+
+            padding: 10px 15px;
+        }
+
+        .search-box input {
+            width: 100%;
+            border: 0;
+            outline: none;
+            background: transparent;
+            color: var(--text);
+        }
+
+        .side-card {
+            margin-top: 20px;
+            background: var(--hover);
+            border-radius: 18px;
+            padding: 18px;
+        }
+
+        .side-card h2 {
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        .suggestion {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .suggestion-info {
+            flex: 1;
+        }
+
+        .suggestion-name {
+            font-weight: 800;
+        }
+
+        .suggestion-user {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .follow-button {
+            border: 0;
+            border-radius: 20px;
+            padding: 7px 13px;
+            background: var(--text);
+            color: var(--bg);
+            font-weight: 700;
+        }
+
+        .follow-button.following {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        /* =========================
+           PROFILE
+        ========================= */
+
+        .profile-cover {
+            height: 170px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #00c6ff,
+                    #1877f2,
+                    #6f00ff
+                );
+        }
+
+        .profile-info {
+            padding: 0 20px 20px;
+        }
+
+        .profile-avatar {
+            margin-top: -45px;
+            border: 5px solid var(--bg);
+        }
+
+        .profile-name {
+            font-size: 25px;
+            font-weight: 900;
+            margin-top: 10px;
+        }
+
+        .profile-handle {
+            color: var(--muted);
+        }
+
+        .profile-bio {
+            margin-top: 12px;
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 25px;
+            margin-top: 15px;
+        }
+
+        .stat strong {
+            font-weight: 900;
+        }
+
+        .stat span {
+            color: var(--muted);
+            margin-left: 4px;
+        }
+
+        /* =========================
+           NOTIFICATIONS
+        ========================= */
+
+        .notification {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* =========================
+           MODAL
+        ========================= */
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+
+            background: rgba(0,0,0,.55);
+
+            z-index: 100;
+
+            align-items: center;
+            justify-content: center;
+
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-box {
+            width: 100%;
+            max-width: 500px;
+
+            background: var(--card);
+            border-radius: 20px;
+            padding: 25px;
+
+            box-shadow: 0 25px 70px rgba(0,0,0,.35);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-close {
+            border: 0;
+            background: transparent;
+            color: var(--muted);
+            font-size: 25px;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        .mobile-nav {
+            display: none;
+        }
+
+        @media (max-width: 1050px) {
+            .layout {
+                grid-template-columns: 80px minmax(400px, 650px) 280px;
+            }
+
+            .brand span,
+            .nav-button span:not(.nav-icon),
+            .post-button {
+                display: none;
+            }
+
+            .nav-button {
+                justify-content: center;
+            }
+
+            .account-box .account-details {
+                display: none;
+            }
+        }
+
+        @media (max-width: 800px) {
+            .layout {
+                display: block;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .rightbar {
+                display: none;
+            }
+
+            .main {
+                border: 0;
+            }
+
+            .mobile-nav {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+
+                height: 60px;
+
+                background: var(--bg);
+                border-top: 1px solid var(--border);
+
+                display: flex;
+                align-items: center;
+                justify-content: space-around;
+
+                z-index: 50;
+            }
+
+            .mobile-nav button {
+                border: 0;
+                background: transparent;
+                color: var(--text);
+                font-size: 21px;
+            }
+
+            .main {
+                padding-bottom: 60px;
+            }
+        }
+
+        @media (max-width: 550px) {
+            .auth-box {
+                padding: 25px;
+            }
+
+            .post,
+            .composer {
+                padding: 15px;
+            }
+
+            .topbar {
+                padding: 14px 15px;
+            }
+
+            .profile-cover {
+                height: 130px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-<!-- ==================================================
-     AUTH SCREEN
-================================================== -->
+<!-- =========================
+     AUTH
+========================= -->
 
-<div id="authScreen">
+<section id="authScreen">
 
-    <div class="auth-card">
+    <div class="auth-box">
 
         <div class="auth-logo">
-            <img
-                src="Connectx%20App%20Logo.png"
-                alt="ConnectX"
-            >
+            <div class="logo-mark">CX</div>
+
+            <h1>ConnectX</h1>
+
+            <p>Connect with everyone.</p>
         </div>
 
-        <h1>ConnectX</h1>
-
-        <p class="auth-subtitle">
-            Connect with everyone.
-        </p>
-
+        <div id="authError" class="auth-error"></div>
 
         <!-- LOGIN -->
 
-        <form id="loginForm">
+        <form id="loginForm" class="auth-form active">
 
-            <label for="loginEmail">
-                Email
-            </label>
+            <div class="form-group">
+                <label>Username</label>
+                <input
+                    id="loginUsername"
+                    class="form-input"
+                    type="text"
+                    placeholder="Username"
+                    required
+                >
+            </div>
 
-            <input
-                id="loginEmail"
-                type="email"
-                placeholder="you@example.com"
-                autocomplete="email"
-                required
-            >
+            <div class="form-group">
+                <label>Password</label>
+                <input
+                    id="loginPassword"
+                    class="form-input"
+                    type="password"
+                    placeholder="Password"
+                    required
+                >
+            </div>
 
-            <label for="loginPassword">
-                Password
-            </label>
-
-            <input
-                id="loginPassword"
-                type="password"
-                placeholder="Your password"
-                autocomplete="current-password"
-                required
-            >
-
-            <button
-                type="submit"
-                class="primary-button"
-            >
+            <button class="auth-button">
                 Log in
             </button>
 
-        </form>
+            <div class="auth-switch">
+                Don't have an account?
+                <button type="button" onclick="showRegister()">
+                    Create one
+                </button>
+            </div>
 
+        </form>
 
         <!-- REGISTER -->
 
-        <form
-            id="registerForm"
-            class="hidden"
-        >
+        <form id="registerForm" class="auth-form">
 
-            <label for="registerName">
-                Display name
-            </label>
+            <div class="form-group">
+                <label>Display name</label>
+                <input
+                    id="registerName"
+                    class="form-input"
+                    type="text"
+                    placeholder="Your name"
+                    maxlength="30"
+                    required
+                >
+            </div>
 
-            <input
-                id="registerName"
-                type="text"
-                placeholder="Your name"
-                maxlength="30"
-                autocomplete="name"
-                required
-            >
-
-            <label for="registerUsername">
-                Username
-            </label>
-
-            <div class="username-input">
-
-                <span>@</span>
-
+            <div class="form-group">
+                <label>Username</label>
                 <input
                     id="registerUsername"
+                    class="form-input"
                     type="text"
                     placeholder="username"
                     maxlength="20"
-                    autocomplete="username"
                     required
                 >
-
             </div>
 
-            <p class="input-help">
-                Letters, numbers, and underscores only.
-            </p>
+            <div class="form-group">
+                <label>Password</label>
+                <input
+                    id="registerPassword"
+                    class="form-input"
+                    type="password"
+                    placeholder="Password"
+                    minlength="6"
+                    required
+                >
+            </div>
 
-
-            <label for="registerEmail">
-                Email
-            </label>
-
-            <input
-                id="registerEmail"
-                type="email"
-                placeholder="you@example.com"
-                autocomplete="email"
-                required
-            >
-
-
-            <label for="registerPassword">
-                Password
-            </label>
-
-            <input
-                id="registerPassword"
-                type="password"
-                placeholder="At least 6 characters"
-                minlength="6"
-                autocomplete="new-password"
-                required
-            >
-
-
-            <button
-                type="submit"
-                class="primary-button"
-            >
+            <button class="auth-button">
                 Create account
             </button>
 
+            <div class="auth-switch">
+                Already have an account?
+                <button type="button" onclick="showLogin()">
+                    Log in
+                </button>
+            </div>
+
         </form>
-
-
-        <div
-            id="authMessage"
-            class="auth-message"
-        ></div>
-
-
-        <button
-            id="switchAuth"
-            class="auth-switch"
-            type="button"
-        >
-            Create an account
-        </button>
 
     </div>
 
-</div>
+</section>
 
 
-<!-- ==================================================
-     MAIN APPLICATION
-================================================== -->
+<!-- =========================
+     APP
+========================= -->
 
-<div
-    id="app"
-    class="hidden"
->
+<div id="app">
 
-    <div class="app-layout">
+    <div class="layout">
 
-
-        <!-- ==================================================
-             LEFT SIDEBAR
-        ================================================== -->
+        <!-- LEFT SIDEBAR -->
 
         <aside class="sidebar">
 
-            <div class="sidebar-inner">
+            <div class="brand">
+                <div class="brand-icon">CX</div>
+                <span>ConnectX</span>
+            </div>
 
-                <a
-                    href="#"
-                    class="brand"
-                    onclick="return false;"
+            <button class="nav-button active" onclick="navigate('home')">
+                <span class="nav-icon">⌂</span>
+                <span>Home</span>
+            </button>
+
+            <button class="nav-button" onclick="navigate('explore')">
+                <span class="nav-icon">⌕</span>
+                <span>Explore</span>
+            </button>
+
+            <button class="nav-button" onclick="navigate('notifications')">
+                <span class="nav-icon">♡</span>
+                <span>Notifications</span>
+            </button>
+
+            <button class="nav-button" onclick="navigate('profile')">
+                <span class="nav-icon">◯</span>
+                <span>Profile</span>
+            </button>
+
+            <button class="nav-button" onclick="toggleDarkMode()">
+                <span class="nav-icon">☾</span>
+                <span>Dark mode</span>
+            </button>
+
+            <button class="post-button" onclick="openPostModal()">
+                Post
+            </button>
+
+            <div class="account-box" onclick="logout()">
+
+                <div
+                    class="avatar small"
+                    id="sidebarAvatar"
                 >
+                    U
+                </div>
 
-                    <img
-                        src="Connectx%20App%20Logo.png"
-                        alt="ConnectX"
+                <div class="account-details">
+
+                    <strong id="sidebarName">
+                        User
+                    </strong>
+
+                    <div
+                        id="sidebarUsername"
+                        style="color:var(--muted);font-size:13px;"
                     >
-
-                    <span>
-                        ConnectX
-                    </span>
-
-                </a>
-
-
-                <nav class="main-nav">
-
-                    <button
-                        class="nav-button active"
-                        data-page="home"
-                    >
-                        <span class="nav-icon">⌂</span>
-                        <span>Home</span>
-                    </button>
-
-
-                    <button
-                        class="nav-button"
-                        data-page="explore"
-                    >
-                        <span class="nav-icon">⌕</span>
-                        <span>Explore</span>
-                    </button>
-
-
-                    <button
-                        class="nav-button"
-                        data-page="notifications"
-                    >
-                        <span class="nav-icon">♡</span>
-                        <span>Notifications</span>
-                    </button>
-
-
-                    <button
-                        class="nav-button"
-                        data-page="profile"
-                    >
-                        <span class="nav-icon">○</span>
-                        <span>Profile</span>
-                    </button>
-
-                </nav>
-
-
-                <button
-                    id="sidebarPostButton"
-                    class="post-button"
-                >
-                    Post
-                </button>
-
-
-                <div class="sidebar-bottom">
-
-                    <button
-                        id="darkModeButton"
-                        class="nav-button"
-                    >
-                        <span class="nav-icon">☾</span>
-                        <span>Dark mode</span>
-                    </button>
-
-
-                    <button
-                        id="logoutButton"
-                        class="nav-button"
-                    >
-                        <span class="nav-icon">↪</span>
-                        <span>Log out</span>
-                    </button>
-
-
-                    <div class="account-card">
-
-                        <div
-                            id="sidebarAvatar"
-                            class="avatar"
-                        >
-                            U
-                        </div>
-
-                        <div class="account-info">
-
-                            <strong id="sidebarName">
-                                User
-                            </strong>
-
-                            <span id="sidebarUsername">
-                                @user
-                            </span>
-
-                        </div>
-
+                        @user
                     </div>
 
                 </div>
@@ -327,53 +1008,44 @@
         </aside>
 
 
-        <!-- ==================================================
-             MAIN CONTENT
-        ================================================== -->
+        <!-- MAIN -->
 
-        <main class="main-content">
+        <main class="main">
+
+            <div class="topbar" id="pageTitle">
+                Home
+            </div>
 
 
             <!-- HOME -->
 
-            <section
-                id="homePage"
-                class="page active"
-            >
-
-                <header class="page-header">
-                    <h2>Home</h2>
-                </header>
-
+            <section id="homePage" class="page active">
 
                 <div class="composer">
 
                     <div
-                        id="composerAvatar"
                         class="avatar"
+                        id="composerAvatar"
                     >
                         U
                     </div>
-
 
                     <div class="composer-content">
 
                         <textarea
                             id="postInput"
-                            maxlength="280"
                             placeholder="What's happening?"
+                            maxlength="280"
+                            oninput="updatePostButton()"
                         ></textarea>
 
-
-                        <div class="composer-footer">
-
-                            <span id="characterCount">
-                                0/280
-                            </span>
+                        <div class="composer-bottom">
 
                             <button
-                                id="postButton"
-                                class="small-post-button"
+                                id="sendPost"
+                                class="send-post"
+                                disabled
+                                onclick="createPost()"
                             >
                                 Post
                             </button>
@@ -384,7 +1056,6 @@
 
                 </div>
 
-
                 <div id="feed"></div>
 
             </section>
@@ -392,28 +1063,24 @@
 
             <!-- EXPLORE -->
 
-            <section
-                id="explorePage"
-                class="page"
-            >
+            <section id="explorePage" class="page">
 
-                <header class="page-header">
-                    <h2>Explore</h2>
-                </header>
+                <div style="padding:20px;">
 
+                    <div class="search-box">
 
-                <div class="explore-search">
+                        <span>⌕</span>
 
-                    <span>⌕</span>
+                        <input
+                            id="exploreSearch"
+                            type="text"
+                            placeholder="Search ConnectX"
+                            oninput="searchConnectX()"
+                        >
 
-                    <input
-                        id="searchInput"
-                        type="search"
-                        placeholder="Search ConnectX"
-                    >
+                    </div>
 
                 </div>
-
 
                 <div id="searchResults"></div>
 
@@ -422,15 +1089,7 @@
 
             <!-- NOTIFICATIONS -->
 
-            <section
-                id="notificationsPage"
-                class="page"
-            >
-
-                <header class="page-header">
-                    <h2>Notifications</h2>
-                </header>
-
+            <section id="notificationsPage" class="page">
 
                 <div id="notifications"></div>
 
@@ -439,79 +1098,60 @@
 
             <!-- PROFILE -->
 
-            <section
-                id="profilePage"
-                class="page"
-            >
-
-                <header class="page-header">
-                    <h2>Profile</h2>
-                </header>
-
+            <section id="profilePage" class="page">
 
                 <div class="profile-cover"></div>
-
 
                 <div class="profile-info">
 
                     <div
+                        class="avatar large profile-avatar"
                         id="profileAvatar"
-                        class="avatar profile-avatar"
                     >
                         U
                     </div>
 
-
-                    <h2 id="profileName">
+                    <div
+                        class="profile-name"
+                        id="profileName"
+                    >
                         User
-                    </h2>
+                    </div>
 
-
-                    <p
-                        id="profileUsername"
-                        class="muted"
+                    <div
+                        class="profile-handle"
+                        id="profileHandle"
                     >
                         @user
-                    </p>
+                    </div>
 
-
-                    <p id="profileBio">
+                    <div
+                        class="profile-bio"
+                        id="profileBio"
+                    >
                         Welcome to ConnectX!
-                    </p>
-
+                    </div>
 
                     <div class="profile-stats">
 
-                        <div>
-                            <strong id="followingCount">
-                                0
-                            </strong>
-
+                        <div class="stat">
+                            <strong id="followingCount">0</strong>
                             <span>Following</span>
                         </div>
 
-
-                        <div>
-                            <strong id="followersCount">
-                                0
-                            </strong>
-
+                        <div class="stat">
+                            <strong id="followersCount">0</strong>
                             <span>Followers</span>
                         </div>
 
-
-                        <div>
-                            <strong id="postCount">
-                                0
-                            </strong>
-
+                        <div class="stat">
+                            <strong id="postCount">0</strong>
                             <span>Posts</span>
                         </div>
 
                     </div>
 
                 </div>
-
 
                 <div id="profilePosts"></div>
 
@@ -520,26 +1160,23 @@
         </main>
 
 
-        <!-- ==================================================
-             RIGHT SIDEBAR
-        ================================================== -->
+        <!-- RIGHT SIDEBAR -->
 
-        <aside class="right-sidebar">
+        <aside class="rightbar">
 
-            <div class="right-search">
+            <div class="search-box">
 
                 <span>⌕</span>
 
                 <input
-                    id="rightSearch"
-                    type="search"
+                    type="text"
                     placeholder="Search"
+                    onfocus="navigate('explore')"
                 >
 
             </div>
 
-
-            <div class="suggestions-card">
+            <div class="side-card">
 
                 <h2>
                     Who to follow
@@ -549,38 +1186,46 @@
 
             </div>
 
+            <div class="side-card">
+
+                <h2>
+                    ConnectX
+                </h2>
+
+                <p style="color:var(--muted);line-height:1.5;">
+                    Welcome to ConnectX — a place to
+                    connect, share and discover.
+                </p>
+
+            </div>
+
         </aside>
 
     </div>
 
 
-    <!-- ==================================================
-         MOBILE NAVIGATION
-    ================================================== -->
+    <!-- MOBILE NAV -->
 
     <nav class="mobile-nav">
 
-        <button data-page="home">
+        <button onclick="navigate('home')">
             ⌂
         </button>
 
-        <button data-page="explore">
+        <button onclick="navigate('explore')">
             ⌕
         </button>
 
-        <button
-            id="mobilePost"
-            class="mobile-post"
-        >
-            +
+        <button onclick="openPostModal()">
+            ＋
         </button>
 
-        <button data-page="notifications">
+        <button onclick="navigate('notifications')">
             ♡
         </button>
 
-        <button data-page="profile">
-            ○
+        <button onclick="navigate('profile')">
+            ◯
         </button>
 
     </nav>
@@ -588,8 +1233,1648 @@
 </div>
 
 
-<script src="app.js"></script>
+<!-- =========================
+     POST MODAL
+========================= -->
+
+<div id="postModal" class="modal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <h2>Create post</h2>
+
+            <button
+                class="modal-close"
+                onclick="closePostModal()"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <textarea
+            id="modalPostInput"
+            placeholder="What's happening?"
+            maxlength="280"
+            style="
+                width:100%;
+                min-height:150px;
+                resize:none;
+                border:0;
+                outline:none;
+                background:transparent;
+                color:var(--text);
+                font-size:18px;
+            "
+        ></textarea>
+
+        <div style="display:flex;justify-content:flex-end;">
+
+            <button
+                class="send-post"
+                onclick="createModalPost()"
+            >
+                Post
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   CONNECTX DATABASE
+===================================================== */
+
+const DB_USERS = "connectx_users";
+const DB_POSTS = "connectx_posts";
+const DB_SESSION = "connectx_session";
+const DB_NOTIFICATIONS = "connectx_notifications";
+
+
+/* =====================================================
+   DEFAULT USERS
+===================================================== */
+
+function initializeDatabase() {
+
+    if (!localStorage.getItem(DB_USERS)) {
+
+        const users = [
+            {
+                id: "user_1",
+                name: "ConnectX",
+                username: "connectx",
+                password: "connectx",
+                bio: "Official ConnectX account.",
+                followers: [],
+                following: [],
+                verified: true
+            },
+            {
+                id: "user_2",
+                name: "Alex Johnson",
+                username: "alex",
+                password: "password",
+                bio: "Building cool things.",
+                followers: [],
+                following: [],
+                verified: false
+            }
+        ];
+
+        localStorage.setItem(
+            DB_USERS,
+            JSON.stringify(users)
+        );
+    }
+
+    if (!localStorage.getItem(DB_POSTS)) {
+
+        const posts = [
+            {
+                id: "post_1",
+                userId: "user_1",
+                text: "Welcome to ConnectX! 🚀",
+                createdAt: Date.now(),
+                likes: [],
+                replies: []
+            }
+        ];
+
+        localStorage.setItem(
+            DB_POSTS,
+            JSON.stringify(posts)
+        );
+    }
+
+    if (!localStorage.getItem(DB_NOTIFICATIONS)) {
+
+        localStorage.setItem(
+            DB_NOTIFICATIONS,
+            JSON.stringify([])
+        );
+    }
+}
+
+
+/* =====================================================
+   DATABASE HELPERS
+===================================================== */
+
+function getUsers() {
+
+    return JSON.parse(
+        localStorage.getItem(DB_USERS) || "[]"
+    );
+
+}
+
+function saveUsers(users) {
+
+    localStorage.setItem(
+        DB_USERS,
+        JSON.stringify(users)
+    );
+
+}
+
+function getPosts() {
+
+    return JSON.parse(
+        localStorage.getItem(DB_POSTS) || "[]"
+    );
+
+}
+
+function savePosts(posts) {
+
+    localStorage.setItem(
+        DB_POSTS,
+        JSON.stringify(posts)
+    );
+
+}
+
+function getNotifications() {
+
+    return JSON.parse(
+        localStorage.getItem(DB_NOTIFICATIONS) || "[]"
+    );
+
+}
+
+function saveNotifications(notifications) {
+
+    localStorage.setItem(
+        DB_NOTIFICATIONS,
+        JSON.stringify(notifications)
+    );
+
+}
+
+
+/* =====================================================
+   SESSION
+===================================================== */
+
+function getCurrentUser() {
+
+    const id = localStorage.getItem(DB_SESSION);
+
+    if (!id) return null;
+
+    return getUsers().find(
+        user => user.id === id
+    ) || null;
+
+}
+
+
+/* =====================================================
+   AUTH
+===================================================== */
+
+function showRegister() {
+
+    document
+        .getElementById("loginForm")
+        .classList.remove("active");
+
+    document
+        .getElementById("registerForm")
+        .classList.add("active");
+
+    clearAuthError();
+
+}
+
+function showLogin() {
+
+    document
+        .getElementById("registerForm")
+        .classList.remove("active");
+
+    document
+        .getElementById("loginForm")
+        .classList.add("active");
+
+    clearAuthError();
+
+}
+
+function showAuthError(message) {
+
+    const error =
+        document.getElementById("authError");
+
+    error.textContent = message;
+    error.style.display = "block";
+
+}
+
+function clearAuthError() {
+
+    const error =
+        document.getElementById("authError");
+
+    error.textContent = "";
+    error.style.display = "none";
+
+}
+
+
+/* LOGIN */
+
+document
+    .getElementById("loginForm")
+    .addEventListener("submit", function(event) {
+
+        event.preventDefault();
+
+        const username =
+            document
+                .getElementById("loginUsername")
+                .value
+                .trim()
+                .toLowerCase();
+
+        const password =
+            document
+                .getElementById("loginPassword")
+                .value;
+
+        const user = getUsers().find(
+            u =>
+                u.username.toLowerCase() === username &&
+                u.password === password
+        );
+
+        if (!user) {
+
+            showAuthError(
+                "Incorrect username or password."
+            );
+
+            return;
+
+        }
+
+        localStorage.setItem(
+            DB_SESSION,
+            user.id
+        );
+
+        startApp();
+
+    });
+
+
+/* REGISTER */
+
+document
+    .getElementById("registerForm")
+    .addEventListener("submit", function(event) {
+
+        event.preventDefault();
+
+        const name =
+            document
+                .getElementById("registerName")
+                .value
+                .trim();
+
+        const username =
+            document
+                .getElementById("registerUsername")
+                .value
+                .trim()
+                .toLowerCase();
+
+        const password =
+            document
+                .getElementById("registerPassword")
+                .value;
+
+        if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+
+            showAuthError(
+                "Username can only contain letters, numbers and underscores."
+            );
+
+            return;
+
+        }
+
+        const users = getUsers();
+
+        if (
+            users.some(
+                u =>
+                    u.username.toLowerCase() === username
+            )
+        ) {
+
+            showAuthError(
+                "That username is already taken."
+            );
+
+            return;
+
+        }
+
+        const newUser = {
+
+            id:
+                "user_" +
+                Date.now(),
+
+            name,
+
+            username,
+
+            password,
+
+            bio:
+                "Welcome to ConnectX!",
+
+            followers: [],
+
+            following: [],
+
+            verified: false
+
+        };
+
+        users.push(newUser);
+
+        saveUsers(users);
+
+        localStorage.setItem(
+            DB_SESSION,
+            newUser.id
+        );
+
+        startApp();
+
+    });
+
+
+/* =====================================================
+   APP START
+===================================================== */
+
+function startApp() {
+
+    const user = getCurrentUser();
+
+    if (!user) return;
+
+    document
+        .getElementById("authScreen")
+        .style.display = "none";
+
+    document
+        .getElementById("app")
+        .style.display = "block";
+
+    updateUserUI();
+
+    renderFeed();
+
+    renderSuggestions();
+
+    renderNotifications();
+
+    renderProfile();
+
+}
+
+
+/* =====================================================
+   USER UI
+===================================================== */
+
+function getInitials(name) {
+
+    return name
+        .split(" ")
+        .map(word => word[0])
+        .join("")
+        .substring(0, 2)
+        .toUpperCase();
+
+}
+
+function updateUserUI() {
+
+    const user = getCurrentUser();
+
+    if (!user) return;
+
+    document
+        .getElementById("sidebarName")
+        .textContent = user.name;
+
+    document
+        .getElementById("sidebarUsername")
+        .textContent = "@" + user.username;
+
+    document
+        .getElementById("sidebarAvatar")
+        .textContent = getInitials(user.name);
+
+    document
+        .getElementById("composerAvatar")
+        .textContent = getInitials(user.name);
+
+    document
+        .getElementById("profileAvatar")
+        .textContent = getInitials(user.name);
+
+}
+
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+function navigate(page) {
+
+    const pages = {
+
+        home: {
+            element: "homePage",
+            title: "Home"
+        },
+
+        explore: {
+            element: "explorePage",
+            title: "Explore"
+        },
+
+        notifications: {
+            element: "notificationsPage",
+            title: "Notifications"
+        },
+
+        profile: {
+            element: "profilePage",
+            title: "Profile"
+        }
+
+    };
+
+    Object
+        .values(pages)
+        .forEach(p => {
+
+            document
+                .getElementById(p.element)
+                .classList.remove("active");
+
+        });
+
+    document
+        .getElementById(
+            pages[page].element
+        )
+        .classList.add("active");
+
+    document
+        .getElementById("pageTitle")
+        .textContent = pages[page].title;
+
+    document
+        .querySelectorAll(".nav-button")
+        .forEach(button =>
+            button.classList.remove("active")
+        );
+
+    if (page === "home")
+        renderFeed();
+
+    if (page === "profile")
+        renderProfile();
+
+    if (page === "notifications")
+        renderNotifications();
+
+}
+
+
+/* =====================================================
+   CREATE POST
+===================================================== */
+
+function createPost() {
+
+    const input =
+        document.getElementById("postInput");
+
+    const text = input.value.trim();
+
+    if (!text) return;
+
+    addPost(text);
+
+    input.value = "";
+
+    updatePostButton();
+
+}
+
+function addPost(text) {
+
+    const user = getCurrentUser();
+
+    if (!user) return;
+
+    const posts = getPosts();
+
+    posts.unshift({
+
+        id:
+            "post_" +
+            Date.now() +
+            "_" +
+            Math.random()
+                .toString(36)
+                .substring(2, 8),
+
+        userId: user.id,
+
+        text,
+
+        createdAt: Date.now(),
+
+        likes: [],
+
+        replies: []
+
+    });
+
+    savePosts(posts);
+
+    renderFeed();
+
+    renderProfile();
+
+}
+
+function createModalPost() {
+
+    const input =
+        document.getElementById("modalPostInput");
+
+    const text = input.value.trim();
+
+    if (!text) return;
+
+    addPost(text);
+
+    input.value = "";
+
+    closePostModal();
+
+}
+
+function updatePostButton() {
+
+    const text =
+        document
+            .getElementById("postInput")
+            .value
+            .trim();
+
+    document
+        .getElementById("sendPost")
+        .disabled = !text;
+
+}
+
+
+/* =====================================================
+   RENDER FEED
+===================================================== */
+
+function renderFeed() {
+
+    const feed =
+        document.getElementById("feed");
+
+    const posts = getPosts();
+
+    const users = getUsers();
+
+    if (posts.length === 0) {
+
+        feed.innerHTML = `
+            <div style="padding:40px;text-align:center;color:var(--muted);">
+                No posts yet.
+            </div>
+        `;
+
+        return;
+
+    }
+
+    feed.innerHTML = posts
+        .map(post => {
+
+            const user =
+                users.find(
+                    u => u.id === post.userId
+                );
+
+            if (!user) return "";
+
+            return createPostHTML(post, user);
+
+        })
+        .join("");
+
+}
+
+
+/* =====================================================
+   POST HTML
+===================================================== */
+
+function createPostHTML(post, user) {
+
+    const current =
+        getCurrentUser();
+
+    const liked =
+        post.likes.includes(current.id);
+
+    const ownPost =
+        current.id === user.id;
+
+    const time =
+        formatTime(post.createdAt);
+
+    return `
+
+        <article class="post">
+
+            <div
+                class="avatar"
+                onclick="viewUser('${user.id}')"
+                style="cursor:pointer;"
+            >
+                ${getInitials(user.name)}
+            </div>
+
+            <div class="post-body">
+
+                <div class="post-header">
+
+                    <span class="post-name">
+                        ${escapeHTML(user.name)}
+                    </span>
+
+                    ${
+                        user.verified
+                        ? `<span class="verified">✓</span>`
+                        : ""
+                    }
+
+                    <span class="post-username">
+                        @${escapeHTML(user.username)}
+                    </span>
+
+                    <span class="post-time">
+                        · ${time}
+                    </span>
+
+                    ${
+                        ownPost
+                        ?
+                        `<button
+                            class="delete-post"
+                            onclick="deletePost('${post.id}')"
+                        >
+                            Delete
+                        </button>`
+                        :
+                        ""
+                    }
+
+                </div>
+
+                <div class="post-text">
+                    ${escapeHTML(post.text)}
+                </div>
+
+                <div class="post-actions">
+
+                    <button
+                        class="action"
+                        onclick="replyToPost('${post.id}')"
+                    >
+                        ♧
+                        <span>${post.replies.length}</span>
+                    </button>
+
+                    <button
+                        class="action ${liked ? "liked" : ""}"
+                        onclick="toggleLike('${post.id}')"
+                    >
+                        ${liked ? "♥" : "♡"}
+                        <span>${post.likes.length}</span>
+                    </button>
+
+                    <button
+                        class="action"
+                        onclick="sharePost('${post.id}')"
+                    >
+                        ↗
+                    </button>
+
+                </div>
+
+            </div>
+
+        </article>
+
+    `;
+
+}
+
+
+/* =====================================================
+   LIKE
+===================================================== */
+
+function toggleLike(postId) {
+
+    const current =
+        getCurrentUser();
+
+    const posts = getPosts();
+
+    const post =
+        posts.find(
+            p => p.id === postId
+        );
+
+    if (!post) return;
+
+    const index =
+        post.likes.indexOf(current.id);
+
+    if (index === -1) {
+
+        post.likes.push(current.id);
+
+        if (post.userId !== current.id) {
+
+            addNotification(
+                post.userId,
+                `${current.name} liked your post.`
+            );
+
+        }
+
+    } else {
+
+        post.likes.splice(index, 1);
+
+    }
+
+    savePosts(posts);
+
+    renderFeed();
+
+    renderProfile();
+
+}
+
+
+/* =====================================================
+   DELETE POST
+===================================================== */
+
+function deletePost(postId) {
+
+    const current =
+        getCurrentUser();
+
+    const posts =
+        getPosts();
+
+    const post =
+        posts.find(
+            p => p.id === postId
+        );
+
+    if (!post) return;
+
+    if (post.userId !== current.id)
+        return;
+
+    if (!confirm("Delete this post?"))
+        return;
+
+    savePosts(
+        posts.filter(
+            p => p.id !== postId
+        )
+    );
+
+    renderFeed();
+
+    renderProfile();
+
+}
+
+
+/* =====================================================
+   REPLY
+===================================================== */
+
+function replyToPost(postId) {
+
+    const text =
+        prompt("Write your reply:");
+
+    if (!text || !text.trim())
+        return;
+
+    const posts = getPosts();
+
+    const post =
+        posts.find(
+            p => p.id === postId
+        );
+
+    if (!post) return;
+
+    post.replies.push({
+
+        id: Date.now(),
+
+        userId:
+            getCurrentUser().id,
+
+        text: text.trim(),
+
+        createdAt: Date.now()
+
+    });
+
+    savePosts(posts);
+
+    if (
+        post.userId !==
+        getCurrentUser().id
+    ) {
+
+        addNotification(
+            post.userId,
+            `${getCurrentUser().name} replied to your post.`
+        );
+
+    }
+
+    renderFeed();
+
+}
+
+
+/* =====================================================
+   SHARE
+===================================================== */
+
+function sharePost(postId) {
+
+    const url =
+        window.location.href
+        .split("#")[0] +
+        "#post=" +
+        postId;
+
+    if (
+        navigator.clipboard
+    ) {
+
+        navigator.clipboard.writeText(url);
+
+        alert("Post link copied!");
+
+    } else {
+
+        prompt(
+            "Copy this link:",
+            url
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   TIME
+===================================================== */
+
+function formatTime(timestamp) {
+
+    const seconds =
+        Math.floor(
+            (Date.now() - timestamp) / 1000
+        );
+
+    if (seconds < 60)
+        return seconds + "s";
+
+    const minutes =
+        Math.floor(seconds / 60);
+
+    if (minutes < 60)
+        return minutes + "m";
+
+    const hours =
+        Math.floor(minutes / 60);
+
+    if (hours < 24)
+        return hours + "h";
+
+    const days =
+        Math.floor(hours / 24);
+
+    return days + "d";
+
+}
+
+
+/* =====================================================
+   FOLLOW SYSTEM
+===================================================== */
+
+function toggleFollow(userId) {
+
+    const current =
+        getCurrentUser();
+
+    if (current.id === userId)
+        return;
+
+    const users = getUsers();
+
+    const me =
+        users.find(
+            u => u.id === current.id
+        );
+
+    const target =
+        users.find(
+            u => u.id === userId
+        );
+
+    if (!me || !target)
+        return;
+
+    const index =
+        me.following.indexOf(userId);
+
+    if (index === -1) {
+
+        me.following.push(userId);
+
+        if (!target.followers.includes(me.id))
+            target.followers.push(me.id);
+
+        addNotification(
+            target.id,
+            `${me.name} followed you.`
+        );
+
+    } else {
+
+        me.following.splice(index, 1);
+
+        const followerIndex =
+            target.followers.indexOf(me.id);
+
+        if (followerIndex !== -1)
+            target.followers.splice(
+                followerIndex,
+                1
+            );
+
+    }
+
+    saveUsers(users);
+
+    renderSuggestions();
+
+    renderProfile();
+
+}
+
+
+/* =====================================================
+   SUGGESTIONS
+===================================================== */
+
+function renderSuggestions() {
+
+    const container =
+        document.getElementById("suggestions");
+
+    const current =
+        getCurrentUser();
+
+    const users =
+        getUsers()
+            .filter(
+                u =>
+                    u.id !== current.id
+            )
+            .slice(0, 5);
+
+    if (users.length === 0) {
+
+        container.innerHTML =
+            `<p style="color:var(--muted);">
+                No suggestions yet.
+            </p>`;
+
+        return;
+
+    }
+
+    container.innerHTML =
+        users
+            .map(user => {
+
+                const following =
+                    current.following.includes(
+                        user.id
+                    );
+
+                return `
+
+                    <div class="suggestion">
+
+                        <div class="avatar small">
+                            ${getInitials(user.name)}
+                        </div>
+
+                        <div class="suggestion-info">
+
+                            <div class="suggestion-name">
+                                ${escapeHTML(user.name)}
+                            </div>
+
+                            <div class="suggestion-user">
+                                @${escapeHTML(user.username)}
+                            </div>
+
+                        </div>
+
+                        <button
+                            class="follow-button ${following ? "following" : ""}"
+                            onclick="toggleFollow('${user.id}')"
+                        >
+                            ${following ? "Following" : "Follow"}
+                        </button>
+
+                    </div>
+
+                `;
+
+            })
+            .join("");
+
+}
+
+
+/* =====================================================
+   PROFILE
+===================================================== */
+
+function renderProfile() {
+
+    const user =
+        getCurrentUser();
+
+    if (!user) return;
+
+    document
+        .getElementById("profileName")
+        .textContent = user.name;
+
+    document
+        .getElementById("profileHandle")
+        .textContent =
+            "@" + user.username;
+
+    document
+        .getElementById("profileBio")
+        .textContent =
+            user.bio || "Welcome to ConnectX!";
+
+    document
+        .getElementById("followingCount")
+        .textContent =
+            user.following.length;
+
+    document
+        .getElementById("followersCount")
+        .textContent =
+            user.followers.length;
+
+    const posts =
+        getPosts()
+            .filter(
+                p =>
+                    p.userId === user.id
+            );
+
+    document
+        .getElementById("postCount")
+        .textContent =
+            posts.length;
+
+    document
+        .getElementById("profilePosts")
+        .innerHTML =
+            posts
+                .map(
+                    post =>
+                        createPostHTML(
+                            post,
+                            user
+                        )
+                )
+                .join("");
+
+}
+
+
+/* =====================================================
+   VIEW USER
+===================================================== */
+
+function viewUser(userId) {
+
+    const users = getUsers();
+
+    const user =
+        users.find(
+            u => u.id === userId
+        );
+
+    if (!user) return;
+
+    const current =
+        getCurrentUser();
+
+    if (current.id === userId) {
+
+        navigate("profile");
+
+        return;
+
+    }
+
+    alert(
+        `${user.name}\n@${user.username}\n\n${user.bio}`
+    );
+
+}
+
+
+/* =====================================================
+   SEARCH
+===================================================== */
+
+function searchConnectX() {
+
+    const query =
+        document
+            .getElementById("exploreSearch")
+            .value
+            .trim()
+            .toLowerCase();
+
+    const results =
+        document.getElementById(
+            "searchResults"
+        );
+
+    if (!query) {
+
+        results.innerHTML = `
+            <div style="
+                padding:40px;
+                text-align:center;
+                color:var(--muted);
+            ">
+                Search for people or posts.
+            </div>
+        `;
+
+        return;
+
+    }
+
+    const users =
+        getUsers().filter(
+            u =>
+                u.name
+                    .toLowerCase()
+                    .includes(query)
+                ||
+                u.username
+                    .toLowerCase()
+                    .includes(query)
+        );
+
+    const posts =
+        getPosts().filter(
+            p =>
+                p.text
+                    .toLowerCase()
+                    .includes(query)
+        );
+
+    let html = "";
+
+    if (users.length) {
+
+        html += `
+            <div style="
+                padding:20px;
+                font-size:20px;
+                font-weight:800;
+            ">
+                People
+            </div>
+        `;
+
+        users.forEach(user => {
+
+            const current =
+                getCurrentUser();
+
+            const following =
+                current.following.includes(
+                    user.id
+                );
+
+            html += `
+
+                <div class="post">
+
+                    <div class="avatar">
+                        ${getInitials(user.name)}
+                    </div>
+
+                    <div class="post-body">
+
+                        <div class="post-name">
+                            ${escapeHTML(user.name)}
+                        </div>
+
+                        <div class="post-username">
+                            @${escapeHTML(user.username)}
+                        </div>
+
+                        <div style="margin-top:5px;">
+                            ${escapeHTML(user.bio)}
+                        </div>
+
+                    </div>
+
+                    ${
+                        user.id !== current.id
+                        ?
+                        `<button
+                            class="follow-button ${following ? "following" : ""}"
+                            onclick="toggleFollow('${user.id}'); searchConnectX();"
+                        >
+                            ${following ? "Following" : "Follow"}
+                        </button>`
+                        :
+                        ""
+                    }
+
+                </div>
+
+            `;
+
+        });
+
+    }
+
+    if (posts.length) {
+
+        html += `
+            <div style="
+                padding:20px;
+                font-size:20px;
+                font-weight:800;
+            ">
+                Posts
+            </div>
+        `;
+
+        const usersList = getUsers();
+
+        posts.forEach(post => {
+
+            const user =
+                usersList.find(
+                    u => u.id === post.userId
+                );
+
+            if (user)
+                html +=
+                    createPostHTML(
+                        post,
+                        user
+                    );
+
+        });
+
+    }
+
+    if (!html) {
+
+        html = `
+            <div style="
+                padding:40px;
+                text-align:center;
+                color:var(--muted);
+            ">
+                No results found.
+            </div>
+        `;
+
+    }
+
+    results.innerHTML = html;
+
+}
+
+
+/* =====================================================
+   NOTIFICATIONS
+===================================================== */
+
+function addNotification(
+    userId,
+    message
+) {
+
+    const notifications =
+        getNotifications();
+
+    notifications.unshift({
+
+        id: Date.now(),
+
+        userId,
+
+        message,
+
+        createdAt: Date.now()
+
+    });
+
+    saveNotifications(
+        notifications.slice(0, 100)
+    );
+
+}
+
+function renderNotifications() {
+
+    const current =
+        getCurrentUser();
+
+    const container =
+        document.getElementById(
+            "notifications"
+        );
+
+    const notifications =
+        getNotifications()
+            .filter(
+                n =>
+                    n.userId === current.id
+            );
+
+    if (!notifications.length) {
+
+        container.innerHTML = `
+            <div style="
+                padding:50px 20px;
+                text-align:center;
+                color:var(--muted);
+            ">
+                No notifications yet.
+            </div>
+        `;
+
+        return;
+
+    }
+
+    container.innerHTML =
+        notifications
+            .map(n => `
+
+                <div class="notification">
+
+                    <strong>♡</strong>
+
+                    <span style="margin-left:10px;">
+                        ${escapeHTML(n.message)}
+                    </span>
+
+                    <div style="
+                        color:var(--muted);
+                        font-size:13px;
+                        margin-top:5px;
+                    ">
+                        ${formatTime(n.createdAt)}
+                    </div>
+
+                </div>
+
+            `)
+            .join("");
+
+}
+
+
+/* =====================================================
+   POST MODAL
+===================================================== */
+
+function openPostModal() {
+
+    document
+        .getElementById("postModal")
+        .classList.add("active");
+
+    document
+        .getElementById("modalPostInput")
+        .focus();
+
+}
+
+function closePostModal() {
+
+    document
+        .getElementById("postModal")
+        .classList.remove("active");
+
+}
+
+
+/* =====================================================
+   DARK MODE
+===================================================== */
+
+function toggleDarkMode() {
+
+    document
+        .body
+        .classList
+        .toggle("dark");
+
+    localStorage.setItem(
+        "connectx_dark",
+        document.body.classList.contains("dark")
+    );
+
+}
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+function logout() {
+
+    if (
+        !confirm(
+            "Are you sure you want to log out?"
+        )
+    )
+        return;
+
+    localStorage.removeItem(
+        DB_SESSION
+    );
+
+    location.reload();
+
+}
+
+
+/* =====================================================
+   SECURITY / HTML ESCAPE
+===================================================== */
+
+function escapeHTML(value) {
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+/* =====================================================
+   STARTUP
+===================================================== */
+
+initializeDatabase();
+
+
+if (
+    localStorage.getItem("connectx_dark") === "true"
+) {
+
+    document
+        .body
+        .classList
+        .add("dark");
+
+}
+
+
+if (getCurrentUser()) {
+
+    startApp();
+
+}
+
+
+/* =====================================================
+   CLOSE MODAL WHEN CLICKING OUTSIDE
+===================================================== */
+
+document
+    .getElementById("postModal")
+    .addEventListener(
+        "click",
+        function(event) {
+
+            if (
+                event.target === this
+            ) {
+
+                closePostModal();
+
+            }
+
+        }
+    );
+
+
+/* =====================================================
+   ENTER KEY / CTRL+ENTER
+===================================================== */
+
+document
+    .getElementById("postInput")
+    .addEventListener(
+        "keydown",
+        function(event) {
+
+            if (
+                event.key === "Enter" &&
+                (event.ctrlKey || event.metaKey)
+            ) {
+
+                event.preventDefault();
+
+                createPost();
+
+            }
+
+        }
+    );
+
+</script>
 
 </body>
 </html>
-```
