@@ -1,19 +1,19 @@
-/* =========================================================
+```javascript
+/* ==================================================
    CONNECTX
-   Clean Supabase Starter
-========================================================= */
+   CLEAN SUPABASE STARTER
+================================================== */
 
 
-/* =========================================================
-   SUPABASE CONFIG
-========================================================= */
+/* ==================================================
+   SUPABASE
+================================================== */
 
 const SUPABASE_URL =
     "https://onvmeffhmruzshqlwakx.supabase.co";
 
-
 const SUPABASE_KEY =
-    "YOUR_SUPABASE_PUBLISHABLE_KEY";
+    "sb_publishable_9VzEW8DurRpM51GgQ282BQ_qQ3e1WkX";
 
 
 const supabaseClient =
@@ -23,18 +23,17 @@ const supabaseClient =
     );
 
 
-/* =========================================================
-   GLOBAL STATE
-========================================================= */
+/* ==================================================
+   STATE
+================================================== */
 
 let currentUser = null;
-
 let currentProfile = null;
 
 
-/* =========================================================
+/* ==================================================
    HELPERS
-========================================================= */
+================================================== */
 
 function initials(name) {
 
@@ -43,8 +42,8 @@ function initials(name) {
     }
 
     return name
-        .split(" ")
-        .filter(Boolean)
+        .trim()
+        .split(/\s+/)
         .map(word => word[0])
         .join("")
         .slice(0, 2)
@@ -53,9 +52,9 @@ function initials(name) {
 }
 
 
-function escapeHTML(text) {
+function escapeHTML(value) {
 
-    return String(text ?? "")
+    return String(value ?? "")
         .replaceAll("&", "&amp;")
         .replaceAll("<", "&lt;")
         .replaceAll(">", "&gt;")
@@ -67,10 +66,9 @@ function escapeHTML(text) {
 
 function timeAgo(date) {
 
-    const seconds =
-        Math.floor(
-            (Date.now() - new Date(date).getTime()) / 1000
-        );
+    const seconds = Math.floor(
+        (Date.now() - new Date(date).getTime()) / 1000
+    );
 
 
     if (seconds < 60) {
@@ -78,8 +76,7 @@ function timeAgo(date) {
     }
 
 
-    const minutes =
-        Math.floor(seconds / 60);
+    const minutes = Math.floor(seconds / 60);
 
 
     if (minutes < 60) {
@@ -87,8 +84,7 @@ function timeAgo(date) {
     }
 
 
-    const hours =
-        Math.floor(minutes / 60);
+    const hours = Math.floor(minutes / 60);
 
 
     if (hours < 24) {
@@ -96,8 +92,7 @@ function timeAgo(date) {
     }
 
 
-    const days =
-        Math.floor(hours / 24);
+    const days = Math.floor(hours / 24);
 
 
     if (days < 30) {
@@ -105,91 +100,66 @@ function timeAgo(date) {
     }
 
 
-    const months =
-        Math.floor(days / 30);
-
-
-    if (months < 12) {
-        return `${months}mo`;
-    }
-
-
-    return `${Math.floor(months / 12)}y`;
-
+    return new Date(date).toLocaleDateString();
 }
 
 
-function showAuthMessage(
-    message,
-    success = false
-) {
+function isConnectXAccount(profile) {
 
-    const element =
-        document.getElementById(
-            "authMessage"
-        );
-
-
-    element.textContent =
-        message;
-
-
-    element.style.color =
-        success
-            ? "#16803c"
-            : "#d00";
-
-}
-
-
-/* =========================================================
-   VERIFIED BADGE
-========================================================= */
-
-function isVerified(profile) {
-
-    if (!profile) {
-        return false;
-    }
-
-
-    if (
-        profile.username?.toLowerCase() ===
-        "connectx"
-    ) {
-
-        return true;
-
-    }
-
-
-    return profile.verified === true;
+    return (
+        profile &&
+        profile.username &&
+        profile.username.toLowerCase() === "connectx"
+    );
 
 }
 
 
 function verifiedBadge(profile) {
 
-    if (!isVerified(profile)) {
+    if (!isConnectXAccount(profile)) {
         return "";
     }
 
 
     return `
         <img
-            class="inline-verified"
-            src="assets/Verified ConnectX.jpg"
+            class="verified-badge"
+            src="Verified%20ConnectX.jpg"
             alt="Verified"
-            title="Verified"
+            title="Verified ConnectX account"
         >
     `;
-
 }
 
 
-/* =========================================================
-   AUTH - LOGIN
-========================================================= */
+/* ==================================================
+   AUTH MESSAGE
+================================================== */
+
+function showAuthMessage(message, success = false) {
+
+    const element =
+        document.getElementById("authMessage");
+
+
+    if (!element) {
+        return;
+    }
+
+
+    element.textContent = message;
+
+    element.style.color =
+        success
+            ? "#16803c"
+            : "#d00000";
+}
+
+
+/* ==================================================
+   LOGIN
+================================================== */
 
 document
     .getElementById("loginForm")
@@ -220,14 +190,13 @@ document
                 data,
                 error
             } =
-                await supabaseClient.auth
-                    .signInWithPassword({
+                await supabaseClient.auth.signInWithPassword({
 
-                        email,
+                    email,
 
-                        password
+                    password
 
-                    });
+                });
 
 
             if (error) {
@@ -237,7 +206,6 @@ document
                 );
 
                 return;
-
             }
 
 
@@ -251,9 +219,9 @@ document
     );
 
 
-/* =========================================================
-   AUTH - REGISTER
-========================================================= */
+/* ==================================================
+   REGISTER
+================================================== */
 
 document
     .getElementById("registerForm")
@@ -292,42 +260,32 @@ document
                     .value;
 
 
-            if (username.length < 3) {
+            showAuthMessage("");
+
+
+            if (!/^[a-z0-9_]+$/.test(username)) {
 
                 showAuthMessage(
-                    "Username must be at least 3 characters."
+                    "Username can only contain letters, numbers, and underscores."
                 );
 
                 return;
-
             }
 
 
-            if (
-                !/^[a-z0-9_]+$/.test(
-                    username
-                )
-            ) {
+            if (username.length < 1) {
 
                 showAuthMessage(
-                    "Username can only contain letters, numbers and underscores."
+                    "Please enter a username."
                 );
 
                 return;
-
             }
 
 
-            if (username === "connectx") {
-
-                showAuthMessage(
-                    "That username is reserved."
-                );
-
-                return;
-
-            }
-
+            /*
+                Check whether username already exists.
+            */
 
             const {
                 data: existing,
@@ -336,21 +294,19 @@ document
                 await supabaseClient
                     .from("profiles")
                     .select("id")
-                    .eq(
-                        "username",
-                        username
-                    )
+                    .eq("username", username)
                     .maybeSingle();
 
 
             if (usernameError) {
 
+                console.error(usernameError);
+
                 showAuthMessage(
-                    usernameError.message
+                    "Could not check username. Please try again."
                 );
 
                 return;
-
             }
 
 
@@ -361,38 +317,36 @@ document
                 );
 
                 return;
-
             }
 
+
+            /*
+                Create Auth account.
+            */
 
             const {
                 data,
                 error
             } =
-                await supabaseClient.auth
-                    .signUp({
+                await supabaseClient.auth.signUp({
 
-                        email,
+                    email,
 
-                        password,
+                    password,
 
-                        options: {
+                    options: {
 
-                            emailRedirectTo:
-                                `${window.location.origin}/verify.html`,
+                        data: {
 
-                            data: {
+                            username,
 
-                                username,
-
-                                display_name:
-                                    name
-
-                            }
+                            display_name: name
 
                         }
 
-                    });
+                    }
+
+                });
 
 
             if (error) {
@@ -402,35 +356,44 @@ document
                 );
 
                 return;
-
             }
 
 
-            if (!data.session) {
+            /*
+                Supabase creates the profile automatically
+                through the database trigger.
+            */
+
+            if (data.session) {
+
+                currentUser =
+                    data.user;
+
 
                 showAuthMessage(
-                    "Account created! Check your email to verify your account.",
+                    "Account created!",
                     true
                 );
 
-                return;
 
+                await loadApp();
+
+                return;
             }
 
 
-            currentUser =
-                data.user;
-
-
-            await loadApp();
+            showAuthMessage(
+                "Account created! Check your email to verify your account.",
+                true
+            );
 
         }
     );
 
 
-/* =========================================================
-   SWITCH LOGIN / REGISTER
-========================================================= */
+/* ==================================================
+   LOGIN / REGISTER SWITCH
+================================================== */
 
 document
     .getElementById("switchAuth")
@@ -438,13 +401,13 @@ document
         "click",
         () => {
 
-            const loginForm =
+            const login =
                 document.getElementById(
                     "loginForm"
                 );
 
 
-            const registerForm =
+            const register =
                 document.getElementById(
                     "registerForm"
                 );
@@ -456,34 +419,20 @@ document
                 );
 
 
-            const showingLogin =
-                !loginForm.classList.contains(
-                    "hidden"
-                );
+            if (register.classList.contains("hidden")) {
 
+                login.classList.add("hidden");
 
-            if (showingLogin) {
-
-                loginForm.classList.add(
-                    "hidden"
-                );
-
-                registerForm.classList.remove(
-                    "hidden"
-                );
+                register.classList.remove("hidden");
 
                 switchButton.textContent =
                     "Already have an account? Log in";
 
             } else {
 
-                registerForm.classList.add(
-                    "hidden"
-                );
+                register.classList.add("hidden");
 
-                loginForm.classList.remove(
-                    "hidden"
-                );
+                login.classList.remove("hidden");
 
                 switchButton.textContent =
                     "Create an account";
@@ -497,9 +446,9 @@ document
     );
 
 
-/* =========================================================
-   LOAD APPLICATION
-========================================================= */
+/* ==================================================
+   LOAD APP
+================================================== */
 
 async function loadApp() {
 
@@ -515,11 +464,8 @@ async function loadApp() {
         await supabaseClient
             .from("profiles")
             .select("*")
-            .eq(
-                "id",
-                currentUser.id
-            )
-            .single();
+            .eq("id", currentUser.id)
+            .maybeSingle();
 
 
     if (error) {
@@ -529,48 +475,119 @@ async function loadApp() {
             error
         );
 
+
         showAuthMessage(
-            "Your account exists, but your profile could not be loaded."
+            "Your account was created, but your profile could not be loaded."
         );
 
         return;
+    }
+
+
+    /*
+        If a profile doesn't exist, create it.
+        This also makes the frontend more forgiving
+        if an old Auth account exists.
+    */
+
+    if (!profile) {
+
+        const metadata =
+            currentUser.user_metadata || {};
+
+
+        const username =
+            String(
+                metadata.username ||
+                `user_${currentUser.id.slice(0, 8)}`
+            )
+                .toLowerCase()
+                .replace(/[^a-z0-9_]/g, "")
+                .slice(0, 20);
+
+
+        const displayName =
+            String(
+                metadata.display_name ||
+                "ConnectX User"
+            )
+                .slice(0, 30);
+
+
+        const {
+            data: newProfile,
+            error: createError
+        } =
+            await supabaseClient
+                .from("profiles")
+                .insert({
+
+                    id: currentUser.id,
+
+                    username,
+
+                    display_name: displayName
+
+                })
+                .select()
+                .single();
+
+
+        if (createError) {
+
+            console.error(
+                "Create profile error:",
+                createError
+            );
+
+            return;
+        }
+
+
+        currentProfile =
+            newProfile;
+
+    } else {
+
+        currentProfile =
+            profile;
 
     }
 
 
-    currentProfile =
-        profile;
-
-
     document
         .getElementById("authScreen")
-        .classList.add("hidden");
+        .classList
+        .add("hidden");
 
 
     document
         .getElementById("app")
-        .classList.remove("hidden");
+        .classList
+        .remove("hidden");
 
 
     updateUserUI();
 
 
-    await loadFeed();
+    await Promise.all([
 
-    await loadSuggestions();
+        loadFeed(),
 
-    await loadProfile();
+        loadSuggestions(),
 
-    await loadNotifications();
+        loadProfile(),
 
-    await loadBookmarks();
+        loadNotifications()
+
+    ]);
 
 }
 
 
-/* =========================================================
+/* ==================================================
    UPDATE USER UI
-========================================================= */
+================================================== */
 
 function updateUserUI() {
 
@@ -593,7 +610,8 @@ function updateUserUI() {
     document
         .getElementById("sidebarUsername")
         .textContent =
-        `@${currentProfile.username}`;
+        "@" +
+        currentProfile.username;
 
 
     document
@@ -613,63 +631,22 @@ function updateUserUI() {
         .textContent =
         initials(name);
 
-
-    document
-        .getElementById("profileName")
-        .textContent =
-        name;
-
-
-    document
-        .getElementById("profileUsername")
-        .textContent =
-        `@${currentProfile.username}`;
-
-
-    document
-        .getElementById("profileBio")
-        .textContent =
-        currentProfile.bio ||
-        "Welcome to ConnectX!";
-
-
-    const verified =
-        document.getElementById(
-            "profileVerified"
-        );
-
-
-    if (
-        isVerified(
-            currentProfile
-        )
-    ) {
-
-        verified.classList.add(
-            "visible"
-        );
-
-    } else {
-
-        verified.classList.remove(
-            "visible"
-        );
-
-    }
-
 }
 
 
-/* =========================================================
+/* ==================================================
    LOAD FEED
-========================================================= */
+================================================== */
 
 async function loadFeed() {
 
     const feed =
-        document.getElementById(
-            "feed"
-        );
+        document.getElementById("feed");
+
+
+    if (!feed || !currentUser) {
+        return;
+    }
 
 
     const {
@@ -682,19 +659,14 @@ async function loadFeed() {
                 id,
                 user_id,
                 content,
-                image_url,
                 created_at,
                 profiles (
                     id,
                     username,
                     display_name,
-                    avatar_url,
-                    verified
+                    avatar_url
                 ),
                 likes (
-                    user_id
-                ),
-                bookmarks (
                     user_id
                 )
             `)
@@ -710,7 +682,7 @@ async function loadFeed() {
     if (error) {
 
         console.error(
-            "Failed to load posts:",
+            "Feed error:",
             error
         );
 
@@ -719,29 +691,24 @@ async function loadFeed() {
             <div class="error">
                 Failed to load posts.
                 <br>
-                <small>
-                    ${escapeHTML(error.message)}
-                </small>
+                <small>${escapeHTML(error.message)}</small>
             </div>
         `;
 
         return;
-
     }
 
 
-    if (!posts?.length) {
+    if (!posts || posts.length === 0) {
 
         feed.innerHTML = `
             <div class="empty">
-                No posts yet.
-                <br>
-                Be the first person to post!
+                No posts yet.<br>
+                Be the first to post!
             </div>
         `;
 
         return;
-
     }
 
 
@@ -753,9 +720,9 @@ async function loadFeed() {
 }
 
 
-/* =========================================================
+/* ==================================================
    RENDER POST
-========================================================= */
+================================================== */
 
 function renderPost(post) {
 
@@ -767,10 +734,6 @@ function renderPost(post) {
         post.likes || [];
 
 
-    const bookmarks =
-        post.bookmarks || [];
-
-
     const liked =
         likes.some(
             like =>
@@ -779,17 +742,19 @@ function renderPost(post) {
         );
 
 
-    const bookmarked =
-        bookmarks.some(
-            bookmark =>
-                bookmark.user_id ===
-                currentUser.id
-        );
-
-
     const own =
         post.user_id ===
         currentUser.id;
+
+
+    const displayName =
+        profile.display_name ||
+        "ConnectX User";
+
+
+    const username =
+        profile.username ||
+        "user";
 
 
     return `
@@ -802,9 +767,7 @@ function renderPost(post) {
             <div class="avatar">
 
                 ${escapeHTML(
-                    initials(
-                        profile.display_name
-                    )
+                    initials(displayName)
                 )}
 
             </div>
@@ -817,24 +780,20 @@ function renderPost(post) {
                     <strong class="post-name">
 
                         ${escapeHTML(
-                            profile.display_name ||
-                            "User"
+                            displayName
                         )}
-
-                        ${verifiedBadge(profile)}
 
                     </strong>
 
+                    ${verifiedBadge(profile)}
 
                     <span class="post-user">
 
                         @${escapeHTML(
-                            profile.username ||
-                            "user"
+                            username
                         )}
 
                     </span>
-
 
                     <span class="post-user">
 
@@ -858,26 +817,12 @@ function renderPost(post) {
                 </div>
 
 
-                ${
-                    post.image_url
-                    ?
-                    `
-                        <img
-                            class="post-image"
-                            src="${escapeHTML(post.image_url)}"
-                            alt="Post image"
-                        >
-                    `
-                    :
-                    ""
-                }
-
-
                 <div class="actions">
 
                     <button
                         class="action"
-                        onclick="replyToPost('${post.id}')"
+                        onclick="commentPost('${post.id}')"
+                        title="Reply"
                     >
                         💬
                     </button>
@@ -890,6 +835,7 @@ function renderPost(post) {
                                 : ""
                         }"
                         onclick="toggleLike('${post.id}')"
+                        title="Like"
                     >
 
                         ${
@@ -904,28 +850,9 @@ function renderPost(post) {
 
 
                     <button
-                        class="action ${
-                            bookmarked
-                                ? "bookmarked"
-                                : ""
-                        }"
-                        onclick="toggleBookmark('${post.id}')"
-                    >
-                        🔖
-                    </button>
-
-
-                    <button
-                        class="action"
-                        onclick="repost('${post.id}')"
-                    >
-                        🔁
-                    </button>
-
-
-                    <button
                         class="action"
                         onclick="sharePost('${post.id}')"
+                        title="Share"
                     >
                         ↗
                     </button>
@@ -934,15 +861,17 @@ function renderPost(post) {
                     ${
                         own
                             ?
-                            `
-                                <button
-                                    class="action"
-                                    onclick="deletePost('${post.id}')"
-                                >
-                                    🗑
-                                </button>
-                            `
+
+                            `<button
+                                class="action"
+                                onclick="deletePost('${post.id}')"
+                                title="Delete"
+                            >
+                                🗑
+                            </button>`
+
                             :
+
                             ""
                     }
 
@@ -957,9 +886,9 @@ function renderPost(post) {
 }
 
 
-/* =========================================================
-   CREATE POST
-========================================================= */
+/* ==================================================
+   POST CHARACTER COUNT
+================================================== */
 
 document
     .getElementById("postInput")
@@ -967,22 +896,24 @@ document
         "input",
         () => {
 
-            const input =
-                document.getElementById(
-                    "postInput"
-                );
+            const text =
+                document
+                    .getElementById("postInput")
+                    .value;
 
 
             document
-                .getElementById(
-                    "characterCount"
-                )
+                .getElementById("characterCount")
                 .textContent =
-                `${input.value.length}/280`;
+                `${text.length}/280`;
 
         }
     );
 
+
+/* ==================================================
+   CREATE POST
+================================================== */
 
 document
     .getElementById("postButton")
@@ -998,10 +929,11 @@ document
         "click",
         () => {
 
+            navigate("home");
+
+
             document
-                .getElementById(
-                    "postInput"
-                )
+                .getElementById("postInput")
                 .focus();
 
         }
@@ -1018,9 +950,7 @@ document
 
 
             document
-                .getElementById(
-                    "postInput"
-                )
+                .getElementById("postInput")
                 .focus();
 
         }
@@ -1029,10 +959,13 @@ document
 
 async function createPost() {
 
+    if (!currentUser) {
+        return;
+    }
+
+
     const input =
-        document.getElementById(
-            "postInput"
-        );
+        document.getElementById("postInput");
 
 
     const content =
@@ -1044,15 +977,11 @@ async function createPost() {
     }
 
 
-    if (content.length > 280) {
+    const button =
+        document.getElementById("postButton");
 
-        alert(
-            "Posts can only be 280 characters."
-        );
 
-        return;
-
-    }
+    button.disabled = true;
 
 
     const {
@@ -1070,14 +999,14 @@ async function createPost() {
             });
 
 
+    button.disabled = false;
+
+
     if (error) {
 
-        alert(
-            error.message
-        );
+        alert(error.message);
 
         return;
-
     }
 
 
@@ -1085,9 +1014,7 @@ async function createPost() {
 
 
     document
-        .getElementById(
-            "characterCount"
-        )
+        .getElementById("characterCount")
         .textContent =
         "0/280";
 
@@ -1099,14 +1026,20 @@ async function createPost() {
 }
 
 
-/* =========================================================
-   LIKE
-========================================================= */
+/* ==================================================
+   LIKES
+================================================== */
 
 async function toggleLike(postId) {
 
+    if (!currentUser) {
+        return;
+    }
+
+
     const {
-        data: existing
+        data: existing,
+        error: checkError
     } =
         await supabaseClient
             .from("likes")
@@ -1120,6 +1053,14 @@ async function toggleLike(postId) {
                 currentUser.id
             )
             .maybeSingle();
+
+
+    if (checkError) {
+
+        console.error(checkError);
+
+        return;
+    }
 
 
     if (existing) {
@@ -1158,286 +1099,9 @@ async function toggleLike(postId) {
 }
 
 
-/* =========================================================
-   BOOKMARK
-========================================================= */
-
-async function toggleBookmark(postId) {
-
-    const {
-        data: existing
-    } =
-        await supabaseClient
-            .from("bookmarks")
-            .select("post_id")
-            .eq(
-                "post_id",
-                postId
-            )
-            .eq(
-                "user_id",
-                currentUser.id
-            )
-            .maybeSingle();
-
-
-    if (existing) {
-
-        await supabaseClient
-            .from("bookmarks")
-            .delete()
-            .eq(
-                "post_id",
-                postId
-            )
-            .eq(
-                "user_id",
-                currentUser.id
-            );
-
-    } else {
-
-        await supabaseClient
-            .from("bookmarks")
-            .insert({
-
-                post_id:
-                    postId,
-
-                user_id:
-                    currentUser.id
-
-            });
-
-    }
-
-
-    await loadFeed();
-
-}
-
-
-/* =========================================================
-   BOOKMARK PAGE
-========================================================= */
-
-async function loadBookmarks() {
-
-    const container =
-        document.getElementById(
-            "bookmarks"
-        );
-
-
-    const {
-        data: bookmarks,
-        error
-    } =
-        await supabaseClient
-            .from("bookmarks")
-            .select(`
-                post_id,
-                posts (
-                    id,
-                    user_id,
-                    content,
-                    image_url,
-                    created_at,
-                    profiles (
-                        id,
-                        username,
-                        display_name,
-                        avatar_url,
-                        verified
-                    ),
-                    likes (
-                        user_id
-                    ),
-                    bookmarks (
-                        user_id
-                    )
-                )
-            `)
-            .eq(
-                "user_id",
-                currentUser.id
-            )
-            .order(
-                "created_at",
-                {
-                    ascending: false
-                }
-            );
-
-
-    if (error) {
-
-        console.error(error);
-
-        container.innerHTML = `
-            <div class="error">
-                ${escapeHTML(error.message)}
-            </div>
-        `;
-
-        return;
-
-    }
-
-
-    const posts =
-        (bookmarks || [])
-            .map(
-                item =>
-                    item.posts
-            )
-            .filter(Boolean);
-
-
-    if (!posts.length) {
-
-        container.innerHTML = `
-            <div class="empty">
-                You haven't bookmarked anything yet.
-            </div>
-        `;
-
-        return;
-
-    }
-
-
-    container.innerHTML =
-        posts
-            .map(renderPost)
-            .join("");
-
-}
-
-
-/* =========================================================
-   REPLY
-========================================================= */
-
-async function replyToPost(postId) {
-
-    const content =
-        prompt(
-            "Write your reply:"
-        );
-
-
-    if (!content?.trim()) {
-        return;
-    }
-
-
-    const {
-        error
-    } =
-        await supabaseClient
-            .from("replies")
-            .insert({
-
-                post_id:
-                    postId,
-
-                user_id:
-                    currentUser.id,
-
-                content:
-                    content.trim()
-
-            });
-
-
-    if (error) {
-
-        alert(
-            error.message
-        );
-
-        return;
-
-    }
-
-
-    alert(
-        "Reply posted!"
-    );
-
-}
-
-
-/* =========================================================
-   REPOST
-========================================================= */
-
-async function repost(postId) {
-
-    const {
-        data: original,
-        error
-    } =
-        await supabaseClient
-            .from("posts")
-            .select("content")
-            .eq(
-                "id",
-                postId
-            )
-            .single();
-
-
-    if (error) {
-
-        alert(
-            error.message
-        );
-
-        return;
-
-    }
-
-
-    const {
-        error: repostError
-    } =
-        await supabaseClient
-            .from("posts")
-            .insert({
-
-                user_id:
-                    currentUser.id,
-
-                content:
-                    `🔁 Repost: ${original.content}`,
-
-                repost_of:
-                    postId
-
-            });
-
-
-    if (repostError) {
-
-        alert(
-            repostError.message
-        );
-
-        return;
-
-    }
-
-
-    await loadFeed();
-
-}
-
-
-/* =========================================================
-   DELETE
-========================================================= */
+/* ==================================================
+   DELETE POST
+================================================== */
 
 async function deletePost(postId) {
 
@@ -1468,12 +1132,9 @@ async function deletePost(postId) {
 
     if (error) {
 
-        alert(
-            error.message
-        );
+        alert(error.message);
 
         return;
-
     }
 
 
@@ -1484,14 +1145,66 @@ async function deletePost(postId) {
 }
 
 
-/* =========================================================
+/* ==================================================
+   COMMENTS
+================================================== */
+
+async function commentPost(postId) {
+
+    const content =
+        prompt(
+            "Write your reply:"
+        );
+
+
+    if (
+        !content ||
+        !content.trim()
+    ) {
+        return;
+    }
+
+
+    const {
+        error
+    } =
+        await supabaseClient
+            .from("comments")
+            .insert({
+
+                post_id:
+                    postId,
+
+                user_id:
+                    currentUser.id,
+
+                content:
+                    content.trim()
+
+            });
+
+
+    if (error) {
+
+        alert(error.message);
+
+        return;
+    }
+
+
+    alert("Reply posted!");
+
+}
+
+
+/* ==================================================
    SHARE
-========================================================= */
+================================================== */
 
 async function sharePost(postId) {
 
     const url =
-        `${window.location.origin}${window.location.pathname}#post-${postId}`;
+        `${location.origin}${location.pathname}#post-${postId}`;
 
 
     try {
@@ -1500,6 +1213,7 @@ async function sharePost(postId) {
             url
         );
 
+
         alert(
             "Post link copied!"
         );
@@ -1507,7 +1221,7 @@ async function sharePost(postId) {
     } catch {
 
         prompt(
-            "Copy this link:",
+            "Copy this post link:",
             url
         );
 
@@ -1516,9 +1230,9 @@ async function sharePost(postId) {
 }
 
 
-/* =========================================================
+/* ==================================================
    SUGGESTIONS
-========================================================= */
+================================================== */
 
 async function loadSuggestions() {
 
@@ -1526,6 +1240,11 @@ async function loadSuggestions() {
         document.getElementById(
             "suggestions"
         );
+
+
+    if (!container || !currentUser) {
+        return;
+    }
 
 
     const {
@@ -1544,10 +1263,12 @@ async function loadSuggestions() {
 
     if (error) {
 
-        console.error(error);
+        console.error(
+            "Suggestions error:",
+            error
+        );
 
         return;
-
     }
 
 
@@ -1573,10 +1294,29 @@ async function loadSuggestions() {
         );
 
 
+    if (!profiles || profiles.length === 0) {
+
+        container.innerHTML = `
+            <p class="muted">
+                No suggestions right now.
+            </p>
+        `;
+
+        return;
+    }
+
+
     container.innerHTML =
-        (profiles || [])
-            .map(
-                profile => `
+        profiles
+            .map(profile => {
+
+                const following =
+                    followingIds.has(
+                        profile.id
+                    );
+
+
+                return `
 
                     <div class="suggestion">
 
@@ -1593,21 +1333,29 @@ async function loadSuggestions() {
 
                         <div class="suggestion-info">
 
-                            <strong>
+                            <strong
+                                class="suggestion-name"
+                            >
 
                                 ${escapeHTML(
                                     profile.display_name
                                 )}
 
-                                ${verifiedBadge(profile)}
+                                ${verifiedBadge(
+                                    profile
+                                )}
 
                             </strong>
 
 
-                            <span>
+                            <span
+                                class="suggestion-username"
+                            >
+
                                 @${escapeHTML(
                                     profile.username
                                 )}
+
                             </span>
 
                         </div>
@@ -1615,42 +1363,41 @@ async function loadSuggestions() {
 
                         <button
                             class="follow-button"
-                            onclick="
-                                toggleFollow(
-                                    '${profile.id}'
-                                )
-                            "
+                            onclick="toggleFollow('${profile.id}')"
                         >
 
                             ${
-                                followingIds.has(
-                                    profile.id
-                                )
-                                    ?
-                                    "Following"
-                                    :
-                                    "Follow"
+                                following
+                                    ? "Following"
+                                    : "Follow"
                             }
 
                         </button>
 
                     </div>
 
-                `
-            )
+                `;
+
+            })
             .join("");
 
 }
 
 
-/* =========================================================
+/* ==================================================
    FOLLOW
-========================================================= */
+================================================== */
 
 async function toggleFollow(userId) {
 
+    if (!currentUser) {
+        return;
+    }
+
+
     const {
-        data: existing
+        data: existing,
+        error
     } =
         await supabaseClient
             .from("follows")
@@ -1664,6 +1411,14 @@ async function toggleFollow(userId) {
                 userId
             )
             .maybeSingle();
+
+
+    if (error) {
+
+        console.error(error);
+
+        return;
+    }
 
 
     if (existing) {
@@ -1704,15 +1459,35 @@ async function toggleFollow(userId) {
 }
 
 
-/* =========================================================
+/* ==================================================
    PROFILE
-========================================================= */
+================================================== */
 
 async function loadProfile() {
 
-    if (!currentProfile) {
+    if (!currentProfile || !currentUser) {
         return;
     }
+
+
+    document
+        .getElementById("profileName")
+        .textContent =
+        currentProfile.display_name;
+
+
+    document
+        .getElementById("profileUsername")
+        .textContent =
+        "@" +
+        currentProfile.username;
+
+
+    document
+        .getElementById("profileBio")
+        .textContent =
+        currentProfile.bio ||
+        "Welcome to ConnectX!";
 
 
     const {
@@ -1770,25 +1545,19 @@ async function loadProfile() {
 
 
     document
-        .getElementById(
-            "postCount"
-        )
+        .getElementById("postCount")
         .textContent =
         posts || 0;
 
 
     document
-        .getElementById(
-            "followersCount"
-        )
+        .getElementById("followersCount")
         .textContent =
         followers || 0;
 
 
     document
-        .getElementById(
-            "followingCount"
-        )
+        .getElementById("followingCount")
         .textContent =
         following || 0;
 
@@ -1803,19 +1572,13 @@ async function loadProfile() {
                 id,
                 user_id,
                 content,
-                image_url,
                 created_at,
                 profiles (
                     id,
                     username,
-                    display_name,
-                    avatar_url,
-                    verified
+                    display_name
                 ),
                 likes (
-                    user_id
-                ),
-                bookmarks (
                     user_id
                 )
             `)
@@ -1833,17 +1596,17 @@ async function loadProfile() {
 
     if (error) {
 
-        console.error(error);
+        console.error(
+            "Profile posts error:",
+            error
+        );
 
         return;
-
     }
 
 
     document
-        .getElementById(
-            "profilePosts"
-        )
+        .getElementById("profilePosts")
         .innerHTML =
         (data || [])
             .map(renderPost)
@@ -1852,9 +1615,9 @@ async function loadProfile() {
 }
 
 
-/* =========================================================
+/* ==================================================
    NOTIFICATIONS
-========================================================= */
+================================================== */
 
 async function loadNotifications() {
 
@@ -1862,6 +1625,11 @@ async function loadNotifications() {
         document.getElementById(
             "notifications"
         );
+
+
+    if (!container || !currentUser) {
+        return;
+    }
 
 
     const {
@@ -1872,10 +1640,9 @@ async function loadNotifications() {
             .from("notifications")
             .select(`
                 *,
-                actor:actor_id (
+                profiles:actor_id (
                     username,
-                    display_name,
-                    verified
+                    display_name
                 )
             `)
             .eq(
@@ -1893,14 +1660,10 @@ async function loadNotifications() {
 
     if (error) {
 
-        console.error(error);
-
-        return;
-
-    }
-
-
-    if (!data?.length) {
+        console.error(
+            "Notification error:",
+            error
+        );
 
         container.innerHTML = `
             <div class="empty">
@@ -1909,67 +1672,89 @@ async function loadNotifications() {
         `;
 
         return;
+    }
 
+
+    if (!data || data.length === 0) {
+
+        container.innerHTML = `
+            <div class="empty">
+                No notifications yet.
+            </div>
+        `;
+
+        return;
     }
 
 
     container.innerHTML =
         data
-            .map(
-                notification => `
+            .map(notification => {
+
+                const actor =
+                    notification.profiles;
+
+
+                return `
 
                     <div class="post">
 
                         <div class="avatar">
-                            🔔
+
+                            ${escapeHTML(
+                                initials(
+                                    actor?.display_name ||
+                                    "ConnectX"
+                                )
+                            )}
+
                         </div>
 
-                        <div class="post-body">
+
+                        <div>
 
                             <strong>
 
-                                ${escapeHTML(
-                                    notification.actor?.display_name ||
-                                    "Someone"
-                                )}
-
-                                ${verifiedBadge(
-                                    notification.actor
-                                )}
+                                ${
+                                    escapeHTML(
+                                        actor?.display_name ||
+                                        "Someone"
+                                    )
+                                }
 
                             </strong>
 
-                            <div class="post-content">
 
+                            <div>
                                 ${escapeHTML(
-                                    notification.message ||
                                     notification.type
                                 )}
-
                             </div>
 
-                            <span class="post-user">
+
+                            <small class="muted">
 
                                 ${timeAgo(
                                     notification.created_at
                                 )}
 
-                            </span>
+                            </small>
 
                         </div>
 
                     </div>
 
-                `
-            )
+                `;
+
+            })
             .join("");
 
 }
 
 
-/* =========================================================
+/* ==================================================
    SEARCH
-========================================================= */
+================================================== */
 
 document
     .getElementById("searchInput")
@@ -1988,10 +1773,26 @@ document
             navigate("explore");
 
             document
-                .getElementById(
-                    "searchInput"
-                )
+                .getElementById("searchInput")
                 .focus();
+
+        }
+    );
+
+
+document
+    .getElementById("rightSearch")
+    .addEventListener(
+        "input",
+        event => {
+
+            document
+                .getElementById("searchInput")
+                .value =
+                event.target.value;
+
+
+            search();
 
         }
     );
@@ -2001,9 +1802,7 @@ async function search() {
 
     const query =
         document
-            .getElementById(
-                "searchInput"
-            )
+            .getElementById("searchInput")
             .value
             .trim();
 
@@ -2019,30 +1818,26 @@ async function search() {
         results.innerHTML = "";
 
         return;
-
     }
 
 
+    const safeQuery =
+        query.replaceAll(
+            "%",
+            ""
+        );
+
+
     const {
-        data: users,
-        error: userError
+        data: users
     } =
         await supabaseClient
             .from("profiles")
             .select("*")
             .or(
-                `username.ilike.%${query}%,display_name.ilike.%${query}%`
+                `username.ilike.%${safeQuery}%,display_name.ilike.%${safeQuery}%`
             )
             .limit(20);
-
-
-    if (userError) {
-
-        console.error(userError);
-
-        return;
-
-    }
 
 
     const {
@@ -2054,23 +1849,19 @@ async function search() {
                 id,
                 user_id,
                 content,
-                image_url,
                 created_at,
                 profiles (
+                    id,
                     username,
-                    display_name,
-                    verified
+                    display_name
                 ),
                 likes (
-                    user_id
-                ),
-                bookmarks (
                     user_id
                 )
             `)
             .ilike(
                 "content",
-                `%${query}%`
+                `%${safeQuery}%`
             )
             .limit(20);
 
@@ -2078,85 +1869,79 @@ async function search() {
     let html = "";
 
 
-    if (users?.length) {
+    if (users && users.length) {
 
         html += `
-            <h3 style="padding:20px 20px 10px">
+            <h2 class="search-title">
                 People
-            </h3>
+            </h2>
         `;
 
 
         html += users
-            .map(
-                user => `
+            .map(user => `
 
-                    <div class="post">
+                <div class="post">
 
-                        <div class="avatar">
+                    <div class="avatar">
+
+                        ${escapeHTML(
+                            initials(
+                                user.display_name
+                            )
+                        )}
+
+                    </div>
+
+
+                    <div>
+
+                        <strong>
 
                             ${escapeHTML(
-                                initials(
-                                    user.display_name
-                                )
+                                user.display_name
+                            )}
+
+                            ${verifiedBadge(
+                                user
+                            )}
+
+                        </strong>
+
+
+                        <div class="post-user">
+
+                            @${escapeHTML(
+                                user.username
                             )}
 
                         </div>
 
 
-                        <div class="post-body">
+                        <div>
 
-                            <strong>
-
-                                ${escapeHTML(
-                                    user.display_name
-                                )}
-
-                                ${verifiedBadge(
-                                    user
-                                )}
-
-                            </strong>
-
-
-                            <div class="post-user">
-
-                                @${escapeHTML(
-                                    user.username
-                                )}
-
-                            </div>
-
-
-                            ${
-                                user.bio
-                                    ?
-                                    `
-                                        <div class="post-content">
-                                            ${escapeHTML(user.bio)}
-                                        </div>
-                                    `
-                                    :
-                                    ""
-                            }
+                            ${escapeHTML(
+                                user.bio || ""
+                            )}
 
                         </div>
 
                     </div>
 
-                `
-            )
+                </div>
+
+            `)
             .join("");
 
     }
 
 
-    if (posts?.length) {
+    if (posts && posts.length) {
 
         html += `
-            <h3 style="padding:20px 20px 10px">
+            <h2 class="search-title">
                 Posts
-            </h3>
+            </h2>
         `;
 
 
@@ -2184,9 +1969,9 @@ async function search() {
 }
 
 
-/* =========================================================
+/* ==================================================
    NAVIGATION
-========================================================= */
+================================================== */
 
 document
     .querySelectorAll("[data-page]")
@@ -2260,38 +2045,25 @@ function navigate(page) {
 
 
     if (page === "home") {
-
         loadFeed();
-
     }
 
 
     if (page === "profile") {
-
         loadProfile();
-
     }
 
 
     if (page === "notifications") {
-
         loadNotifications();
-
-    }
-
-
-    if (page === "bookmarks") {
-
-        loadBookmarks();
-
     }
 
 }
 
 
-/* =========================================================
+/* ==================================================
    LOGOUT
-========================================================= */
+================================================== */
 
 document
     .getElementById("logoutButton")
@@ -2304,15 +2076,20 @@ document
                 .signOut();
 
 
+            currentUser = null;
+
+            currentProfile = null;
+
+
             location.reload();
 
         }
     );
 
 
-/* =========================================================
+/* ==================================================
    DARK MODE
-========================================================= */
+================================================== */
 
 document
     .getElementById("darkModeButton")
@@ -2325,13 +2102,41 @@ document
                 .classList
                 .toggle("dark");
 
+
+            localStorage.setItem(
+                "connectx-dark-mode",
+                document.body.classList.contains(
+                    "dark"
+                )
+                    ? "true"
+                    : "false"
+            );
+
         }
     );
 
 
-/* =========================================================
-   SESSION
-========================================================= */
+/* ==================================================
+   LOAD DARK MODE
+================================================== */
+
+if (
+    localStorage.getItem(
+        "connectx-dark-mode"
+    ) === "true"
+) {
+
+    document
+        .body
+        .classList
+        .add("dark");
+
+}
+
+
+/* ==================================================
+   AUTH SESSION
+================================================== */
 
 async function checkSession() {
 
@@ -2346,10 +2151,12 @@ async function checkSession() {
 
     if (error) {
 
-        console.error(error);
+        console.error(
+            "Session error:",
+            error
+        );
 
         return;
-
     }
 
 
@@ -2358,12 +2165,17 @@ async function checkSession() {
         currentUser =
             data.session.user;
 
+
         await loadApp();
 
     }
 
 }
 
+
+/* ==================================================
+   AUTH STATE
+================================================== */
 
 supabaseClient
     .auth
@@ -2400,4 +2212,9 @@ supabaseClient
     );
 
 
+/* ==================================================
+   START
+================================================== */
+
 checkSession();
+```
