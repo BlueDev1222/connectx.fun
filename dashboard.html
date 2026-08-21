@@ -1,1 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>ConnectX — Dashboard</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <nav>
+
+        <div class="logo">
+            <span class="logo-x">X</span>
+            ConnectX
+        </div>
+
+        <button
+            onclick="logout()"
+            class="nav-link"
+            style="
+                background:none;
+                border:none;
+                cursor:pointer;
+            "
+        >
+            Logout
+        </button>
+
+    </nav>
+
+
+    <main class="hero">
+
+        <div class="hero-badge">
+            CONNECTX DASHBOARD
+        </div>
+
+        <h1>
+            Welcome back.
+        </h1>
+
+        <p
+            id="userEmail"
+            class="hero-description"
+        >
+            Loading your account...
+        </p>
+
+
+        <div class="features">
+
+            <div class="feature">
+
+                <div class="feature-icon">
+                    ⛏
+                </div>
+
+                <h3>
+                    Minecraft
+                </h3>
+
+                <p id="minecraftStatus">
+                    Minecraft connection coming next.
+                </p>
+
+            </div>
+
+
+            <div class="feature">
+
+                <div class="feature-icon">
+                    ◈
+                </div>
+
+                <h3>
+                    ConnectX Profile
+                </h3>
+
+                <p>
+                    Your ConnectX identity will live here.
+                </p>
+
+            </div>
+
+
+            <div class="feature">
+
+                <div class="feature-icon">
+                    +
+                </div>
+
+                <h3>
+                    Connect Server
+                </h3>
+
+                <p>
+                    Server integrations are coming soon.
+                </p>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+    ></script>
+
+    <script src="app.js"></script>
+
+
+    <script>
+
+        async function loadDashboard() {
+
+            const session =
+                await checkAuthentication();
+
+            if (!session) return;
+
+            const user =
+                session.user;
+
+            document.getElementById(
+                "userEmail"
+            ).textContent =
+                user.email ||
+                "Microsoft account connected";
+
+        }
+
+        loadDashboard();
+
+    </script>
+
+</body>
+
+</html>
