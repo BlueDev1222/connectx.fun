@@ -10,142 +10,224 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>ConnectX — Dashboard</title>
+    <title>ConnectX Dashboard</title>
 
     <link rel="stylesheet" href="style.css">
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 </head>
 
-<body>
+<body class="dashboard-body">
+
+<aside class="sidebar">
+
+    <div class="sidebar-logo">
+        <div class="logo small">X</div>
+        <span>ConnectX</span>
+    </div>
 
     <nav>
 
-        <div class="logo">
-            <span class="logo-x">X</span>
-            ConnectX
-        </div>
+        <button class="nav-item active">
+            <span>⌂</span>
+            Home
+        </button>
 
-        <button
-            onclick="logout()"
-            class="nav-link"
-            style="
-                background:none;
-                border:none;
-                cursor:pointer;
-            "
-        >
-            Logout
+        <button class="nav-item">
+            <span>◉</span>
+            Profile
+        </button>
+
+        <button class="nav-item">
+            <span>⛏</span>
+            Minecraft
+        </button>
+
+        <button class="nav-item">
+            <span>♙</span>
+            Friends
+        </button>
+
+        <button class="nav-item">
+            <span>♡</span>
+            Notifications
+        </button>
+
+        <button class="nav-item">
+            <span>🔖</span>
+            Bookmarks
         </button>
 
     </nav>
 
+    <div class="sidebar-bottom">
 
-    <main class="hero">
+        <button class="nav-item">
+            <span>⚙</span>
+            Settings
+        </button>
 
-        <div class="hero-badge">
-            CONNECTX DASHBOARD
+        <button id="logoutButton" class="logout">
+            Log out
+        </button>
+
+    </div>
+
+</aside>
+
+
+<main class="dashboard">
+
+    <header class="topbar">
+
+        <div>
+            <h1>Home</h1>
+            <p>Welcome back to ConnectX.</p>
         </div>
 
-        <h1>
-            Welcome back.
-        </h1>
+        <div class="top-profile">
 
-        <p
-            id="userEmail"
-            class="hero-description"
-        >
-            Loading your account...
-        </p>
+            <img
+                id="topAvatar"
+                src="https://mc-heads.net/avatar/Steve/40"
+                alt="Avatar"
+            >
 
-
-        <div class="features">
-
-            <div class="feature">
-
-                <div class="feature-icon">
-                    ⛏
-                </div>
-
-                <h3>
-                    Minecraft
-                </h3>
-
-                <p id="minecraftStatus">
-                    Minecraft connection coming next.
-                </p>
-
-            </div>
-
-
-            <div class="feature">
-
-                <div class="feature-icon">
-                    ◈
-                </div>
-
-                <h3>
-                    ConnectX Profile
-                </h3>
-
-                <p>
-                    Your ConnectX identity will live here.
-                </p>
-
-            </div>
-
-
-            <div class="feature">
-
-                <div class="feature-icon">
-                    +
-                </div>
-
-                <h3>
-                    Connect Server
-                </h3>
-
-                <p>
-                    Server integrations are coming soon.
-                </p>
-
-            </div>
+            <span id="topUsername">Loading...</span>
 
         </div>
 
-    </main>
+    </header>
 
 
-    <script
-        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
-    ></script>
+    <section class="welcome-card">
 
-    <script src="app.js"></script>
+        <div>
+
+            <p class="eyebrow">
+                CONNECTX
+            </p>
+
+            <h2>
+                Welcome back,
+                <span id="welcomeUsername">Player</span>.
+            </h2>
+
+            <p>
+                Your Minecraft community starts here.
+            </p>
+
+        </div>
+
+    </section>
 
 
-    <script>
+    <section class="dashboard-grid">
 
-        async function loadDashboard() {
+        <div class="card profile-card">
 
-            const session =
-                await checkAuthentication();
+            <div class="card-header">
 
-            if (!session) return;
+                <h3>Your Profile</h3>
 
-            const user =
-                session.user;
+                <button>
+                    Edit
+                </button>
 
-            document.getElementById(
-                "userEmail"
-            ).textContent =
-                user.email ||
-                "Microsoft account connected";
+            </div>
 
-        }
+            <div class="profile-content">
 
-        loadDashboard();
+                <img
+                    id="profileAvatar"
+                    class="profile-avatar"
+                    src="https://mc-heads.net/avatar/Steve/96"
+                    alt="Minecraft Avatar"
+                >
 
-    </script>
+                <div>
+
+                    <h2 id="profileUsername">
+                        Loading...
+                    </h2>
+
+                    <p id="profileBio">
+                        Welcome to ConnectX!
+                    </p>
+
+                    <div class="verified">
+                        ✓ ConnectX Member
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="card minecraft-card">
+
+            <div class="card-header">
+
+                <h3>Minecraft</h3>
+
+                <span class="status">
+                    Not Connected
+                </span>
+
+            </div>
+
+            <p>
+                Connect your Minecraft account to unlock
+                your verified player profile.
+            </p>
+
+            <button class="primary-button">
+                Connect Minecraft
+            </button>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <h3>Friends</h3>
+
+                <span>0</span>
+
+            </div>
+
+            <div class="empty-state">
+                You don't have any friends yet.
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <h3>Recent Activity</h3>
+
+            </div>
+
+            <div class="empty-state">
+                Your recent activity will appear here.
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script src="app.js"></script>
 
 </body>
-
 </html>
