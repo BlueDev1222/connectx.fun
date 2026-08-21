@@ -12,9 +12,9 @@
 // NEVER put a service_role/secret key in this file.
 // ============================================================
 
-const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
+const SUPABASE_URL = "https://onvmeffhmruzshqlwakx.supabase.co";
 
-const SUPABASE_KEY = "YOUR_SUPABASE_PUBLISHABLE_KEY";
+const SUPABASE_KEY = "sb_publishable_9VzEW8DurRpM51GgQ282BQ_qQ3e1WkX";
 
 const supabaseClient = window.supabase.createClient(
     SUPABASE_URL,
