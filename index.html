@@ -4,106 +4,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>ConnectX</title>
+    <title>ConnectX — Minecraft Identity</title>
 
     <link rel="stylesheet" href="style.css">
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
 
-<div class="auth-container">
-
-    <div class="brand">
-        <div class="logo">X</div>
-
-        <h1>Connect<span>X</span></h1>
-
-        <p>Connect. Play. Discover.</p>
-    </div>
-
-    <div class="auth-card">
-
-        <div class="tabs">
-            <button id="loginTab" class="tab active">Login</button>
-            <button id="signupTab" class="tab">Create Account</button>
+    <nav>
+        <div class="logo">
+            <span class="logo-x">X</span>
+            ConnectX
         </div>
 
-        <div id="message"></div>
+        <a href="dashboard.html" class="nav-link">Dashboard</a>
+    </nav>
 
-        <!-- LOGIN -->
+    <main class="hero">
 
-        <form id="loginForm">
+        <div class="hero-badge">
+            MINECRAFT IDENTITY PLATFORM
+        </div>
 
-            <label>Email</label>
-            <input
-                id="loginEmail"
-                type="email"
-                placeholder="you@example.com"
-                required
-            >
+        <h1>
+            Your Minecraft.
+            <span>Your Identity.</span>
+        </h1>
 
-            <label>Password</label>
-            <input
-                id="loginPassword"
-                type="password"
-                placeholder="Your password"
-                required
-            >
+        <p class="hero-description">
+            Connect your Minecraft account, create your ConnectX identity,
+            and take your profile with you across Minecraft communities.
+        </p>
 
-            <button class="primary-button" type="submit">
-                Login
-            </button>
+        <button id="loginButton" class="minecraft-button">
+            <span class="button-icon">◆</span>
+            Continue with Microsoft
+        </button>
 
-        </form>
+        <p id="errorMessage" class="error"></p>
 
-        <!-- SIGNUP -->
+        <div class="features">
 
-        <form id="signupForm" class="hidden">
+            <div class="feature">
+                <div class="feature-icon">◈</div>
+                <h3>One Identity</h3>
+                <p>Use one ConnectX account across Minecraft communities.</p>
+            </div>
 
-            <label>Username</label>
-            <input
-                id="signupUsername"
-                type="text"
-                placeholder="Your Minecraft username"
-                minlength="1"
-                maxlength="20"
-                required
-            >
+            <div class="feature">
+                <div class="feature-icon">✓</div>
+                <h3>Verified</h3>
+                <p>Connect your Minecraft identity to your profile.</p>
+            </div>
 
-            <label>Email</label>
-            <input
-                id="signupEmail"
-                type="email"
-                placeholder="you@example.com"
-                required
-            >
+            <div class="feature">
+                <div class="feature-icon">⚡</div>
+                <h3>Connected</h3>
+                <p>Connect servers, communities and future integrations.</p>
+            </div>
 
-            <label>Password</label>
-            <input
-                id="signupPassword"
-                type="password"
-                placeholder="At least 6 characters"
-                minlength="6"
-                required
-            >
+        </div>
 
-            <button class="primary-button" type="submit">
-                Create Account
-            </button>
+    </main>
 
-        </form>
+    <footer>
+        ConnectX &copy; 2026
+    </footer>
 
-    </div>
-
-    <p class="footer">
-        © 2026 ConnectX
-    </p>
-
-</div>
-
-<script src="app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="app.js"></script>
 
 </body>
 </html>
