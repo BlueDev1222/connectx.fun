@@ -1,1 +1,276 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
+:root {
+    --background: #07090d;
+    --surface: #0d1118;
+    --surface-light: #151b25;
+    --border: #202938;
+    --text: #f4f7fb;
+    --muted: #8d98aa;
+    --accent: #4f8cff;
+    --accent-hover: #6b9fff;
+}
+
+body {
+    min-height: 100vh;
+    background:
+        radial-gradient(
+            circle at 50% -10%,
+            rgba(79, 140, 255, 0.18),
+            transparent 40%
+        ),
+        var(--background);
+
+    color: var(--text);
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+}
+
+/* NAVIGATION */
+
+nav {
+    height: 72px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 7%;
+
+    border-bottom: 1px solid var(--border);
+
+    background: rgba(7, 9, 13, 0.8);
+
+    backdrop-filter: blur(15px);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    font-size: 21px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.logo-x {
+    width: 30px;
+    height: 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+
+    background: var(--accent);
+
+    color: white;
+
+    font-size: 15px;
+    font-weight: 900;
+}
+
+.nav-link {
+    color: var(--muted);
+    text-decoration: none;
+
+    font-size: 14px;
+}
+
+.nav-link:hover {
+    color: white;
+}
+
+/* HERO */
+
+.hero {
+    max-width: 900px;
+
+    margin: 0 auto;
+
+    padding: 110px 25px 70px;
+
+    text-align: center;
+}
+
+.hero-badge {
+    display: inline-block;
+
+    padding: 7px 13px;
+
+    border: 1px solid rgba(79, 140, 255, 0.3);
+
+    border-radius: 999px;
+
+    background: rgba(79, 140, 255, 0.08);
+
+    color: #8eb5ff;
+
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+}
+
+h1 {
+    margin-top: 25px;
+
+    font-size: clamp(48px, 8vw, 82px);
+
+    line-height: 0.98;
+
+    letter-spacing: -4px;
+
+    font-weight: 850;
+}
+
+h1 span {
+    display: block;
+
+    color: var(--accent);
+}
+
+.hero-description {
+    max-width: 620px;
+
+    margin: 28px auto;
+
+    color: var(--muted);
+
+    font-size: 17px;
+    line-height: 1.7;
+}
+
+/* LOGIN BUTTON */
+
+.minecraft-button {
+    margin-top: 12px;
+
+    padding: 15px 24px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: var(--accent);
+
+    color: white;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s,
+        background 0.2s,
+        box-shadow 0.2s;
+}
+
+.minecraft-button:hover {
+    background: var(--accent-hover);
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 10px 35px rgba(79, 140, 255, 0.25);
+}
+
+.button-icon {
+    margin-right: 8px;
+}
+
+/* FEATURES */
+
+.features {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 16px;
+
+    margin-top: 90px;
+}
+
+.feature {
+    padding: 25px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 14px;
+
+    background: rgba(13, 17, 24, 0.75);
+
+    text-align: left;
+}
+
+.feature-icon {
+    margin-bottom: 18px;
+
+    color: var(--accent);
+
+    font-size: 22px;
+}
+
+.feature h3 {
+    margin-bottom: 8px;
+
+    font-size: 15px;
+}
+
+.feature p {
+    color: var(--muted);
+
+    font-size: 13px;
+
+    line-height: 1.6;
+}
+
+/* ERROR */
+
+.error {
+    margin-top: 15px;
+
+    color: #ff6b6b;
+
+    font-size: 13px;
+}
+
+/* FOOTER */
+
+footer {
+    padding: 30px;
+
+    border-top: 1px solid var(--border);
+
+    color: var(--muted);
+
+    text-align: center;
+
+    font-size: 12px;
+}
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+
+    .features {
+        grid-template-columns: 1fr;
+    }
+
+    h1 {
+        letter-spacing: -2px;
+    }
+
+    .hero {
+        padding-top: 75px;
+    }
+}
