@@ -1,132 +1,385 @@
-// ============================================================
-// CONNECTX SUPABASE CONFIGURATION
-// ============================================================
-//
-// Get these from:
-// Supabase Dashboard
-// → Project Settings
-// → API
-//
-// IMPORTANT:
-// Use the publishable/anon client key here.
-// NEVER put a service_role/secret key in this file.
-// ============================================================
+const SUPABASE_URL =
+    "https://onvmeffhmruzshqlwakx.supabase.co";
 
-const SUPABASE_URL = "https://onvmeffhmruzshqlwakx.supabase.co";
+const SUPABASE_KEY =
+    "sb_publishable_9VzEW8DurRpM51GgQ282BQ_qQ3e1WkX";
 
-const SUPABASE_KEY = "sb_publishable_9VzEW8DurRpM51GgQ282BQ_qQ3e1WkX";
+const { createClient } =
+    supabase;
 
-const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-);
+const client =
+    createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
 
 
-// ============================================================
-// LOGIN
-// ============================================================
+/*
+============================================================
+AUTH PAGE
+============================================================
+*/
 
-const loginButton = document.getElementById("loginButton");
+const loginForm =
+    document.getElementById("loginForm");
 
-if (loginButton) {
+const signupForm =
+    document.getElementById("signupForm");
 
-    loginButton.addEventListener("click", async () => {
+const loginTab =
+    document.getElementById("loginTab");
 
-        loginButton.disabled = true;
+const signupTab =
+    document.getElementById("signupTab");
 
-        loginButton.textContent = "Connecting...";
+const message =
+    document.getElementById("message");
 
-        const { data, error } =
-            await supabaseClient.auth.signInWithOAuth({
 
-                provider: "azure",
+function showMessage(text, error = false) {
 
-                options: {
+    if (!message) return;
 
-                    scopes: "email",
+    message.textContent = text;
 
-                    redirectTo:
-                        window.location.origin +
-                        "/dashboard.html"
-                }
-            });
+    message.style.color =
+        error
+            ? "#ff7070"
+            : "#8d93a3";
+}
 
-        if (error) {
 
-            console.error(error);
+if (loginTab) {
 
-            const errorMessage =
-                document.getElementById("errorMessage");
+    loginTab.addEventListener("click", () => {
 
-            if (errorMessage) {
-                errorMessage.textContent =
-                    error.message;
-            }
+        loginTab.classList.add("active");
+        signupTab.classList.remove("active");
 
-            loginButton.disabled = false;
+        loginForm.classList.remove("hidden");
+        signupForm.classList.add("hidden");
 
-            loginButton.textContent =
-                "Continue with Microsoft";
-        }
+        showMessage("");
 
     });
 
 }
 
 
-// ============================================================
-// DASHBOARD REDIRECT
-// ============================================================
+if (signupTab) {
 
-async function checkAuthentication() {
+    signupTab.addEventListener("click", () => {
+
+        signupTab.classList.add("active");
+        loginTab.classList.remove("active");
+
+        signupForm.classList.remove("hidden");
+        loginForm.classList.add("hidden");
+
+        showMessage("");
+
+    });
+
+}
+
+
+/*
+============================================================
+LOGIN
+============================================================
+*/
+
+if (loginForm) {
+
+    loginForm.addEventListener("submit", async (event) => {
+
+        event.preventDefault();
+
+        const email =
+            document.getElementById("loginEmail").value.trim();
+
+        const password =
+            document.getElementById("loginPassword").value;
+
+        showMessage("Logging in...");
+
+        const { error } =
+            await client.auth.signInWithPassword({
+                email,
+                password
+            });
+
+        if (error) {
+
+            showMessage(
+                error.message,
+                true
+            );
+
+            return;
+        }
+
+        window.location.href =
+            "dashboard.html";
+
+    });
+
+}
+
+
+/*
+============================================================
+SIGN UP
+============================================================
+*/
+
+if (signupForm) {
+
+    signupForm.addEventListener("submit", async (event) => {
+
+        event.preventDefault();
+
+        const username =
+            document
+                .getElementById("signupUsername")
+                .value
+                .trim();
+
+        const email =
+            document
+                .getElementById("signupEmail")
+                .value
+                .trim();
+
+        const password =
+            document
+                .getElementById("signupPassword")
+                .value;
+
+        if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+
+            showMessage(
+                "Username can only contain letters, numbers, and underscores.",
+                true
+            );
+
+            return;
+        }
+
+        showMessage("Creating your ConnectX account...");
+
+        const { data, error } =
+            await client.auth.signUp({
+
+                email,
+                password,
+
+                options: {
+
+                    data: {
+                        username: username,
+                        display_name: username
+                    }
+
+                }
+
+            });
+
+        if (error) {
+
+            showMessage(
+                error.message,
+                true
+            );
+
+            return;
+        }
+
+        /*
+        Supabase may require email confirmation.
+        */
+
+        if (!data.session) {
+
+            showMessage(
+                "Account created! Check your email to verify your account."
+            );
+
+            return;
+        }
+
+        window.location.href =
+            "dashboard.html";
+
+    });
+
+}
+
+
+/*
+============================================================
+DASHBOARD
+============================================================
+*/
+
+async function loadDashboard() {
 
     const {
-        data: { session }
-    } = await supabaseClient.auth.getSession();
+        data: {
+            session
+        }
+    } = await client.auth.getSession();
 
-    const currentPage =
-        window.location.pathname;
 
-    const isDashboard =
-        currentPage.includes("dashboard");
+    if (!session) {
 
-    const isProfile =
-        currentPage.includes("profile");
+        window.location.href =
+            "index.html";
 
-    if (!session && (isDashboard || isProfile)) {
-
-        window.location.href = "index.html";
-
-        return null;
+        return;
     }
 
-    return session;
+
+    const user =
+        session.user;
+
+
+    const {
+        data: profile,
+        error
+    } = await client
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+
+    if (error) {
+
+        console.error(error);
+
+        return;
+    }
+
+
+    const username =
+        profile.username ||
+        profile.display_name ||
+        "Player";
+
+
+    const avatar =
+        profile.minecraft_username
+            ? `https://mc-heads.net/avatar/${encodeURIComponent(profile.minecraft_username)}/96`
+            : "https://mc-heads.net/avatar/Steve/96";
+
+
+    const topAvatar =
+        document.getElementById("topAvatar");
+
+    const profileAvatar =
+        document.getElementById("profileAvatar");
+
+
+    if (topAvatar)
+        topAvatar.src = avatar;
+
+    if (profileAvatar)
+        profileAvatar.src = avatar;
+
+
+    const elements = {
+
+        topUsername:
+            document.getElementById("topUsername"),
+
+        welcomeUsername:
+            document.getElementById("welcomeUsername"),
+
+        profileUsername:
+            document.getElementById("profileUsername"),
+
+        profileBio:
+            document.getElementById("profileBio")
+
+    };
+
+
+    if (elements.topUsername)
+        elements.topUsername.textContent =
+            username;
+
+    if (elements.welcomeUsername)
+        elements.welcomeUsername.textContent =
+            username;
+
+    if (elements.profileUsername)
+        elements.profileUsername.textContent =
+            username;
+
+    if (elements.profileBio)
+        elements.profileBio.textContent =
+            profile.bio ||
+            "Welcome to ConnectX!";
+
 }
 
 
-// ============================================================
-// LOGOUT
-// ============================================================
+if (
+    window.location.pathname.endsWith(
+        "dashboard.html"
+    )
+) {
 
-async function logout() {
+    loadDashboard();
 
-    await supabaseClient.auth.signOut();
-
-    window.location.href = "index.html";
 }
 
 
-// ============================================================
-// AUTH STATE
-// ============================================================
+/*
+============================================================
+LOGOUT
+============================================================
+*/
 
-supabaseClient.auth.onAuthStateChange(
+const logoutButton =
+    document.getElementById("logoutButton");
+
+
+if (logoutButton) {
+
+    logoutButton.addEventListener("click", async () => {
+
+        await client.auth.signOut();
+
+        window.location.href =
+            "index.html";
+
+    });
+
+}
+
+
+/*
+============================================================
+AUTH STATE
+============================================================
+*/
+
+client.auth.onAuthStateChange(
     (event, session) => {
 
-        console.log(
-            "ConnectX auth:",
-            event
-        );
+        if (
+            event === "SIGNED_OUT" &&
+            window.location.pathname.endsWith(
+                "dashboard.html"
+            )
+        ) {
+
+            window.location.href =
+                "index.html";
+
+        }
 
     }
 );
