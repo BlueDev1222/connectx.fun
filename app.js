@@ -12,7 +12,7 @@
 // NEVER put a service_role/secret key in this file.
 // ============================================================
 
-const SUPABASE_URL = "onvmeffhmruzshqlwakx";
+const SUPABASE_URL = "https://onvmeffhmruzshqlwakx.supabase.co";
 
 const SUPABASE_KEY = "sb_publishable_9VzEW8DurRpM51GgQ282BQ_qQ3e1WkX";
 
