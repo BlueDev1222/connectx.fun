@@ -12,11 +12,9 @@ export default function Landing() {
   return (
     <div className="landing">
       <header className="landing-nav">
-        <Link className="brand" href="/">
-          <span className="brand-icon">
-            c<span>×</span>
-          </span>
-          connect<span className="lime">x</span>
+        <Link className="brand" href="/" aria-label="ConnectX home">
+          <img src="/connectx-logo.webp" alt="" width="42" height="42" style={{borderRadius:10,marginRight:10,objectFit:"cover"}} />
+          Connect<span className="lime">X</span>
         </Link>
         <nav>
           <Link href="/explore">Explore</Link>
@@ -151,8 +149,9 @@ export default function Landing() {
         </section>
       </main>
       <footer>
-        <Link href="/" className="brand">
-          connect<span className="lime">x</span>
+        <Link href="/" className="brand" aria-label="ConnectX home">
+          <img src="/connectx-logo.webp" alt="" width="38" height="38" style={{borderRadius:9,marginRight:10,objectFit:"cover"}} />
+          Connect<span className="lime">X</span>
         </Link>
         <div>
           {[
