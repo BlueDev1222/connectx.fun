@@ -1,0 +1,7 @@
+project_id = "connectx"
+
+[functions.connectx-api]
+# The function validates every protected request with auth.getUser(token).
+# This supports both current JWT signing keys and legacy projects.
+verify_jwt = false
+entrypoint = "./functions/connectx-api/index.ts"

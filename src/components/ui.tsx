@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import Link from "next/link";
+import Link from "@/lib/link";
 import { BadgeCheck, X, LoaderCircle } from "lucide-react";
 import { useApp } from "./provider";
 import type { Profile } from "@/lib/types";

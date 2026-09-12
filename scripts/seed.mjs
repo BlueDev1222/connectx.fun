@@ -3,7 +3,7 @@ import { randomBytes } from "node:crypto";
 try {
   process.loadEnvFile(".env.local");
 } catch {}
-const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const url = process.env.VITE_SUPABASE_URL;
 if (
   !url ||
   !["localhost", "127.0.0.1", "[::1]"].includes(new URL(url).hostname)
@@ -33,7 +33,7 @@ for (const [handle, name, playstyle] of players) {
   if (error) throw error;
   const client = createClient(
     url,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+    process.env.VITE_SUPABASE_PUBLISHABLE_KEY,
     { auth: { persistSession: false } },
   );
   const signed = await client.auth.signInWithPassword({ email, password });

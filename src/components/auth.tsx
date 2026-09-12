@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import Link from "@/lib/link";
+import { useRouter } from "@/lib/navigation";
 import { browserDb, configured } from "@/lib/supabase";
 import { Field } from "./ui";
 export default function Auth({ mode }: { mode: string }) {
@@ -49,7 +49,7 @@ export default function Auth({ mode }: { mode: string }) {
                       age_confirmed: true,
                       terms_accepted_at: new Date().toISOString(),
                     },
-                    emailRedirectTo: window.location.origin + "/auth/callback",
+                    emailRedirectTo: window.location.origin + "/?flow=confirmation",
                   },
                 });
                 if (result.error) throw result.error;
@@ -62,7 +62,7 @@ export default function Auth({ mode }: { mode: string }) {
                   {
                     redirectTo:
                       window.location.origin +
-                      "/auth/callback?next=/reset-password",
+                      "/?flow=recovery",
                   },
                 );
                 if (result.error) throw result.error;

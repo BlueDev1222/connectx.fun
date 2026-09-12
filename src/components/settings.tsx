@@ -1,9 +1,10 @@
 "use client";
 import { useState, useEffect } from "react";
-import Link from "next/link";
+import Link from "@/lib/link";
 import { useApp } from "./provider";
 import { Action, Empty, Field, Loading, Modal } from "./ui";
 import { browserDb } from "@/lib/supabase";
+import {edgeJson,downloadExport} from '@/lib/edge-api';
 import { playstyles, type Row } from "@/lib/types";
 export function SettingsPage() {
   const { user, ready, settings, command, notice, refresh, upload } = useApp();
@@ -118,11 +119,7 @@ export function SettingsPage() {
             </p>
             <Action
               run={async () => {
-                const response = await fetch("/api/minecraft", {
-                  method: "POST",
-                });
-                const data = await response.json();
-                if (!response.ok) throw Error(data.error);
+                await edgeJson('minecraft',{method:'POST'});
                 await refresh();
                 notice(
                   "Minecraft profile looked up. Ownership remains unverified.",
@@ -384,9 +381,9 @@ export function SettingsPage() {
               Export your profile, posts, reactions, connections, communities,
               and settings as JSON.
             </p>
-            <a href="/api/account/export" className="button secondary" download>
+            <Action run={downloadExport} className="button secondary">
               Download account data
-            </a>
+            </Action>
             <h3>Deactivate account</h3>
             <p>
               Your profile and posts become unavailable. Contact support to
@@ -427,13 +424,11 @@ export function SettingsPage() {
               e.preventDefault();
               try {
                 if (confirm === "delete") {
-                  const res = await fetch("/api/account/delete", {
+                  await edgeJson('delete', {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ confirmation: "DELETE" }),
                   });
-                  const data = await res.json();
-                  if (!res.ok) throw Error(data.error);
                 } else await command("deactivate");
                 await browserDb().auth.signOut();
                 location.href = "/";

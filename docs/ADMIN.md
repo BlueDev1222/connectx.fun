@@ -12,7 +12,7 @@ The script locks role changes, checks the account exists and has verified email,
 
 Alternatively, use the SQL editor to execute the script body after replacing the psql variable setup with `select set_config('cx.bootstrap_owner_id','THE_VERIFIED_AUTH_UUID',true);` inside the transaction. Remove the psql `\set` line. Review the UUID before execution.
 
-4. Refresh ConnectX and open `/admin`. The navigation reveals Admin only after loading the database role, but the server and database are the actual security boundary.
+4. Refresh ConnectX and open `/#/admin`. The navigation reveals Admin only after loading the database role, but the database and authenticated Edge Functions are the actual security boundary.
 5. The owner can assign user/moderator/admin roles through the Users panel. There is no frontend operation that grants the owner role. Ordinary admins cannot change other admins or the owner.
 
 ## Operational roles
@@ -26,7 +26,7 @@ Community moderators have independent permissions: `manage_members`, `delete_pos
 
 ## Verification
 
-Use Users or Communities in `/admin`. Choose verified/unverified, category, and internal notes. Notes are readable only by active administrators. Each change writes a verification record and audit entry. Minecraft identity ownership remains separate from official platform verification.
+Use Users or Communities in `/#/admin`. Choose verified/unverified, category, and internal notes. Notes are readable only by active administrators. Each change writes a verification record and audit entry. Minecraft identity ownership remains separate from official platform verification.
 
 ## Recovery and owner transfer
 

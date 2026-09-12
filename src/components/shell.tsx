@@ -1,6 +1,6 @@
 "use client";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import Link from "@/lib/link";
+import { usePathname, useRouter } from "@/lib/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 import {
   Home,
@@ -118,7 +118,7 @@ function Frame({ children }: { children: ReactNode }) {
         {children}
       </main>
       <aside className="right-sidebar">
-        <form className="search-box" action="/explore">
+        <form className="search-box" onSubmit={e=>{e.preventDefault();router.push('/explore?q='+encodeURIComponent(query))}}>
           <Search size={18} />
           <input
             name="q"

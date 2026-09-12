@@ -6,3 +6,5 @@ node_modules/
 .sites-runtime/
 .supabase/
 supabase/.temp/
+
+dist/

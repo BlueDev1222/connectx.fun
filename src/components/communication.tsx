@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import Link from "@/lib/link";
+import { useSearchParams } from "@/lib/navigation";
 import { Bell, Send, Mail } from "lucide-react";
 import { useApp } from "./provider";
 import {

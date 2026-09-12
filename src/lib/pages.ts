@@ -78,7 +78,7 @@ export const pages: Record<
       ],
       [
         "Technical information and cookies",
-        "Authentication uses session cookies. A theme preference may be stored on your device. Hosting and Supabase may process request logs and technical information. This codebase does not add an analytics SDK or advertising tracker. Google Fonts requests may disclose IP address and browser information; self-host fonts if this is not acceptable for your deployment.",
+        "Authentication stores session tokens in your browser's local storage. A theme preference may also be stored on your device. GitHub Pages and Supabase may process request logs and technical information. This codebase does not add an analytics SDK or advertising tracker. Google Fonts requests may disclose IP address and browser information; self-host fonts if this is not acceptable for your deployment.",
       ],
       [
         "Messages and security",
@@ -110,7 +110,7 @@ export const pages: Record<
     sections: [
       [
         "Essential authentication",
-        "Supabase authentication uses cookies to maintain and refresh your signed-in session. These are needed for account features.",
+        "This static version stores Supabase authentication session tokens in browser local storage to maintain and refresh your signed-in session. This storage is needed for account features. Third-party services may have their own cookie practices.",
       ],
       [
         "Preferences",

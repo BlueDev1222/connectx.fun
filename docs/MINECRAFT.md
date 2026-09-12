@@ -2,7 +2,7 @@
 
 The default profile associates a self-declared Minecraft username with a ConnectX account. It does not establish account ownership. Official ConnectX verification and `identity_verified` are separate concepts; the lookup adapter always sets `identity_verified` to false.
 
-To enable skin/UUID lookup, configure a trusted server-side HTTPS `MINECRAFT_LOOKUP_URL` and optional `MINECRAFT_LOOKUP_TOKEN`. The application appends a validated `username` query parameter. The response contract is:
+To enable skin/UUID lookup, configure, in Supabase Edge Function secrets, a trusted HTTPS `MINECRAFT_LOOKUP_URL` and optional `MINECRAFT_LOOKUP_TOKEN`. The application appends a validated `username` query parameter. The response contract is:
 
 ```json
 {"username":"ExamplePlayer","uuid":"32 hexadecimal characters","skinUrl":"https://textures.minecraft.net/texture/…","capeUrl":null}

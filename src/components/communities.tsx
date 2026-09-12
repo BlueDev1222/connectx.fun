@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import Link from "@/lib/link";
 import { Blocks, Users, BadgeCheck } from "lucide-react";
 import { browserDb, configured } from "@/lib/supabase";
 import { useApp } from "./provider";

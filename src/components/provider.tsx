@@ -8,6 +8,7 @@ import {
   type ReactNode,
 } from "react";
 import { browserDb, configured } from "@/lib/supabase";
+import {edgeJson} from '@/lib/edge-api';
 import type { Profile, Row } from "@/lib/types";
 type Context = {
   user: Profile | null;
@@ -99,9 +100,7 @@ export function Provider({ children }: { children: ReactNode }) {
     if (!user) throw Error("Sign in to upload.");
     const form = new FormData();
     form.set("file", file);
-    const res = await fetch("/api/media", { method: "POST", body: form });
-    const data = await res.json();
-    if (!res.ok) throw Error(data.error);
+    const data = await edgeJson('media',{method:'POST',body:form});
     return data.path as string;
   }
   async function media(path?: string | null) {

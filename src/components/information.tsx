@@ -1,10 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import Link from "@/lib/link";
 import { pages } from "@/lib/pages";
 import { useApp } from "./provider";
 import { Action, Empty, Field } from "./ui";
 import type { Row } from "@/lib/types";
+import {edgeJson} from '@/lib/edge-api';
 export function Information({ slug }: { slug: string }) {
   const [q, setQ] = useState("");
   const page = pages[slug];
@@ -118,8 +119,7 @@ export function Contact() {
 export function Status() {
   const [status, setStatus] = useState<Row | null>(null);
   useEffect(() => {
-    void fetch("/api/status")
-      .then((r) => r.json())
+    void edgeJson('status')
       .then(setStatus)
       .catch(() => setStatus({ website: "unreachable" }));
   }, []);

@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import Link from "@/lib/link";
+import { useSearchParams } from "@/lib/navigation";
 import {
   ImagePlus,
   ChartNoAxesColumn,
@@ -428,7 +428,7 @@ export function PostCard({
             className="post-action"
             run={async () => {
               await navigator.clipboard.writeText(
-                window.location.origin + "/post/" + p.id,
+                window.location.origin + "/#/post/" + p.id,
               );
               notice("Post link copied.");
             }}
