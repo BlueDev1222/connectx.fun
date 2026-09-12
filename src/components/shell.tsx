@@ -58,11 +58,9 @@ function Frame({ children }: { children: ReactNode }) {
   return (
     <div className="app-shell">
       <aside className="left-sidebar">
-        <Link className="brand" href="/">
-          <span className="brand-icon">
-            c<span>×</span>
-          </span>
-          connect<span className="lime">x</span>
+        <Link className="brand" href="/" aria-label="ConnectX home">
+          <img src="/connectx-logo.webp" alt="" width="42" height="42" style={{borderRadius:10,marginRight:10,objectFit:"cover"}} />
+          Connect<span className="lime">X</span>
         </Link>
         <div className="nav-caption">YOUR CORNER OF MINECRAFT</div>
         <nav>
