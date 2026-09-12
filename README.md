@@ -23,7 +23,7 @@ Email confirmation returns to /?flow=confirmation and password recovery to /?flo
 
 ## Database and owner
 
-The four SQL migrations in supabase/migrations are already applied to project onvmeffhmruzshqlwakx.supabase.co. Do not rerun them against that project. The original tables and Auth accounts remain intact; cx_ tables isolate ConnectX data. No owner was inferred or created automatically.
+The five SQL migrations in supabase/migrations are already applied to project onvmeffhmruzshqlwakx.supabase.co. Do not rerun them against that project. The original tables and Auth accounts remain intact; cx_ tables isolate ConnectX data. No owner was inferred or created automatically.
 
 Follow [docs/ADMIN.md](docs/ADMIN.md) to assign the first owner using a verified Auth UUID and a trusted SQL connection. Client-side route guards improve the UI; Postgres RLS and checked RPCs are the real authorization boundary. All staff commands remain server-authorized.
 
@@ -52,3 +52,6 @@ The local preview is optional; closing it does not stop the public website. npm 
 Source: supabase/functions/connectx-api. Endpoints provide media upload, account export, confirmed deletion, optional Minecraft lookup, and a public connectivity status. Protected endpoints validate the bearer token with Supabase Auth and require an active database profile before using server credentials. Unauthenticated access tests return 401; unauthorized origins return 403. Function gateway JWT validation is disabled only because the function implements explicit getUser(token) validation for every protected route.
 
 Read [deployment](docs/DEPLOYMENT.md), [security](docs/SECURITY.md), and [Minecraft adapter](docs/MINECRAFT.md) for operational details and remaining integration boundaries. Legal pages remain review-required templates; actual Minecraft ownership verification, server player monitoring, and group messages are not enabled.
+
+Discord sign-in setup: [docs/DISCORD.md](docs/DISCORD.md).
+

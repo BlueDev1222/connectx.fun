@@ -3,10 +3,12 @@ import { useState } from "react";
 import Link from "@/lib/link";
 import { useRouter } from "@/lib/navigation";
 import { browserDb, configured } from "@/lib/supabase";
-import { Field } from "./ui";
+import { Field,Modal } from "./ui";
+import {signInWithDiscord} from '@/lib/discord';
 export default function Auth({ mode }: { mode: string }) {
   const [busy, setBusy] = useState(false),
-    [message, setMessage] = useState("");
+    [message, setMessage] = useState(()=>{const error=sessionStorage.getItem('cx-auth-error');sessionStorage.removeItem('cx-auth-error');return error||''}),
+    [discordConsent,setDiscordConsent]=useState(false);
   const router = useRouter();
   const title =
     mode === "register"
@@ -29,6 +31,10 @@ export default function Auth({ mode }: { mode: string }) {
             ? "Your next chapter in Minecraft starts here."
             : "Your corner of Minecraft is waiting."}
         </p>
+        {['login','register'].includes(mode)&&<>
+          <button type="button" className="button discord-button wide" disabled={busy} onClick={()=>{setMessage('');setDiscordConsent(true)}}>Continue with Discord</button>
+          <div className="auth-separator"><span>or use your email</span></div>
+        </>}
         <form
           onSubmit={async (e) => {
             e.preventDefault();
@@ -194,6 +200,14 @@ export default function Auth({ mode }: { mode: string }) {
           Explore before joining →
         </Link>
       </section>
+      {discordConsent&&<Modal title="Continue with Discord" onClose={()=>setDiscordConsent(false)}>
+        <p>Use your Discord account to sign in or create a ConnectX profile. You can change your ConnectX username in Settings.</p>
+        <form onSubmit={async e=>{e.preventDefault();setBusy(true);setMessage('');try{await signInWithDiscord()}catch(error){setMessage(error instanceof Error?error.message:'Discord sign-in failed. Please try again.');setDiscordConsent(false)}finally{setBusy(false)}}}>
+          <label className="check"><input type="checkbox" required/> I am at least 13 years old.</label>
+          <label className="check"><input type="checkbox" required/><span>I agree to the <Link href="/terms-of-service" target="_blank">Terms of Service</Link> and <Link href="/privacy-policy" target="_blank">Privacy Policy</Link>.</span></label>
+          <button className="button discord-button wide" disabled={busy}>{busy?'Connecting…':'Continue to Discord'}</button>
+        </form>
+      </Modal>}
     </main>
   );
 }

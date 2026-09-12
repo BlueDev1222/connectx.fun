@@ -20,7 +20,7 @@ async function command(id, action, payload) {
 }
 before(async () => {
   await db.exec(
-    `create role anon; create role authenticated; create schema auth; create table auth.users(id uuid primary key,raw_user_meta_data jsonb default '{}'); create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$; grant usage on schema auth to anon,authenticated; grant execute on function auth.uid() to anon,authenticated; create schema storage; create table storage.buckets(id text primary key,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]); create table storage.objects(id uuid default gen_random_uuid(),bucket_id text,name text); alter table storage.objects enable row level security; grant usage on schema storage to anon,authenticated; grant select,insert,update,delete on storage.objects to anon,authenticated;`,
+    `create role anon; create role authenticated; create schema auth; create table auth.users(id uuid primary key,raw_user_meta_data jsonb default '{}',raw_app_meta_data jsonb default '{}'); create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$; grant usage on schema auth to anon,authenticated; grant execute on function auth.uid() to anon,authenticated; create schema storage; create table storage.buckets(id text primary key,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]); create table storage.objects(id uuid default gen_random_uuid(),bucket_id text,name text); alter table storage.objects enable row level security; grant usage on schema storage to anon,authenticated; grant select,insert,update,delete on storage.objects to anon,authenticated;`,
   );
   for (const file of readdirSync("supabase/migrations")
     .filter((x) => x.endsWith(".sql"))
@@ -31,6 +31,15 @@ before(async () => {
   );
 });
 after(() => db.close());
+test("Discord profiles use generated handles and normal roles", async () => {
+  await db.exec("reset role");
+  const id = "d15c0ad0-1234-4000-8000-000000000001";
+  await db.exec(`insert into auth.users(id,raw_app_meta_data,raw_user_meta_data) values('${id}','{"provider":"discord"}','{"username":"admin","full_name":"Discord Player","role":"owner","verified":true}')`);
+  const result = await db.query(`select p.username,p.display_name,r.role from public.cx_profiles p join public.cx_roles r on r.user_id=p.id where p.id='${id}'`);
+  assert.equal(result.rows[0].username, "player_d15c0ad0123440008");
+  assert.equal(result.rows[0].display_name, "Discord Player");
+  assert.equal(result.rows[0].role, "user");
+});
 test("anonymous writes and direct role escalation fail", async () => {
   await assert.rejects(command(null, "post", { body: "hello" }));
   await assert.rejects(
@@ -224,3 +233,4 @@ test("trending aggregates distinct creators and obeys privacy", async () => {
     1,
   );
 });
+

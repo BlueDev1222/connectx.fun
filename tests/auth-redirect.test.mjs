@@ -1,0 +1,5 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {authDestination} from '../src/lib/auth-redirect.ts';
+test('Discord callbacks require a session before opening the feed',()=>{assert.equal(authDestination('?flow=discord',true,false),'/home');assert.equal(authDestination('?flow=discord',false,false),'/login');assert.equal(authDestination('?flow=discord&error=access_denied',true,false),'/login');assert.equal(authDestination('?flow=discord',true,true),'/login')});
+test('recovery, verification, and ordinary navigation keep separate destinations',()=>{assert.equal(authDestination('?flow=recovery',true,false),'/reset-password');assert.equal(authDestination('?flow=recovery',false,false),'/login');assert.equal(authDestination('?flow=confirmation',true,false),'/home');assert.equal(authDestination('?flow=confirmation',false,false),'/login');assert.equal(authDestination('?next=https://evil.example',true,false),null);assert.equal(authDestination('',false,false),null)});
