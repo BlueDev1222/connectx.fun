@@ -2,8 +2,6 @@ import {browserDb} from './supabase';
 import {supabaseKey,supabaseUrl} from './public-config';
 export const socialProviders = [
  {id:'discord',label:'Discord',scopes:'identify email'},
- {id:'apple',label:'Apple',scopes:'name email'},
- {id:'azure',label:'Microsoft',scopes:'email'},
  {id:'google',label:'Google',scopes:'openid email profile'},
 ] as const;
 export type SocialProvider = typeof socialProviders[number];

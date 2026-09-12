@@ -1,3 +1,7 @@
+# Current sign-in options
+
+ConnectX offers Discord, Google, and email sign-in. Apple and Microsoft buttons were removed at the site owner's request. The Apple and Azure instructions below are retained only for reference; they are not current setup requirements.
+
 # Enable Apple, Microsoft Azure, and Google
 
 ConnectX uses Supabase Auth and GitHub Pages. Configure each provider in Supabase Authentication → Sign In / Providers. Credentials belong only in Supabase.
@@ -47,3 +51,4 @@ Apple's OAuth flow does not supply a full name. ConnectX uses a generated profil
 For each enabled provider, use ConnectX's login page to sign in with a test account. Confirm a successful return to the feed, refresh persistence, logout, and cancellation handling. Disabled providers display a helpful message. End-to-end login requires valid provider credentials; code tests cannot verify those credentials.
 
 New social accounts receive the normal user role. Names and provider metadata never grant administrator, owner, or verification privileges. Existing account linking remains governed by Supabase Auth.
+

@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import {Eye, EyeOff, ArrowUpRight, Blocks, Users, Compass} from "lucide-react";
 import Link from "@/lib/link";
 import { useRouter } from "@/lib/navigation";
 import { browserDb, configured } from "@/lib/supabase";
@@ -10,6 +11,7 @@ export default function Auth({ mode }: { mode: string }) {
     [message, setMessage] = useState(()=>{const error=sessionStorage.getItem('cx-auth-error');sessionStorage.removeItem('cx-auth-error');return error||''}),
     [socialConsent,setSocialConsent]=useState<SocialProvider|null>(null);
   const router = useRouter();
+  const [showPassword,setShowPassword]=useState(false);
   const title =
     mode === "register"
       ? "Find your people."
@@ -24,6 +26,14 @@ export default function Auth({ mode }: { mode: string }) {
         <img src="/connectx-logo.webp" alt="" width="44" height="44" style={{borderRadius:10,marginRight:10,objectFit:"cover"}} />
         Connect<span className="lime">X</span>
       </Link>
+      <div className="auth-layout">
+      <aside className="auth-story">
+        <span className="eyebrow">YOUR NEXT ADVENTURE STARTS HERE</span>
+        <h2>Great worlds.<br/>Even better <span>company.</span></h2>
+        <p>Share what you build. Find your next server. Meet the people who make Minecraft yours.</p>
+        <div className="auth-art"><img src="/community-build.png" alt="A Minecraft community build" /><span className="auth-art-caption"><Blocks size={18}/> A little inspiration for your next world</span></div>
+        <div className="auth-highlights"><span><Users size={18}/> Find your people</span><span><Compass size={18}/> Explore together</span></div>
+      </aside>
       <section className="auth-card">
         <span className="eyebrow">CONNECT. CREATE. PLAY.</span>
         <h1>{title}</h1>
@@ -33,7 +43,7 @@ export default function Auth({ mode }: { mode: string }) {
             : "Your corner of Minecraft is waiting."}
         </p>
         {['login','register'].includes(mode)&&<>
-          <div className="social-buttons">{socialProviders.map(provider=><button key={provider.id} type="button" className={"button wide "+(provider.id==="discord"?"discord-button":"social-button")} disabled={busy} onClick={()=>{setMessage("");setSocialConsent(provider)}}>Continue with {provider.label}</button>)}</div>
+          <div className="social-buttons">{socialProviders.map(provider=><button key={provider.id} type="button" className={"button wide "+(provider.id==="discord"?"discord-button":"social-button")} disabled={busy} onClick={()=>{setMessage("");setSocialConsent(provider)}}><span className="provider-symbol" aria-hidden="true">{provider.id==='discord'?<Users size={20}/>:'G'}</span>Continue with {provider.label}<ArrowUpRight size={16} aria-hidden="true"/></button>)}</div>
           <div className="auth-separator"><span>or use your email</span></div>
         </>}
         <form
@@ -127,20 +137,24 @@ export default function Auth({ mode }: { mode: string }) {
           )}
           {mode !== "reset-password" && (
             <Field label="Email address">
-              <input name="email" type="email" required autoComplete="email" />
+              <input name="email" type="email" required autoComplete="email" placeholder="you@example.com" />
             </Field>
           )}
           {mode !== "forgot-password" && (
             <Field label="Password">
+              <div className="auth-password">
               <input
                 name="password"
-                type="password"
+                type={showPassword?"text":"password"}
+                placeholder={mode==='login'?'Enter your password':'At least 12 characters'}
                 minLength={12}
                 required
                 autoComplete={
                   mode === "login" ? "current-password" : "new-password"
                 }
               />
+              <button type="button" className="password-toggle" aria-label={showPassword?'Hide password':'Show password'} aria-pressed={showPassword} onClick={()=>setShowPassword(!showPassword)}>{showPassword?<EyeOff size={18}/>:<Eye size={18}/>}</button>
+              </div>
             </Field>
           )}
           {mode === "register" && (
@@ -201,12 +215,14 @@ export default function Auth({ mode }: { mode: string }) {
           Explore before joining →
         </Link>
       </section>
+      </div>
+      <footer className="auth-footer"><span>Made for the worlds you create.</span><div><Link href="/privacy-policy">Privacy</Link><Link href="/terms-of-service">Terms</Link></div></footer>
       {socialConsent&&<Modal title={"Continue with "+socialConsent.label} onClose={()=>setSocialConsent(null)}>
         <p>Use your {socialConsent.label} account to sign in or create a ConnectX profile. You can change your ConnectX username in Settings.</p>
         <form onSubmit={async e=>{e.preventDefault();setBusy(true);setMessage('');try{await signInWithSocial(socialConsent)}catch(error){setMessage(error instanceof Error?error.message:'Sign-in failed. Please try again.');setSocialConsent(null)}finally{setBusy(false)}}}>
           <label className="check"><input type="checkbox" required/> I am at least 13 years old.</label>
           <label className="check"><input type="checkbox" required/><span>I agree to the <Link href="/terms-of-service" target="_blank">Terms of Service</Link> and <Link href="/privacy-policy" target="_blank">Privacy Policy</Link>.</span></label>
-          <button className="button discord-button wide" disabled={busy}>{busy?'Connecting…':'Continue to '+socialConsent.label}</button>
+          <button className={"button wide "+(socialConsent.id==='discord'?'discord-button':'social-button')} disabled={busy}>{busy?'Connecting…':'Continue to '+socialConsent.label}</button>
         </form>
       </Modal>}
     </main>
