@@ -20,8 +20,9 @@ export default function Auth({ mode }: { mode: string }) {
           : "Welcome back.";
   return (
     <main className="auth-page">
-      <Link className="brand" href="/">
-        connect<span className="lime">x</span>
+      <Link className="brand" href="/" aria-label="ConnectX home">
+        <img src="/connectx-logo.webp" alt="" width="44" height="44" style={{borderRadius:10,marginRight:10,objectFit:"cover"}} />
+        Connect<span className="lime">X</span>
       </Link>
       <section className="auth-card">
         <span className="eyebrow">CONNECT. CREATE. PLAY.</span>
