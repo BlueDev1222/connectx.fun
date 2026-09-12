@@ -2155,3 +2155,6 @@ form + form {
 }
 
 .discord-button{background:#5865f2;color:white;border-color:#5865f2}.discord-button:hover{background:#4752c4}.auth-separator{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:13px;margin:24px 0}.auth-separator:before,.auth-separator:after{content:'';height:1px;background:var(--border);flex:1}
+
+.social-buttons{display:grid;gap:10px}.social-button{background:var(--panel);color:var(--text);border:1px solid var(--border)}
+

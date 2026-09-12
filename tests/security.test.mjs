@@ -31,6 +31,17 @@ before(async () => {
   );
 });
 after(() => db.close());
+test("Apple, Azure, and Google profiles cannot claim privileged handles or roles", async () => {
+  await db.exec("reset role");
+  for (const [index,provider] of ['apple','azure','google'].entries()) {
+    const id = `a123456${index}-1234-4000-8000-000000000001`;
+    await db.exec(`insert into auth.users(id,raw_app_meta_data,raw_user_meta_data) values('${id}','{"provider":"${provider}"}','{"username":"admin","role":"owner"}')`);
+    const result = await db.query(`select p.username,p.display_name,r.role from public.cx_profiles p join public.cx_roles r on r.user_id=p.id where p.id='${id}'`);
+    assert.match(result.rows[0].username,/^player_[a-f0-9]{17}$/);
+    assert.equal(result.rows[0].display_name,result.rows[0].username);
+    assert.equal(result.rows[0].role,'user');
+  }
+});
 test("Discord profiles use generated handles and normal roles", async () => {
   await db.exec("reset role");
   const id = "d15c0ad0-1234-4000-8000-000000000001";

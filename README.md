@@ -23,7 +23,7 @@ Email confirmation returns to /?flow=confirmation and password recovery to /?flo
 
 ## Database and owner
 
-The five SQL migrations in supabase/migrations are already applied to project onvmeffhmruzshqlwakx.supabase.co. Do not rerun them against that project. The original tables and Auth accounts remain intact; cx_ tables isolate ConnectX data. No owner was inferred or created automatically.
+The six SQL migrations in supabase/migrations are already applied to project onvmeffhmruzshqlwakx.supabase.co. Do not rerun them against that project. The original tables and Auth accounts remain intact; cx_ tables isolate ConnectX data. No owner was inferred or created automatically.
 
 Follow [docs/ADMIN.md](docs/ADMIN.md) to assign the first owner using a verified Auth UUID and a trusted SQL connection. Client-side route guards improve the UI; Postgres RLS and checked RPCs are the real authorization boundary. All staff commands remain server-authorized.
 
@@ -55,3 +55,5 @@ Read [deployment](docs/DEPLOYMENT.md), [security](docs/SECURITY.md), and [Minecr
 
 Discord sign-in setup: [docs/DISCORD.md](docs/DISCORD.md).
 
+
+Apple, Microsoft Azure, and Google setup: [docs/SOCIAL-LOGIN.md](docs/SOCIAL-LOGIN.md).

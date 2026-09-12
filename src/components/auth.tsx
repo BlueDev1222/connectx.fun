@@ -4,11 +4,11 @@ import Link from "@/lib/link";
 import { useRouter } from "@/lib/navigation";
 import { browserDb, configured } from "@/lib/supabase";
 import { Field,Modal } from "./ui";
-import {signInWithDiscord} from '@/lib/discord';
+import {signInWithSocial,socialProviders,type SocialProvider} from '@/lib/social-auth';
 export default function Auth({ mode }: { mode: string }) {
   const [busy, setBusy] = useState(false),
     [message, setMessage] = useState(()=>{const error=sessionStorage.getItem('cx-auth-error');sessionStorage.removeItem('cx-auth-error');return error||''}),
-    [discordConsent,setDiscordConsent]=useState(false);
+    [socialConsent,setSocialConsent]=useState<SocialProvider|null>(null);
   const router = useRouter();
   const title =
     mode === "register"
@@ -32,7 +32,7 @@ export default function Auth({ mode }: { mode: string }) {
             : "Your corner of Minecraft is waiting."}
         </p>
         {['login','register'].includes(mode)&&<>
-          <button type="button" className="button discord-button wide" disabled={busy} onClick={()=>{setMessage('');setDiscordConsent(true)}}>Continue with Discord</button>
+          <div className="social-buttons">{socialProviders.map(provider=><button key={provider.id} type="button" className={"button wide "+(provider.id==="discord"?"discord-button":"social-button")} disabled={busy} onClick={()=>{setMessage("");setSocialConsent(provider)}}>Continue with {provider.label}</button>)}</div>
           <div className="auth-separator"><span>or use your email</span></div>
         </>}
         <form
@@ -200,12 +200,12 @@ export default function Auth({ mode }: { mode: string }) {
           Explore before joining →
         </Link>
       </section>
-      {discordConsent&&<Modal title="Continue with Discord" onClose={()=>setDiscordConsent(false)}>
-        <p>Use your Discord account to sign in or create a ConnectX profile. You can change your ConnectX username in Settings.</p>
-        <form onSubmit={async e=>{e.preventDefault();setBusy(true);setMessage('');try{await signInWithDiscord()}catch(error){setMessage(error instanceof Error?error.message:'Discord sign-in failed. Please try again.');setDiscordConsent(false)}finally{setBusy(false)}}}>
+      {socialConsent&&<Modal title={"Continue with "+socialConsent.label} onClose={()=>setSocialConsent(null)}>
+        <p>Use your {socialConsent.label} account to sign in or create a ConnectX profile. You can change your ConnectX username in Settings.</p>
+        <form onSubmit={async e=>{e.preventDefault();setBusy(true);setMessage('');try{await signInWithSocial(socialConsent)}catch(error){setMessage(error instanceof Error?error.message:'Sign-in failed. Please try again.');setSocialConsent(null)}finally{setBusy(false)}}}>
           <label className="check"><input type="checkbox" required/> I am at least 13 years old.</label>
           <label className="check"><input type="checkbox" required/><span>I agree to the <Link href="/terms-of-service" target="_blank">Terms of Service</Link> and <Link href="/privacy-policy" target="_blank">Privacy Policy</Link>.</span></label>
-          <button className="button discord-button wide" disabled={busy}>{busy?'Connecting…':'Continue to Discord'}</button>
+          <button className="button discord-button wide" disabled={busy}>{busy?'Connecting…':'Continue to '+socialConsent.label}</button>
         </form>
       </Modal>}
     </main>
